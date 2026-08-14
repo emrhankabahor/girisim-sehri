@@ -12,7 +12,9 @@ const CORE=[
   './content-4.html',
   './content-5.html',
   './content-6.html',
-  './icon.svg'
+  './icon-192.png',
+  './icon-512.png',
+  './apple-touch-icon.png'
 ];
 
 self.addEventListener('install',event=>{
