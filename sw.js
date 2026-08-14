@@ -1,10 +1,11 @@
-const CACHE_NAME='girisim-sehri-v166';
+const CACHE_NAME='girisim-sehri-v167';
 const CORE=[
   './',
   './index.html',
-  './styles.css?v=166',
-  './bootstrap.js?v=166',
-  './app.js?v=166',
+  './styles.css?v=167',
+  './bootstrap.js?v=167',
+  './app.js?v=167',
+  './v167.js?v=167',
   './manifest.webmanifest',
   './content-1.html',
   './content-2.html',
