@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#07111f">
-<title>Girişim Şehri Demo V1.63 • Tek Sefer Giriş • Seçili Şirket</title>
+<title>Girişim Şehri Demo V1.64 • Kalıcı Hesap • Seçili Şirket</title>
 <style>
 :root{--bg:#07111f;--surface:#0f1d30;--surface2:#12243a;--surface3:#172b43;--text:#f7fbff;--muted:#8ea2bb;--line:rgba(255,255,255,.09);--green:#34d399;--blue:#60a5fa;--amber:#fbbf24;--red:#fb7185}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Arial,sans-serif}body{background:radial-gradient(circle at 85% -5%,rgba(37,99,235,.24),transparent 28%),radial-gradient(circle at -10% 25%,rgba(16,185,129,.13),transparent 26%),linear-gradient(180deg,#07111f,#091522 45%,#07111f)}a{text-decoration:none;color:inherit}
@@ -1032,17 +1032,20 @@ button.btn.wide + a.btn.wide{
 (function(){
  try{
   var raw=localStorage.getItem('gs_current_account'),hasAccount=false;
-  if(raw){var u=JSON.parse(raw);hasAccount=!!(u&&u.id)}
+  if(raw){
+   var u=JSON.parse(raw);
+   hasAccount=!!(u&&u.id);
+  }
   if(!hasAccount){
    document.addEventListener('DOMContentLoaded',function(){
     var e=document.getElementById('accountOverlay');
-    if(e){e.style.display='grid';e.classList.remove('hidden')}
+    if(e){e.style.display='grid';e.classList.remove('hidden');}
    });
   }
  }catch(err){
   document.addEventListener('DOMContentLoaded',function(){
    var e=document.getElementById('accountOverlay');
-   if(e){e.style.display='grid';e.classList.remove('hidden')}
+   if(e){e.style.display='grid';e.classList.remove('hidden');}
   });
  }
 })();
@@ -1186,27 +1189,11 @@ button.btn.wide + a.btn.wide{
 
 
 
-<script>
-(function(){
-  var RESET_BUILD = 'gs_clean_v158_zero_1';
-  try{
-    if(sessionStorage.getItem(RESET_BUILD) !== 'done'){
-      var keys = [];
-      for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
-      keys.forEach(function(k){
-        if(k && (k.indexOf('gs_')===0 || k.indexOf('girisim')===0 || k.indexOf('Girişim')===0)){
-          localStorage.removeItem(k);
-        }
-      });
-      sessionStorage.setItem(RESET_BUILD,'done');
-    }
-  }catch(e){}
-})();
-</script>
+
 <script>
 (function(){
   try{
-    var remembered=false;
+    var remembered=localStorage.getItem('gs_account_remembered')==='1';
     var raw=localStorage.getItem('gs_current_account');
     var hasAccount=false;
     if(raw){
@@ -1291,7 +1278,7 @@ button.btn.wide + a.btn.wide{
 </div>
 
 <div class="app">
-<header class="topbar"><a href="#home" class="brand"><div class="logo">GŞ</div><div><h1>Girişim Şehri</h1><small>MOBİL DEMO • V1.63 • TEK SEFER GİRİŞ • SEÇİLİ ŞİRKET</small></div></a><div class="clock" id="clock">--:--:--</div></header>
+<header class="topbar"><a href="#home" class="brand"><div class="logo">GŞ</div><div><h1>Girişim Şehri</h1><small>MOBİL DEMO • V1.64 • KALICI HESAP • SEÇİLİ ŞİRKET</small></div></a><div class="clock" id="clock">--:--:--</div></header>
 
 <section id="home" class="screen">
 <div class="home-command">
@@ -4073,21 +4060,16 @@ function hideAccountOverlay(){let e=document.getElementById('accountOverlay');if
 function showAccountOverlay(){let e=document.getElementById('accountOverlay');if(e){e.style.display='grid';e.classList.remove('hidden');e.setAttribute('aria-hidden','false')}}
 function renderAccountState(){
  let u=currentAccount();
-
- // Bir kere giriş yaptıktan sonra, hesap bu cihazın uygulama verisinde kaldığı sürece
- // yeniden e-posta veya şifre isteme.
  if(u&&u.id){
   hideAccountOverlay();
   hideCareerOverlay();
   if(u.id!=='guest')loadAccountCareer(u.id);
-  repairLegacyCareerBeforeRender();
-  sanitizeGameState();
-  syncSelectedCompanyToProfile();
+  if(typeof repairLegacyCareerBeforeRender==='function')repairLegacyCareerBeforeRender();
+  if(typeof sanitizeGameState==='function')sanitizeGameState();
+  if(typeof syncSelectedCompanyToProfile==='function')syncSelectedCompanyToProfile();
   render();renderFinanceExtras();renderGameExtras();
   return
  }
-
- // Yalnızca ilk kurulumda / uygulama verileri silinmişse / kullanıcı çıkış yapmışsa göster.
  showAccountOverlay();
  setAccountMode('login')
 }
