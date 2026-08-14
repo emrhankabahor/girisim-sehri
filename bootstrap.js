@@ -17,9 +17,14 @@
     const parts=await Promise.all(files.map(f=>fetch(f,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
     root.innerHTML=parts.join('');
     const versionLabel=document.querySelector('.topbar small');
-    if(versionLabel) versionLabel.textContent='MOBİL DEMO • V1.66 • PWA • SEÇİLİ ŞİRKET';
+    if(versionLabel) versionLabel.textContent='MOBİL DEMO • V1.67 • OYNANABİLİRLİK';
     const script=document.createElement('script');
-    script.src='app.js?v=166';
+    script.src='app.js?v=167';
+    script.onload=()=>{
+      const patch=document.createElement('script');
+      patch.src='v167.js?v=167';
+      document.body.appendChild(patch);
+    };
     document.body.appendChild(script);
   }catch(err){
     console.error(err);
