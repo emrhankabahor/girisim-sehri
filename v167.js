@@ -1,10 +1,8 @@
 /* Girişim Şehri V1.67 • Oynanabilirlik Güncellemesi */
 (function(){
   const MAX_ACTIVE_LOANS=2;
-  function removeGameMonth(){
-    const el=document.getElementById('homeCycle');
-    if(el){const card=el.closest('.home-status-row > div');if(card)card.remove();}
-  }
+  function removeGameMonth(){const el=document.getElementById('homeCycle');if(el){const card=el.closest('.home-status-row > div');if(card)card.remove();}}
+  function hideIPO(){document.querySelectorAll('a,button,.menu-card,.finance-card,.info-card,.asset-card,.home-main-card').forEach(el=>{const t=(el.textContent||'').trim().toLocaleLowerCase('tr-TR');if(t.includes('halka arz')){const card=el.closest('.menu-card,.finance-card,.info-card,.asset-card,.home-main-card')||el;card.style.display='none';card.setAttribute('data-v167-ipo-hidden','1');}});}
   function parseTRY(v){let s=String(v??'').trim().replace(/₺|\s/g,'');if(!s)return 0;if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');else s=s.replace(/\./g,'');let n=Number(s);return Number.isFinite(n)?n:0}
   function formatTRYInput(v){let n=parseTRY(v);if(!n)return '';return n.toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2})}
   function isMoneyInput(el){if(!el||el.tagName!=='INPUT')return false;let key=((el.id||'')+' '+(el.name||'')+' '+(el.placeholder||'')).toLowerCase();return /loanamt|creditamount|capital|sermaye|tutar|amount|price|fiyat|cash|nakit/.test(key)&&!/term|vade|month|ay/.test(key)}
@@ -16,7 +14,7 @@
   const originalSecuredLoan=window.takeSecuredLoan;if(typeof originalSecuredLoan==='function')window.takeSecuredLoan=function(){if(blockThirdLoan())return false;document.querySelectorAll('input').forEach(el=>{if(isMoneyInput(el)&&el.value)el.value=String(parseTRY(el.value))});return originalSecuredLoan.apply(this,arguments)};
   function addLoanRuleInfo(){const el=document.getElementById('activeLoansList');if(!el||document.getElementById('v167LoanRule'))return;const box=document.createElement('div');box.id='v167LoanRule';box.className='info-card';box.innerHTML='<b>Kredi Politikası</b><p>Aynı anda en fazla <strong>2 aktif kredi</strong> kullanılabilir. Bankalar kredi puanı, gelir, borç oranı, net servet, ödeme geçmişi ve banka güvenini birlikte değerlendirir.</p>';el.parentNode&&el.parentNode.insertBefore(box,el)}
   function updateLoanButtons(){const full=activeLoanCount()>=MAX_ACTIVE_LOANS;document.querySelectorAll('[onclick*="acceptLoan("],[onclick*="takeSecuredLoan("]').forEach(btn=>{if(full){btn.classList.add('v167-loan-limit');btn.title='Aynı anda en fazla 2 aktif kredi'}else{btn.classList.remove('v167-loan-limit');btn.title=''}})}
-  const oldRender=window.render;if(typeof oldRender==='function')window.render=function(){const r=oldRender.apply(this,arguments);setTimeout(()=>{removeGameMonth();addLoanRuleInfo();updateLoanButtons();prepareMoneyInputs()},0);return r};
-  const observer=new MutationObserver(()=>{removeGameMonth();prepareMoneyInputs()});observer.observe(document.body,{childList:true,subtree:true});
-  setTimeout(()=>{removeGameMonth();addLoanRuleInfo();updateLoanButtons();prepareMoneyInputs()},300);
+  const oldRender=window.render;if(typeof oldRender==='function')window.render=function(){const r=oldRender.apply(this,arguments);setTimeout(()=>{removeGameMonth();hideIPO();addLoanRuleInfo();updateLoanButtons();prepareMoneyInputs()},0);return r};
+  const observer=new MutationObserver(()=>{removeGameMonth();hideIPO();prepareMoneyInputs()});observer.observe(document.body,{childList:true,subtree:true});
+  setTimeout(()=>{removeGameMonth();hideIPO();addLoanRuleInfo();updateLoanButtons();prepareMoneyInputs()},300);
 })();
