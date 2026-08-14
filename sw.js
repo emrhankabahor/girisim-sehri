@@ -12,8 +12,7 @@ const CORE=[
   './content-4.html',
   './content-5.html',
   './content-6.html',
-  './icon-192.png',
-  './icon-512.png'
+  './icon.svg'
 ];
 
 self.addEventListener('install',event=>{
