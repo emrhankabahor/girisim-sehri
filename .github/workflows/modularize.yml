@@ -1,0 +1,39 @@
+name: Modularize Girişim Şehri
+
+on:
+  push:
+    paths:
+      - 'tools/modularize.py'
+      - '.github/workflows/modularize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  modularize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Split project
+        run: python tools/modularize.py
+
+      - name: Commit generated modular files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Modularize game and remove lifestyle section"
+            git push
+          fi
