@@ -13,13 +13,62 @@
     return false;
   }
 
-  const originalAcceptLoan=window.acceptLoan;
-  if(typeof originalAcceptLoan==='function'){
-    window.acceptLoan=function(){
-      if(blockThirdLoan())return false;
-      return originalAcceptLoan.apply(this,arguments);
-    };
-  }
+  window.acceptLoan=function(id,name,limit,rate,maxTerm){
+    if(blockThirdLoan())return false;
+
+    let requested=Number(document.getElementById('loanamt_'+id)?.value),months=Number(document.getElementById('loanterm_'+id)?.value);
+    if(!requested||requested<100000||requested>limit){
+      if(typeof toast==='function')toast('Kredi tutarı geçersiz');
+      return false;
+    }
+    if(!months||months<1||months>maxTerm||months>6){
+      if(typeof toast==='function')toast('Vade 1-6 ay olmalı');
+      return false;
+    }
+
+    let trust=Number(trusts[id]||50),assess=creditAssessment(limit,trust),allowed=Math.min(limit,Math.max(250000,Number(assess.limit||0)));
+    if(creditScore<20||trust<20||allowed<100000){
+      if(typeof toast==='function')toast('Kredi başvurun banka kriterlerini karşılamıyor');
+      return false;
+    }
+
+    let amount=Math.min(requested,allowed);
+    amount=Math.floor(amount/1000)*1000;
+    if(amount<100000){
+      if(typeof toast==='function')toast('Onaylanan kredi tutarı minimum kullanım tutarının altında');
+      return false;
+    }
+
+    let r=Math.max(.5,rate+(creditScore<40?.6:creditScore>=80?-.3:0)+(trust>=80?-.2:trust<40?.4:0)+((sim.macro?.rate||42.5)-42.5)/25+currentNews().credit*2);
+    let total=amount*(1+(r/100)*months),inst=total/months,d=new Date();d.setMonth(d.getMonth()+1);
+
+    cash+=amount;
+    loans.push({id,name,amount,requestedAmount:requested,approvedLimit:allowed,rate:r,months,total,installment:inst,remaining:total,t:Date.now(),nextDue:d.getTime(),paidCount:0,hadLate:false,closed:false});
+    trusts[id]=clamp(trust+2,0,100);
+    tx.unshift({t:Date.now(),kind:'loan',type:'loan_in',sym:name,total:amount});
+
+    save();
+    if(typeof saveAccountCareer==='function'){
+      try{let u=currentAccount();if(u&&u.id&&u.id!=='guest')saveAccountCareer(u.id)}catch(e){}
+    }
+    render();renderFinanceExtras();renderGameExtras();
+
+    let st=document.getElementById('loanstatus_'+id);
+    if(st)st.innerHTML='✅ Kredi kullanıldı • Onaylanan tutar: <b>'+money(amount)+'</b> • Aylık taksit: <b>'+money(inst)+'</b> • Toplam geri ödeme: <b>'+money(total)+'</b>';
+    let title=document.getElementById('loan_success_'+id+'_title');
+    let text=document.getElementById('loan_success_'+id+'_text');
+    let detail=document.getElementById('loan_success_'+id+'_detail');
+    if(title)title.textContent='✅ Kredi hesabına geçti';
+    if(text)text.textContent=money(amount)+' nakit bakiyene eklendi.';
+    if(detail)detail.innerHTML='Yeni nakit bakiyesi: <b>'+money(cash)+'</b> • Aylık taksit: <b>'+money(inst)+'</b> • Toplam geri ödeme: <b>'+money(total)+'</b>';
+
+    if(requested>amount){
+      if(typeof toast==='function')toast('Talebin '+money(requested)+' • Banka '+money(amount)+' onayladı ve bakiyene aktardı');
+    }else if(typeof toast==='function'){
+      toast(name+' kredisi hesabına geçti');
+    }
+    return true;
+  };
 
   const originalSecuredLoan=window.takeSecuredLoan;
   if(typeof originalSecuredLoan==='function'){
