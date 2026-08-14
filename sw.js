@@ -1,18 +1,18 @@
-const CACHE_NAME='girisim-sehri-v167';
+const CACHE_NAME='girisim-sehri-v168';
 const CORE=[
   './',
   './index.html',
-  './styles.css?v=167',
-  './bootstrap.js?v=167',
-  './app.js?v=167',
-  './v167.js?v=167',
+  './styles.css?v=168',
+  './bootstrap.js?v=168',
+  './app.js?v=168',
+  './v167.js?v=168',
   './manifest.webmanifest',
-  './content-1.html',
-  './content-2.html',
-  './content-3.html',
-  './content-4.html',
-  './content-5.html',
-  './content-6.html',
+  './content-1.html?v=168',
+  './content-2.html?v=168',
+  './content-3.html?v=168',
+  './content-4.html?v=168',
+  './content-5.html?v=168',
+  './content-6.html?v=168',
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png'
@@ -24,36 +24,15 @@ self.addEventListener('install',event=>{
 });
 
 self.addEventListener('activate',event=>{
-  event.waitUntil(
-    caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))))
-      .then(()=>self.clients.claim())
-  );
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
 
 self.addEventListener('fetch',event=>{
-  const req=event.request;
-  if(req.method!=='GET') return;
-  const url=new URL(req.url);
-  if(url.origin!==self.location.origin) return;
-
+  const req=event.request;if(req.method!=='GET')return;
+  const url=new URL(req.url);if(url.origin!==self.location.origin)return;
   if(req.mode==='navigate'){
-    event.respondWith(
-      fetch(req).then(res=>{
-        const copy=res.clone();
-        caches.open(CACHE_NAME).then(c=>c.put('./index.html',copy));
-        return res;
-      }).catch(()=>caches.match('./index.html'))
-    );
+    event.respondWith(fetch(req,{cache:'no-store'}).then(res=>{const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put('./index.html',copy));return res}).catch(()=>caches.match('./index.html')));
     return;
   }
-
-  event.respondWith(
-    fetch(req).then(res=>{
-      if(res && res.status===200){
-        const copy=res.clone();
-        caches.open(CACHE_NAME).then(c=>c.put(req,copy));
-      }
-      return res;
-    }).catch(()=>caches.match(req))
-  );
+  event.respondWith(fetch(req).then(res=>{if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy));}return res}).catch(()=>caches.match(req)));
 });
