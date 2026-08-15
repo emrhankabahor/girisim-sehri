@@ -16,10 +16,10 @@
     ensureStyle();ensureOverlay();if(document.getElementById('loanMgmtLauncher'))return;
     const finance=document.getElementById('finance');if(!finance)return;
     const heads=Array.from(finance.querySelectorAll('.section-head'));
-    const financialControl=heads.find(h=>(h.textContent||'').includes('Finansal Kontrol'));
-    const grid=financialControl&&financialControl.nextElementSibling;
+    const banking=heads.find(h=>(h.textContent||'').includes('Bankacılık'));
+    const grid=banking&&banking.nextElementSibling;
     if(!grid)return;
-    const a=document.createElement('a');a.id='loanMgmtLauncher';a.href='javascript:void(0)';a.className='menu-card loan-mgmt-launch-card';a.innerHTML='<div class="iconbox">💳</div><div><h4>Kredilerimi Yönet</h4><p>Aktif kredileri, taksitleri ve erken kapama tutarını gör.</p></div><span class="arrow">›</span>';a.addEventListener('click',e=>{e.preventDefault();window.openLoanManager()});grid.insertBefore(a,grid.firstChild);
+    const a=document.createElement('a');a.id='loanMgmtLauncher';a.href='javascript:void(0)';a.className='menu-card loan-mgmt-launch-card';a.innerHTML='<div class="iconbox">💳</div><div><h4>Kredilerimi Yönet</h4><p>Aktif kredileri, taksitleri ve erken kapama tutarını gör.</p></div><span class="arrow">›</span>';a.addEventListener('click',e=>{e.preventDefault();window.openLoanManager()});grid.appendChild(a);
   }
   function refresh(){try{addLauncher();if(document.getElementById('loanMgmtOverlay')?.classList.contains('open'))renderManager()}catch(e){}}
   window.addEventListener('hashchange',()=>setTimeout(refresh,80));setInterval(refresh,2000);setTimeout(refresh,300);
