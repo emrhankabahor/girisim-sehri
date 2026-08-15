@@ -22,7 +22,13 @@
           .replace(/Girişim Şehri/g,'Empire of Trade');
       }
     });
-    document.querySelectorAll('.account-brand-logo').forEach(el=>el.textContent='EOT');
+    document.querySelectorAll('.account-brand-logo').forEach(el=>{
+      el.textContent='';
+      el.style.backgroundImage="url('./apple-touch-icon.png?v=183')";
+      el.style.backgroundSize='cover';
+      el.style.backgroundPosition='center';
+      el.style.backgroundRepeat='no-repeat';
+    });
     const versionLabel=document.querySelector('.topbar small');
     if(versionLabel) versionLabel.textContent='MOBİL DEMO • V1.69 • OYNANABİLİRLİK';
   }
