@@ -3,7 +3,6 @@
   function fmt(n){try{return '₺'+Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:2})}catch(e){return '₺0'}}
   function list(){try{return Array.isArray(loans)?loans.map((l,i)=>({l,i})).filter(x=>!x.l.closed&&Number(x.l.remaining||0)>.01):[]}catch(e){return []}}
   function ensureStyle(){if(document.getElementById('loanMgmtStyle'))return;const s=document.createElement('style');s.id='loanMgmtStyle';s.textContent=`
-  .loan-mgmt-launch-card{display:flex!important;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer}.loan-mgmt-launch-card .iconbox{flex:0 0 auto}.loan-mgmt-launch-card .arrow{margin-left:auto}
   .loan-mgmt-overlay{position:fixed;inset:0;z-index:99999;background:rgba(2,8,20,.82);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center}.loan-mgmt-overlay.open{display:flex}
   .loan-mgmt-sheet{width:min(760px,100%);max-height:88vh;overflow:auto;border-radius:24px 24px 0 0;background:#081522;border:1px solid rgba(148,163,184,.2);padding:18px 16px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -18px 50px rgba(0,0,0,.35)}
   .loan-mgmt-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.loan-mgmt-head h3{margin:0;font-size:18px}.loan-mgmt-close{width:38px;height:38px;border-radius:12px;border:1px solid rgba(148,163,184,.22);background:#102235;color:white;font-size:20px}
@@ -19,7 +18,7 @@
     const banking=heads.find(h=>(h.textContent||'').includes('Bankacılık'));
     const grid=banking&&banking.nextElementSibling;
     if(!grid)return;
-    const a=document.createElement('a');a.id='loanMgmtLauncher';a.href='javascript:void(0)';a.className='menu-card loan-mgmt-launch-card';a.innerHTML='<div class="iconbox">💳</div><div><h4>Kredilerimi Yönet</h4><p>Aktif kredileri, taksitleri ve erken kapama tutarını gör.</p></div><span class="arrow">›</span>';a.addEventListener('click',e=>{e.preventDefault();window.openLoanManager()});grid.appendChild(a);
+    const a=document.createElement('a');a.id='loanMgmtLauncher';a.href='javascript:void(0)';a.className='menu-card';a.innerHTML='<div class="iconbox">💳</div><h4>Kredilerimi Yönet</h4><p>Aktif kredileri, taksitleri ve erken kapama tutarını gör.</p><span class="arrow">›</span>';a.addEventListener('click',e=>{e.preventDefault();window.openLoanManager()});grid.appendChild(a);
   }
   function refresh(){try{addLauncher();if(document.getElementById('loanMgmtOverlay')?.classList.contains('open'))renderManager()}catch(e){}}
   window.addEventListener('hashchange',()=>setTimeout(refresh,80));setInterval(refresh,2000);setTimeout(refresh,300);
