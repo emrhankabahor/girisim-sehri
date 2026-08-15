@@ -1,18 +1,22 @@
-const CACHE_NAME='girisim-sehri-v168';
+const CACHE_NAME='girisim-sehri-v174';
 const CORE=[
   './',
   './index.html',
-  './styles.css?v=168',
-  './bootstrap.js?v=168',
-  './app.js?v=168',
-  './v167.js?v=168',
+  './styles.css?v=174',
+  './bootstrap.js?v=174',
+  './app.js?v=174',
+  './v167.js?v=174',
+  './realtime-finance.js?v=174',
+  './state-integrity.js?v=174',
+  './company-list-fix.js?v=174',
+  './investment-visibility.js?v=174',
   './manifest.webmanifest',
-  './content-1.html?v=168',
-  './content-2.html?v=168',
-  './content-3.html?v=168',
-  './content-4.html?v=168',
-  './content-5.html?v=168',
-  './content-6.html?v=168',
+  './content-1.html?v=174',
+  './content-2.html?v=174',
+  './content-3.html?v=174',
+  './content-4.html?v=174',
+  './content-5.html?v=174',
+  './content-6.html?v=174',
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png'
@@ -34,5 +38,5 @@ self.addEventListener('fetch',event=>{
     event.respondWith(fetch(req,{cache:'no-store'}).then(res=>{const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put('./index.html',copy));return res}).catch(()=>caches.match('./index.html')));
     return;
   }
-  event.respondWith(fetch(req).then(res=>{if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy));}return res}).catch(()=>caches.match(req)));
+  event.respondWith(fetch(req,{cache:'no-store'}).then(res=>{if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy));}return res}).catch(()=>caches.match(req)));
 });
