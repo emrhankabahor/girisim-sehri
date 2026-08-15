@@ -4,7 +4,7 @@
   if('serviceWorker' in navigator){
     window.addEventListener('load',async()=>{
       try{
-        const reg=await navigator.serviceWorker.register('./sw.js?v=182',{scope:'./'});
+        const reg=await navigator.serviceWorker.register('./sw.js?v=185',{scope:'./'});
         await reg.update();
       }catch(err){console.warn('Service worker kaydı başarısız:',err)}
     });
