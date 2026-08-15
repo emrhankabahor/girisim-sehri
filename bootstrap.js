@@ -4,48 +4,20 @@
   if('serviceWorker' in navigator){
     window.addEventListener('load',async()=>{
       try{
-        const reg=await navigator.serviceWorker.register('./sw.js?v=176',{scope:'./'});
+        const reg=await navigator.serviceWorker.register('./sw.js?v=178',{scope:'./'});
         await reg.update();
-      }catch(err){
-        console.warn('Service worker kaydı başarısız:',err);
-      }
+      }catch(err){console.warn('Service worker kaydı başarısız:',err)}
     });
   }
 
   try{
     const files=['content-1.html','content-2.html','content-3.html','content-4.html','content-5.html','content-6.html'];
-    const parts=await Promise.all(files.map(f=>fetch(f+'?v=176',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
+    const parts=await Promise.all(files.map(f=>fetch(f+'?v=178',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
     root.innerHTML=parts.join('');
     const versionLabel=document.querySelector('.topbar small');
-    if(versionLabel) versionLabel.textContent='MOBİL DEMO • V1.68 • KAYIT SİSTEMİ';
-    const script=document.createElement('script');
-    script.src='app.js?v=176';
-    script.onload=()=>{
-      const patch=document.createElement('script');
-      patch.src='v167.js?v=176';
-      patch.onload=()=>{
-        const realtime=document.createElement('script');
-        realtime.src='realtime-finance.js?v=176';
-        realtime.onload=()=>{
-          const integrity=document.createElement('script');
-          integrity.src='state-integrity.js?v=176';
-          integrity.onload=()=>{
-            const companies=document.createElement('script');
-            companies.src='company-list-fix.js?v=176';
-            companies.onload=()=>{
-              const grant=document.createElement('script');
-              grant.src='demo-balance-grant.js?v=176';
-              document.body.appendChild(grant);
-            };
-            document.body.appendChild(companies);
-          };
-          document.body.appendChild(integrity);
-        };
-        document.body.appendChild(realtime);
-      };
-      document.body.appendChild(patch);
-    };
-    document.body.appendChild(script);
+    if(versionLabel) versionLabel.textContent='MOBİL DEMO • V1.69 • OYNANABİLİRLİK';
+    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v=178';s.onload=()=>next&&next();document.body.appendChild(s)};
+    load('app.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('loan-management.js'))))))));
   }catch(err){
     console.error(err);
     root.innerHTML='<main style="padding:24px;color:white;font-family:Arial"><h2>Girişim Şehri yüklenemedi</h2><p>Bağlantını kontrol edip sayfayı yenile.</p></main>';
