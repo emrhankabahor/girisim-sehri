@@ -11,22 +11,65 @@
 <meta name="application-name" content="Empire of Trade">
 <meta name="description" content="Empire of Trade — ekonomi, ticaret ve girişimcilik simülasyonu.">
 <title>Empire of Trade Demo V1.69 • Oynanabilirlik</title>
-<link rel="manifest" href="manifest.webmanifest?v=183">
-<link rel="icon" href="icon-192.png?v=183" type="image/png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=183">
-<link rel="stylesheet" href="styles.css?v=183">
+<link rel="manifest" href="manifest.webmanifest?v=184">
+<link rel="icon" href="icon-192.png?v=184" type="image/png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=184">
+<link rel="stylesheet" href="styles.css?v=184">
 <style>
 .v167-loan-limit{opacity:.58!important;filter:saturate(.55);cursor:not-allowed!important}
 .home-status-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:82%!important;margin:9px auto 0!important}
 .home-status-row>div{width:100%!important;min-width:0!important;min-height:48px!important;padding:8px 10px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:linear-gradient(180deg,rgba(18,36,58,.94),rgba(15,29,48,.94))!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
 .home-status-row span{display:block!important;font-size:7px!important;color:var(--muted)!important;margin-bottom:3px!important}
 .home-status-row b{display:block!important;font-size:10px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-@media(max-width:430px){.home-status-row{width:94%!important;gap:6px!important}.home-status-row>div{min-height:46px!important;padding:7px 9px!important}.home-status-row b{font-size:9px!important}}
+
+/* V1.69 ana ekran arayüz iyileştirmesi */
+.topbar{padding:10px 4px 18px!important;gap:12px!important;border-bottom:1px solid rgba(255,255,255,.045)!important;background:linear-gradient(180deg,rgba(7,17,31,.99) 78%,rgba(7,17,31,.88) 92%,rgba(7,17,31,0))!important}
+.topbar .brand{min-width:0!important;gap:12px!important}
+.topbar .logo{width:48px!important;height:48px!important;min-width:48px!important;border-radius:15px!important;box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.08) inset!important}
+.topbar .brand>div:last-child{min-width:0!important}
+.topbar .brand h1{font-size:20px!important;line-height:1.05!important;letter-spacing:-.02em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.topbar .brand small{font-size:8.5px!important;letter-spacing:.045em!important;margin-top:5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.topbar .clock{min-width:102px!important;padding:11px 12px!important;border-radius:16px!important;background:linear-gradient(180deg,rgba(19,37,59,.98),rgba(13,27,45,.98))!important;border:1px solid rgba(148,163,184,.18)!important;box-shadow:0 8px 24px rgba(0,0,0,.18)!important;font-size:13px!important}
+
+#home{padding-top:4px!important}
+.home-command{position:relative!important;overflow:hidden!important;padding:24px!important;border-radius:28px!important;border:1px solid rgba(96,165,250,.2)!important;background:linear-gradient(145deg,rgba(15,35,57,.98),rgba(8,24,41,.98))!important;box-shadow:0 18px 45px rgba(0,0,0,.28)!important}
+.home-command:before{content:"";position:absolute;right:-70px;top:-80px;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.12),rgba(37,99,235,.06) 48%,transparent 70%);pointer-events:none}
+.home-command-top{position:relative!important;z-index:1!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:18px!important}
+.home-command .eyebrow{display:block!important;margin-bottom:12px!important;font-size:9px!important;letter-spacing:.22em!important;color:#a8d8ff!important}
+.home-command h2{margin:0!important;max-width:360px!important;font-size:29px!important;line-height:1.08!important;letter-spacing:-.035em!important}
+.home-command p{margin:13px 0 0!important;max-width:390px!important;font-size:12px!important;line-height:1.55!important;color:#92a7bf!important}
+.home-level-badge{position:relative!important;z-index:1!important;width:78px!important;height:78px!important;border-radius:22px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;background:linear-gradient(180deg,rgba(20,48,80,.98),rgba(13,36,62,.98))!important;border:1px solid rgba(96,165,250,.2)!important;box-shadow:0 10px 28px rgba(0,0,0,.2)!important}
+.home-level-badge small{font-size:8px!important;letter-spacing:.08em!important;color:#9eb0c7!important}
+.home-level-badge b{font-size:27px!important;line-height:1!important;margin-top:5px!important}
+.home-money-grid{position:relative!important;z-index:1!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;margin-top:22px!important}
+.home-money-grid>div{min-width:0!important;min-height:88px!important;padding:14px!important;border-radius:18px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;background:linear-gradient(180deg,rgba(24,43,65,.94),rgba(18,35,55,.94))!important;border:1px solid rgba(255,255,255,.055)!important;box-shadow:0 8px 18px rgba(0,0,0,.14)!important}
+.home-money-grid span{display:block!important;margin-bottom:7px!important;font-size:8px!important;letter-spacing:.08em!important;color:#91a4bc!important}
+.home-money-grid b{display:block!important;font-size:16px!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+
+@media(max-width:430px){
+  .topbar .logo{width:44px!important;height:44px!important;min-width:44px!important}
+  .topbar .brand h1{font-size:17px!important}
+  .topbar .brand small{font-size:7px!important;max-width:180px!important}
+  .topbar .clock{min-width:88px!important;padding:10px 9px!important;font-size:11px!important}
+  .home-command{padding:19px!important;border-radius:23px!important}
+  .home-command-top{gap:12px!important}
+  .home-command h2{font-size:25px!important}
+  .home-command p{font-size:11px!important}
+  .home-level-badge{width:66px!important;height:66px!important;border-radius:18px!important}
+  .home-level-badge b{font-size:23px!important}
+  .home-money-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;margin-top:18px!important}
+  .home-money-grid>div{min-height:76px!important;padding:10px!important;border-radius:15px!important}
+  .home-money-grid span{font-size:6.5px!important;margin-bottom:5px!important}
+  .home-money-grid b{font-size:12px!important}
+  .home-status-row{width:94%!important;gap:6px!important}
+  .home-status-row>div{min-height:46px!important;padding:7px 9px!important}
+  .home-status-row b{font-size:9px!important}
+}
 </style>
 </head>
 <body>
 <div id="app-root"></div>
-<script src="investment-visibility.js?v=183"></script>
-<script src="bootstrap.js?v=183"></script>
+<script src="investment-visibility.js?v=184"></script>
+<script src="bootstrap.js?v=184"></script>
 </body>
 </html>
