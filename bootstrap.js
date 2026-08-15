@@ -4,7 +4,7 @@
   if('serviceWorker' in navigator){
     window.addEventListener('load',async()=>{
       try{
-        const reg=await navigator.serviceWorker.register('./sw.js?v=181',{scope:'./'});
+        const reg=await navigator.serviceWorker.register('./sw.js?v=182',{scope:'./'});
         await reg.update();
       }catch(err){console.warn('Service worker kaydı başarısız:',err)}
     });
@@ -29,10 +29,10 @@
 
   try{
     const files=['content-1.html','content-2.html','content-3.html','content-4.html','content-5.html','content-6.html'];
-    const parts=await Promise.all(files.map(f=>fetch(f+'?v=181',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
+    const parts=await Promise.all(files.map(f=>fetch(f+'?v=182',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
     root.innerHTML=parts.join('');
     applyEmpireBranding();
-    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v=181';s.onload=()=>{applyEmpireBranding();next&&next()};document.body.appendChild(s)};
+    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v=182';s.onload=()=>{applyEmpireBranding();next&&next()};document.body.appendChild(s)};
     load('app.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('loan-management.js'))))))));
   }catch(err){
     console.error(err);
