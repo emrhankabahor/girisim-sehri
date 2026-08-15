@@ -1,7 +1,7 @@
 {
-  "name": "Girişim Şehri",
-  "short_name": "Girişim Şehri",
-  "description": "Ekonomi, ticaret ve girişimcilik simülasyonu.",
+  "name": "Empire of Trade",
+  "short_name": "Empire of Trade",
+  "description": "Empire of Trade — ekonomi, ticaret ve girişimcilik simülasyonu.",
   "lang": "tr",
   "start_url": "./",
   "scope": "./",
