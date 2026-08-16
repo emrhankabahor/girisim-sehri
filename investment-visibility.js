@@ -132,6 +132,9 @@
 .asset-mini .eot-card-total-box{grid-column:1/-1!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:11px 13px!important;margin-top:2px!important;border:1px solid rgba(88,196,225,.22)!important;border-radius:13px!important;background:linear-gradient(90deg,rgba(18,55,82,.88),rgba(12,36,57,.88))!important}\
 .asset-mini .eot-card-total-box span{font-size:8px!important;font-weight:900!important;letter-spacing:.08em!important;color:#8fa6bb!important}\
 .asset-mini .eot-card-total-box b{font-size:13px!important;color:#7de6c1!important;white-space:nowrap!important}\
+.summary-strip>div{min-width:0!important;overflow:hidden!important}\
+.summary-strip b{white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;line-height:1.12!important;font-size:clamp(8px,2.8vw,11px)!important;letter-spacing:-.025em!important}\
+.summary-strip .profit,.summary-strip .loss2{white-space:nowrap!important}\
 ';
     document.head.appendChild(st);
   }
