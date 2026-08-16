@@ -78,9 +78,11 @@ self.addEventListener('fetch',event=>{
     return;
   }
 
-  event.respondWith(fetch(req,{cache:'no-store'}).then(res=>{if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy));}return res}).catch(async()=>{
-    const direct=await caches.match(req);if(direct)return direct;
-    const normalized=new URL(req.url);normalized.search='';
-    return caches.match(normalized.pathname.replace(/^\//,'./'));
+  event.respondWith(fetch(req,{cache:'no-store'}).then(res=>{
+    if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy));}
+    return res;
+  }).catch(async()=>{
+    const exact=await caches.match(req);if(exact)return exact;
+    return caches.match(req,{ignoreSearch:true});
   }));
 });
