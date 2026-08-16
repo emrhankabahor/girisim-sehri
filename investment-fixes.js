@@ -25,8 +25,6 @@
     }catch(e){}
   }
   function inputQty(sym){
-    // Ana trade() fonksiyonu qty_ alanını okur. Detay ekranı da işlemden hemen önce tradeqty_ değerini qty_ alanına kopyalar.
-    // Böylece gizli/eski bir detay alanı doğrudan karttan yapılan işlemi yanlışlıkla ezemez.
     const el=document.getElementById('qty_'+sym)||document.getElementById('tradeqty_'+sym);
     const raw=String(el&&el.value||'').trim().replace(/\s/g,'').replace(',','.');
     return Number(raw);
@@ -107,7 +105,11 @@
     if(document.querySelector('script[data-eot-finance-fixes]'))return;
     const s=document.createElement('script');s.src='finance-fixes.js?v=190&_='+Date.now();s.dataset.eotFinanceFixes='1';document.body.appendChild(s);
   }
-  function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs();ensureFinanceLayer()}
+  function ensureHomeCounts(){
+    if(document.querySelector('script[data-eot-home-counts]'))return;
+    const s=document.createElement('script');s.src='home-world-counts.js?v=1&_='+Date.now();s.dataset.eotHomeCounts='1';document.body.appendChild(s);
+  }
+  function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs();ensureFinanceLayer();ensureHomeCounts()}
   window.addEventListener('pagehide',persistCareer);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)persistCareer();else setTimeout(refresh,80)});
   window.addEventListener('hashchange',()=>setTimeout(refresh,80));
