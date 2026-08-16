@@ -101,7 +101,11 @@
       }
     }catch(e){}
   }
-  function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs()}
+  function ensureFinanceLayer(){
+    if(document.querySelector('script[data-eot-finance-fixes]'))return;
+    const s=document.createElement('script');s.src='finance-fixes.js?v=190&_='+Date.now();s.dataset.eotFinanceFixes='1';document.body.appendChild(s);
+  }
+  function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs();ensureFinanceLayer()}
   window.addEventListener('pagehide',persistCareer);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)persistCareer();else setTimeout(refresh,80)});
   window.addEventListener('hashchange',()=>setTimeout(refresh,80));
