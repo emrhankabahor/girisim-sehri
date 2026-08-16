@@ -23,3 +23,12 @@
   function refresh(){try{addLauncher();if(document.getElementById('loanMgmtOverlay')?.classList.contains('open'))renderManager()}catch(e){}}
   window.addEventListener('hashchange',()=>setTimeout(refresh,80));setInterval(refresh,2000);setTimeout(refresh,300);
 })();
+
+/* İnşaat güvenlik katmanını ana oyun fonksiyonları yüklendikten sonra ekle. */
+(function(){
+  if(document.querySelector('script[data-eot-construction-fixes]'))return;
+  const s=document.createElement('script');
+  s.src='construction-fixes.js?v=190&_='+Date.now();
+  s.dataset.eotConstructionFixes='1';
+  document.body.appendChild(s);
+})();
