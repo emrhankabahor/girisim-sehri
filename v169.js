@@ -9,117 +9,21 @@
  function activeLoans(){try{return typeof loans!=='undefined'&&Array.isArray(loans)?loans.filter(x=>!x.closed&&Number(x.remaining||0)>0):[]}catch(e){return []}}
  function runtimeCash(){try{return typeof cash!=='undefined'&&Number.isFinite(Number(cash))?Number(cash):Number(localStorage.getItem('gs124_cash')||0)}catch(e){return 0}}
  function runtimeCredit(){try{return typeof creditScore!=='undefined'&&Number.isFinite(Number(creditScore))?Number(creditScore):Number(localStorage.getItem('gs111_credit')||50)}catch(e){return 50}}
- function goals(){
-   const cs=companies(),as=assets(),ls=activeLoans(),c=runtimeCash(),credit=runtimeCredit();
-   return [
-    {id:'company',title:'İlk şirketini kur',done:cs.length>0,detail:cs.length?'Şirket portföyün aktif.':'Bir sektör seçip ilk şirketini kur.'},
-    {id:'asset',title:'İlk varlığını edin',done:as.length>0,detail:as.length?'Varlık portföyün oluştu.':'Pazar bölümünden arsa, ev veya araç edin.'},
-    {id:'reserve',title:'Nakit rezervi oluştur',done:c>=500000,detail:'Hedef: '+money(500000)+' • Mevcut: '+money(c)},
-    {id:'credit',title:'Finansal güvenini geliştir',done:credit>=60,detail:'Kredi puanı hedefi: 60 • Mevcut: '+Math.round(credit)},
-    {id:'debt',title:'Borcu kontrol altında tut',done:ls.length<=2,detail:'Aktif kredi: '+ls.length+' / 2'}
-   ];
- }
- function ensureStyle(){if(document.getElementById('v169Style'))return;let s=document.createElement('style');s.id='v169Style';s.textContent=`
- .v169-panel{margin:14px 0;padding:16px;border:1px solid rgba(96,165,250,.22);border-radius:20px;background:linear-gradient(145deg,rgba(15,36,58,.96),rgba(8,24,40,.96));box-shadow:0 12px 28px rgba(0,0,0,.14)}
- .v169-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.v169-head b{font-size:15px}.v169-badge{font-size:10px;padding:5px 8px;border-radius:999px;background:rgba(45,212,191,.12);color:#79e6d1;border:1px solid rgba(45,212,191,.2)}
- .v169-goal{padding:11px 0;border-top:1px solid rgba(148,163,184,.12)}.v169-goal:first-of-type{border-top:0}.v169-title{font-size:12px;font-weight:850;display:flex;gap:8px;align-items:center}.v169-detail{font-size:10px;color:#91a4bb;margin:5px 0 0 24px;line-height:1.45}.v169-done{color:#72dfc5}.v169-tip{margin-top:12px;padding:11px;border-radius:14px;background:rgba(59,130,246,.09);font-size:10px;line-height:1.55;color:#b8c9dc}
- .eot-owned-buy{opacity:.62!important;pointer-events:none!important;filter:saturate(.65)}
- `;document.head.appendChild(s)}
- function mount(){
-   ensureStyle();
-   const home=document.querySelector('#home,#homeView,.home-view,[data-view="home"]');if(!home)return;
-   let box=document.getElementById('v169Goals');if(!box){box=document.createElement('section');box.id='v169Goals';box.className='v169-panel';let anchor=home.querySelector('.eot-ui-dashboard,.home-status-row,.home-main-card,.quick-access');if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(box,anchor.nextSibling);else home.appendChild(box)}
-   const gs=goals(),done=gs.filter(g=>g.done).length;
-   box.innerHTML='<div class="v169-head"><b>🎯 Kariyer Hedefleri</b><span class="v169-badge">'+done+'/'+gs.length+' tamamlandı</span></div>'+gs.map(g=>'<div class="v169-goal"><div class="v169-title '+(g.done?'v169-done':'')+'"><span>'+(g.done?'✓':'○')+'</span>'+g.title+'</div><div class="v169-detail">'+g.detail+'</div></div>').join('')+'<div class="v169-tip">💡 Öneri: Bütün paranı tek yatırıma bağlama. Nakit rezervi bırak, şirket ve varlık gelirlerini çeşitlendir, kredi taksitlerini gerçek vade tarihine göre takip et.</div>';
- }
- function dueReminder(){
-   try{
-    let now=Date.now(),s=state(),changed=false;
-    activeLoans().forEach(l=>{let due=Number(l.nextDue||0);if(!due)return;let diff=due-now;if(diff>0&&diff<=86400000){let k='loan_'+(l.id||l.t||due)+'_'+due;if(!s[k]){s[k]=1;changed=true;if(typeof toast==='function')toast('Yaklaşan kredi taksiti • '+(l.name||'Banka')+' • Son ödeme 24 saat içinde')}}});
-    if(changed)saveState(s)
-   }catch(e){}
- }
-
- function persistCareer(){
-   try{
-     if(typeof saveOwned==='function')saveOwned();
-     if(typeof save==='function')save();
-     if(typeof saveUnifiedState==='function')saveUnifiedState();
-     if(typeof currentAccount==='function'&&typeof saveAccountCareer==='function'){
-       const u=currentAccount();if(u&&u.id&&u.id!=='guest')saveAccountCareer(u.id);
-     }
-   }catch(e){console.warn('Varlık kaydı güvenli biçimde tamamlanamadı:',e)}
- }
- function purchaseAssetIdFromButton(el){
-   const code=el&&el.getAttribute?String(el.getAttribute('onclick')||''):'';
-   const m=code.match(/buyAsset\(\s*['"]([^'"]+)['"]/);return m?m[1]:'';
- }
- function refreshAssetPurchaseUI(){
-   try{
-     const owned=new Set(assets().map(a=>String(a&&a.id||'')).filter(Boolean));
-     document.querySelectorAll('[onclick*="buyAsset("]').forEach(el=>{
-       const id=purchaseAssetIdFromButton(el);if(!id)return;
-       const isOwned=owned.has(id);el.classList.toggle('eot-owned-buy',isOwned);
-       if(isOwned){
-         el.setAttribute('aria-disabled','true');
-         if(!el.dataset.eotOriginalText)el.dataset.eotOriginalText=el.textContent||'';
-         el.textContent='✓ Portföyünde';
-       }else{
-         el.removeAttribute('aria-disabled');
-         if(el.dataset.eotOriginalText)el.textContent=el.dataset.eotOriginalText;
-       }
-     });
-     owned.forEach(id=>{
-       const p='purchase_'+id,t=document.getElementById(p+'_title'),x=document.getElementById(p+'_text'),d=document.getElementById(p+'_detail');
-       const a=assets().find(v=>String(v&&v.id||'')===id);if(!a)return;
-       if(t)t.textContent='✅ Varlık portföyünde';
-       if(x)x.textContent=(a.name||'Varlık')+' başarıyla kayıtlı.';
-       if(d)d.innerHTML='Portföy değeri: <b>'+money(a.price)+'</b> • Satın alma kaydı korunuyor.';
-     });
-   }catch(e){}
- }
- function patchAssetTransactions(){
-   try{
-     if(typeof window.buyAsset==='function'&&!window.buyAsset.__eotAssetSafe){
-       const original=window.buyAsset;
-       const wrapped=function(id,name,type,price,rent){
-         id=String(id||'').trim();name=String(name||'').trim();type=String(type||'').trim();price=Number(price);rent=Number(rent||0);
-         if(!id||!name||!type||!Number.isFinite(price)||price<=0){if(typeof toast==='function')toast('Varlık bilgisi geçersiz');return false}
-         if(assets().some(a=>String(a&&a.id||'')===id)){
-           if(typeof setPurchaseResult==='function')setPurchaseResult(id,name,price,true);
-           if(typeof toast==='function')toast('Bu varlık zaten portföyünde');refreshAssetPurchaseUI();return false;
-         }
-         if(runtimeCash()<price){if(typeof toast==='function')toast('Yetersiz nakit');return false}
-         const beforeCash=runtimeCash(),beforeCount=assets().length;
-         const result=original.call(this,id,name,type,price,rent);
-         const purchased=assets().length===beforeCount+1&&assets().some(a=>String(a&&a.id||'')===id)&&runtimeCash()<=beforeCash-price+.01;
-         if(purchased){persistCareer();refreshAssetPurchaseUI();setTimeout(()=>{try{render();renderGameExtras()}catch(e){}},30)}
-         return purchased?true:result;
-       };
-       wrapped.__eotAssetSafe=true;window.buyAsset=wrapped;
-     }
-     if(typeof window.sellOwned==='function'&&!window.sellOwned.__eotAssetSafe){
-       const original=window.sellOwned;
-       const wrapped=function(index){
-         const a=assets()[index],id=a&&a.id,count=assets().length,r=original.apply(this,arguments);
-         if(id&&assets().length<count&&!assets().some(x=>x&&x.id===id)){persistCareer();refreshAssetPurchaseUI()}
-         return r;
-       };wrapped.__eotAssetSafe=true;window.sellOwned=wrapped;
-     }
-     if(typeof window.sellManagedProperty==='function'&&!window.sellManagedProperty.__eotAssetSafe){
-       const original=window.sellManagedProperty;
-       const wrapped=function(index){const a=assets()[index],id=a&&a.id,count=assets().length,r=original.apply(this,arguments);if(id&&assets().length<count){persistCareer();refreshAssetPurchaseUI()}return r};wrapped.__eotAssetSafe=true;window.sellManagedProperty=wrapped;
-     }
-     if(typeof window.togglePropertyRent==='function'&&!window.togglePropertyRent.__eotAssetSafe){
-       const original=window.togglePropertyRent;
-       const wrapped=function(){const r=original.apply(this,arguments);persistCareer();return r};wrapped.__eotAssetSafe=true;window.togglePropertyRent=wrapped;
-     }
-   }catch(e){console.warn('Varlık işlem güvenliği kurulamadı:',e)}
- }
- function refresh(){try{mount();dueReminder();patchAssetTransactions();refreshAssetPurchaseUI()}catch(e){}}
- const oldRender=window.render;if(typeof oldRender==='function')window.render=function(){let r=oldRender.apply(this,arguments);setTimeout(refresh,30);return r};
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(refresh,100);else persistCareer()});
- window.addEventListener('pagehide',persistCareer);
- window.addEventListener('hashchange',()=>setTimeout(refresh,80));
- setInterval(refresh,5000);setTimeout(refresh,500);
+ function goals(){const cs=companies(),as=assets(),ls=activeLoans(),c=runtimeCash(),credit=runtimeCredit();return [{id:'company',title:'İlk şirketini kur',done:cs.length>0,detail:cs.length?'Şirket portföyün aktif.':'Bir sektör seçip ilk şirketini kur.'},{id:'asset',title:'İlk varlığını edin',done:as.length>0,detail:as.length?'Varlık portföyün oluştu.':'Pazar bölümünden arsa, ev veya araç edin.'},{id:'reserve',title:'Nakit rezervi oluştur',done:c>=500000,detail:'Hedef: '+money(500000)+' • Mevcut: '+money(c)},{id:'credit',title:'Finansal güvenini geliştir',done:credit>=60,detail:'Kredi puanı hedefi: 60 • Mevcut: '+Math.round(credit)},{id:'debt',title:'Borcu kontrol altında tut',done:ls.length<=2,detail:'Aktif kredi: '+ls.length+' / 2'}]}
+ function ensureStyle(){if(document.getElementById('v169Style'))return;let s=document.createElement('style');s.id='v169Style';s.textContent=`.v169-panel{margin:14px 0;padding:16px;border:1px solid rgba(96,165,250,.22);border-radius:20px;background:linear-gradient(145deg,rgba(15,36,58,.96),rgba(8,24,40,.96));box-shadow:0 12px 28px rgba(0,0,0,.14)}.v169-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.v169-head b{font-size:15px}.v169-badge{font-size:10px;padding:5px 8px;border-radius:999px;background:rgba(45,212,191,.12);color:#79e6d1;border:1px solid rgba(45,212,191,.2)}.v169-goal{padding:11px 0;border-top:1px solid rgba(148,163,184,.12)}.v169-goal:first-of-type{border-top:0}.v169-title{font-size:12px;font-weight:850;display:flex;gap:8px;align-items:center}.v169-detail{font-size:10px;color:#91a4bb;margin:5px 0 0 24px;line-height:1.45}.v169-done{color:#72dfc5}.v169-tip{margin-top:12px;padding:11px;border-radius:14px;background:rgba(59,130,246,.09);font-size:10px;line-height:1.55;color:#b8c9dc}.eot-owned-buy{opacity:.62!important;pointer-events:none!important;filter:saturate(.65)}`;document.head.appendChild(s)}
+ function mount(){ensureStyle();const home=document.querySelector('#home,#homeView,.home-view,[data-view="home"]');if(!home)return;let box=document.getElementById('v169Goals');if(!box){box=document.createElement('section');box.id='v169Goals';box.className='v169-panel';let anchor=home.querySelector('.eot-ui-dashboard,.home-status-row,.home-main-card,.quick-access');if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(box,anchor.nextSibling);else home.appendChild(box)}const gs=goals(),done=gs.filter(g=>g.done).length;box.innerHTML='<div class="v169-head"><b>🎯 Kariyer Hedefleri</b><span class="v169-badge">'+done+'/'+gs.length+' tamamlandı</span></div>'+gs.map(g=>'<div class="v169-goal"><div class="v169-title '+(g.done?'v169-done':'')+'"><span>'+(g.done?'✓':'○')+'</span>'+g.title+'</div><div class="v169-detail">'+g.detail+'</div></div>').join('')+'<div class="v169-tip">💡 Öneri: Bütün paranı tek yatırıma bağlama. Nakit rezervi bırak, şirket ve varlık gelirlerini çeşitlendir, kredi taksitlerini gerçek vade tarihine göre takip et.</div>'}
+ function dueReminder(){try{let now=Date.now(),s=state(),changed=false;activeLoans().forEach(l=>{let due=Number(l.nextDue||0);if(!due)return;let diff=due-now;if(diff>0&&diff<=86400000){let k='loan_'+(l.id||l.t||due)+'_'+due;if(!s[k]){s[k]=1;changed=true;if(typeof toast==='function')toast('Yaklaşan kredi taksiti • '+(l.name||'Banka')+' • Son ödeme 24 saat içinde')}}});if(changed)saveState(s)}catch(e){}}
+ function persistCareer(){try{if(typeof saveOwned==='function')saveOwned();if(typeof save==='function')save();if(typeof saveUnifiedState==='function')saveUnifiedState();if(typeof currentAccount==='function'&&typeof saveAccountCareer==='function'){const u=currentAccount();if(u&&u.id&&u.id!=='guest')saveAccountCareer(u.id)}}catch(e){console.warn('Varlık kaydı güvenli biçimde tamamlanamadı:',e)}}
+ function purchaseAssetIdFromButton(el){const code=el&&el.getAttribute?String(el.getAttribute('onclick')||''):'';const m=code.match(/buyAsset\(\s*['"]([^'"]+)['"]/);return m?m[1]:''}
+ function refreshAssetPurchaseUI(){try{const owned=new Set(assets().map(a=>String(a&&a.id||'')).filter(Boolean));document.querySelectorAll('[onclick*="buyAsset("]').forEach(el=>{const id=purchaseAssetIdFromButton(el);if(!id)return;const isOwned=owned.has(id);el.classList.toggle('eot-owned-buy',isOwned);if(isOwned){el.setAttribute('aria-disabled','true');if(!el.dataset.eotOriginalText)el.dataset.eotOriginalText=el.textContent||'';el.textContent='✓ Portföyünde'}else{el.removeAttribute('aria-disabled');if(el.dataset.eotOriginalText)el.textContent=el.dataset.eotOriginalText}});owned.forEach(id=>{const p='purchase_'+id,t=document.getElementById(p+'_title'),x=document.getElementById(p+'_text'),d=document.getElementById(p+'_detail');const a=assets().find(v=>String(v&&v.id||'')===id);if(!a)return;if(t)t.textContent='✅ Varlık portföyünde';if(x)x.textContent=(a.name||'Varlık')+' başarıyla kayıtlı.';if(d)d.innerHTML='Portföy değeri: <b>'+money(a.price)+'</b> • Satın alma kaydı korunuyor.'})}catch(e){}}
+ function patchAssetTransactions(){try{if(typeof window.buyAsset==='function'&&!window.buyAsset.__eotAssetSafe){const original=window.buyAsset;const wrapped=function(id,name,type,price,rent){id=String(id||'').trim();name=String(name||'').trim();type=String(type||'').trim();price=Number(price);rent=Number(rent||0);if(!id||!name||!type||!Number.isFinite(price)||price<=0){if(typeof toast==='function')toast('Varlık bilgisi geçersiz');return false}if(assets().some(a=>String(a&&a.id||'')===id)){if(typeof setPurchaseResult==='function')setPurchaseResult(id,name,price,true);if(typeof toast==='function')toast('Bu varlık zaten portföyünde');refreshAssetPurchaseUI();return false}if(runtimeCash()<price){if(typeof toast==='function')toast('Yetersiz nakit');return false}const beforeCash=runtimeCash(),beforeCount=assets().length;const result=original.call(this,id,name,type,price,rent);const purchased=assets().length===beforeCount+1&&assets().some(a=>String(a&&a.id||'')===id)&&runtimeCash()<=beforeCash-price+.01;if(purchased){persistCareer();refreshAssetPurchaseUI();setTimeout(()=>{try{render();renderGameExtras()}catch(e){}},30)}return purchased?true:result};wrapped.__eotAssetSafe=true;window.buyAsset=wrapped}
+ if(typeof window.sellOwned==='function'&&!window.sellOwned.__eotAssetSafe){const original=window.sellOwned;const wrapped=function(index){const a=assets()[index],id=a&&a.id,count=assets().length,r=original.apply(this,arguments);if(id&&assets().length<count&&!assets().some(x=>x&&x.id===id)){persistCareer();refreshAssetPurchaseUI()}return r};wrapped.__eotAssetSafe=true;window.sellOwned=wrapped}
+ if(typeof window.sellManagedProperty==='function'&&!window.sellManagedProperty.__eotAssetSafe){const original=window.sellManagedProperty;const wrapped=function(index){const a=assets()[index],id=a&&a.id,count=assets().length,r=original.apply(this,arguments);if(id&&assets().length<count){persistCareer();refreshAssetPurchaseUI()}return r};wrapped.__eotAssetSafe=true;window.sellManagedProperty=wrapped}
+ if(typeof window.togglePropertyRent==='function'&&!window.togglePropertyRent.__eotAssetSafe){const original=window.togglePropertyRent;const wrapped=function(){const r=original.apply(this,arguments);persistCareer();return r};wrapped.__eotAssetSafe=true;window.togglePropertyRent=wrapped}}catch(e){console.warn('Varlık işlem güvenliği kurulamadı:',e)}}
+ function cleanDealerListings(){try{if(typeof sim==='undefined'||!Array.isArray(sim.dealerListings))return;const carIds=new Set(assets().filter(a=>a&&a.type==='Araç').map(a=>String(a.id)));const seen=new Set();const clean=sim.dealerListings.filter(l=>{const id=String(l&&l.assetId||'');if(!id||!carIds.has(id)||seen.has(id))return false;seen.add(id);return Number.isFinite(Number(l.price))&&Number(l.price)>0});if(clean.length!==sim.dealerListings.length){sim.dealerListings=clean;if(typeof simSave==='function')simSave();persistCareer()}}catch(e){}}
+ function patchDealerTransactions(){try{cleanDealerListings();if(typeof window.listDealerCar==='function'&&!window.listDealerCar.__eotDealerSafe){const original=window.listDealerCar;const wrapped=function(index,markup){const a=assets()[index];if(!a||a.type!=='Araç'){if(typeof toast==='function')toast('Geçerli bir araç seç');return false}if(a.collateral){if(typeof toast==='function')toast('Teminattaki araç satışa çıkarılamaz');return false}const m=Math.max(0,Math.min(50,Number(markup)||0));const r=original.call(this,index,m);cleanDealerListings();persistCareer();return r};wrapped.__eotDealerSafe=true;window.listDealerCar=wrapped}
+ if(typeof window.removeDealerListing==='function'&&!window.removeDealerListing.__eotDealerSafe){const original=window.removeDealerListing;const wrapped=function(){const r=original.apply(this,arguments);cleanDealerListings();persistCareer();return r};wrapped.__eotDealerSafe=true;window.removeDealerListing=wrapped}
+ if(typeof window.checkDealerOffers==='function'&&!window.checkDealerOffers.__eotDealerSafe){const original=window.checkDealerOffers;const wrapped=function(){cleanDealerListings();const beforeIds=new Set(assets().filter(a=>a&&a.type==='Araç').map(a=>String(a.id))),beforeCash=runtimeCash();const r=original.apply(this,arguments);const sold=[...beforeIds].some(id=>!assets().some(a=>String(a&&a.id||'')===id));if(sold||runtimeCash()!==beforeCash)persistCareer();cleanDealerListings();return r};wrapped.__eotDealerSafe=true;window.checkDealerOffers=wrapped}}catch(e){console.warn('Galeri işlem güvenliği kurulamadı:',e)}}
+ function refresh(){try{mount();dueReminder();patchAssetTransactions();patchDealerTransactions();refreshAssetPurchaseUI()}catch(e){}}
+ const oldRender=window.render;if(typeof oldRender==='function')window.render=function(){let r=oldRender.apply(this,arguments);setTimeout(refresh,30);return r};document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(refresh,100);else persistCareer()});window.addEventListener('pagehide',persistCareer);window.addEventListener('hashchange',()=>setTimeout(refresh,80));setInterval(refresh,5000);setTimeout(refresh,500);
 })();
