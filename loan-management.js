@@ -14,47 +14,23 @@
   `;document.head.appendChild(s)}
   function ensureOverlay(){if(document.getElementById('loanMgmtOverlay'))return;const o=document.createElement('div');o.id='loanMgmtOverlay';o.className='loan-mgmt-overlay';o.innerHTML='<div class="loan-mgmt-sheet"><div class="loan-mgmt-head"><div><h3>Kredi Yönetimi</h3><div style="font-size:10px;color:#91a4bb;margin-top:3px">Aktif kredilerini görüntüle ve yönet</div></div><button class="loan-mgmt-close" onclick="window.closeLoanManager()">×</button></div><div id="loanMgmtList"></div></div>';o.addEventListener('click',e=>{if(e.target===o)window.closeLoanManager()});document.body.appendChild(o)}
   function renderManager(){ensureStyle();ensureOverlay();const root=document.getElementById('loanMgmtList');if(!root)return;const arr=list();if(!arr.length){root.innerHTML='<div class="loan-mgmt-empty">Aktif kredin bulunmuyor.</div>';return}root.innerHTML=arr.map(({l,i})=>{const inst=Math.min(Number(l.installment||0),Number(l.remaining||0)),due=Number(l.nextDue||0),late=due&&Date.now()>due;return '<div class="loan-mgmt-card"><div class="loan-mgmt-bank"><div><b>'+String(l.name||'Banka Kredisi')+'</b><div style="font-size:9px;color:#91a4bb;margin-top:3px">Kredi hesabı</div></div><span class="loan-mgmt-status">'+(late?'GECİKMİŞ':'AKTİF')+'</span></div><div class="loan-mgmt-grid"><div class="loan-mgmt-stat"><span>KALAN BORÇ</span><b>'+fmt(l.remaining)+'</b></div><div class="loan-mgmt-stat"><span>SONRAKİ TAKSİT</span><b>'+fmt(inst)+'</b></div><div class="loan-mgmt-stat"><span>KULLANILAN KREDİ</span><b>'+fmt(l.amount||l.requestedAmount||0)+'</b></div><div class="loan-mgmt-stat"><span>ERKEN KAPAMA</span><b>'+fmt(l.remaining)+'</b></div></div><div class="loan-mgmt-due">Sonraki ödeme: <b>'+(due?new Date(due).toLocaleString('tr-TR'):'—')+'</b></div><div class="loan-mgmt-actions"><button class="loan-pay" onclick="window.loanMgmtPay('+i+')">Taksiti Öde</button><button class="loan-close" onclick="window.loanMgmtClose('+i+')">Krediyi Erken Kapat</button></div><div class="loan-close-note">Erken kapama işleminde kalan borcun tamamı tek seferde nakit bakiyenden tahsil edilir.</div></div>'}).join('')}
-  window.openLoanManager=function(){renderManager();document.getElementById('loanMgmtOverlay')?.classList.add('open')};window.closeLoanManager=function(){document.getElementById('loanMgmtOverlay')?.classList.remove('open')};window.loanMgmtPay=function(i){if(typeof payInstallment==='function')payInstallment(i);setTimeout(renderManager,80)};window.loanMgmtClose=function(i){const arr=list(),item=arr.find(x=>x.i===i);if(!item)return;const amt=Number(item.l.remaining||0);if(!confirm('Bu krediyi '+fmt(amt)+' ödeyerek erken kapatmak istiyor musun?'))return;if(typeof closeLoan==='function')closeLoan(i);setTimeout(renderManager,80)};
+  window.openLoanManager=function(){renderManager();document.getElementById('loanMgmtOverlay')?.classList.add('open')};
+  window.closeLoanManager=function(){document.getElementById('loanMgmtOverlay')?.classList.remove('open')};
+  window.loanMgmtPay=function(i){if(typeof payInstallment==='function')payInstallment(i);setTimeout(renderManager,80)};
+  window.loanMgmtClose=function(i){const arr=list(),item=arr.find(x=>x.i===i);if(!item)return;const amt=Number(item.l.remaining||0);if(!confirm('Bu krediyi '+fmt(amt)+' ödeyerek erken kapatmak istiyor musun?'))return;if(typeof closeLoan==='function')closeLoan(i);setTimeout(renderManager,80)};
 
-  function buildDepositCardFrom(reference){
-    const a=document.createElement('a');
-    a.id='eotDepositLauncher';
-    a.href='#deposits';
-    a.dataset.eotBankingAction='deposits';
-    a.className=(reference&&reference.className)||'menu-card';
-    a.innerHTML='<div class="iconbox">💰</div><h4>Vadeli Hesap</h4><p>Nakitini vadeli değerlendir.</p><span class="arrow">›</span>';
-    return a;
-  }
-
-  function addDepositLauncher(){
-    const finance=document.getElementById('finance');if(!finance)return;
-    let existing=document.getElementById('eotDepositLauncher')||finance.querySelector('[data-eot-banking-action="deposits"]');
-    if(existing){existing.setAttribute('href','#deposits');existing.removeAttribute('onclick');return;}
-    const allCards=[...finance.querySelectorAll('a,button,.menu-card')];
-    const loansCard=allCards.find(el=>{const h=el.querySelector&&el.querySelector('h4');const t=norm(h?h.textContent:el.textContent);return t==='kredilerim'||t.includes('kredilerim');});
-    if(loansCard&&loansCard.parentElement){loansCard.insertAdjacentElement('afterend',buildDepositCardFrom(loansCard));return;}
-    const heads=[...finance.querySelectorAll('.section-head')];
-    const banking=heads.find(h=>norm(h.textContent).includes('bankacılık'));
-    const grid=banking&&banking.nextElementSibling;
-    if(grid)grid.appendChild(buildDepositCardFrom(grid.querySelector('.menu-card,a')));
-  }
-
+  function buildDepositCardFrom(reference){const a=document.createElement('a');a.id='eotDepositLauncher';a.href='#deposits';a.dataset.eotBankingAction='deposits';a.className=(reference&&reference.className)||'menu-card';a.innerHTML='<div class="iconbox">💰</div><h4>Vadeli Hesap</h4><p>Nakitini vadeli değerlendir.</p><span class="arrow">›</span>';return a}
+  function addDepositLauncher(){const finance=document.getElementById('finance');if(!finance)return;let existing=document.getElementById('eotDepositLauncher')||finance.querySelector('[data-eot-banking-action="deposits"]');if(existing){existing.setAttribute('href','#deposits');existing.removeAttribute('onclick');return}const allCards=[...finance.querySelectorAll('a,button,.menu-card')];const loansCard=allCards.find(el=>{const h=el.querySelector&&el.querySelector('h4');const t=norm(h?h.textContent:el.textContent);return t==='kredilerim'||t.includes('kredilerim')});if(loansCard&&loansCard.parentElement){loansCard.insertAdjacentElement('afterend',buildDepositCardFrom(loansCard));return}const heads=[...finance.querySelectorAll('.section-head')];const banking=heads.find(h=>norm(h.textContent).includes('bankacılık'));const grid=banking&&banking.nextElementSibling;if(grid)grid.appendChild(buildDepositCardFrom(grid.querySelector('.menu-card,a')))}
   function refresh(){try{addDepositLauncher();if(document.getElementById('loanMgmtOverlay')?.classList.contains('open'))renderManager()}catch(e){}}
-  const observer=new MutationObserver(()=>refresh());
-  const observe=()=>{try{observer.observe(document.getElementById('app-root')||document.body,{childList:true,subtree:true})}catch(e){}};
-  if(document.body)observe();else document.addEventListener('DOMContentLoaded',observe,{once:true});
-  window.addEventListener('hashchange',refresh);
-  refresh();setInterval(refresh,1200);
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{refresh();setTimeout(refresh,250)},{once:true});else{refresh();setTimeout(refresh,250)}
+  window.addEventListener('hashchange',()=>setTimeout(refresh,20));
+  window.addEventListener('pageshow',refresh);
 })();
 
 (function(){
-  function loadOnce(src,attr){
-    if(document.querySelector('script['+attr+']'))return;
-    const s=document.createElement('script');s.src=src+'?v=190&_='+Date.now();s.setAttribute(attr,'1');document.body.appendChild(s);
-  }
+  function loadOnce(src,attr){if(document.querySelector('script['+attr+']'))return;const s=document.createElement('script');s.src=src+'?v=190';s.setAttribute(attr,'1');document.body.appendChild(s)}
   loadOnce('bottom-nav-lock.js','data-eot-bottom-nav-lock');
   loadOnce('credit-progression.js','data-eot-credit-progression');
   loadOnce('economy-balance-v1.js','data-eot-economy-balance-v1');
-  loadOnce('construction-fixes.js','data-eot-construction-fixes');
-  loadOnce('investment-fixes.js','data-eot-investment-fixes');
 })();
