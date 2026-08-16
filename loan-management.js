@@ -35,7 +35,6 @@
       return;
     }
 
-    // Yeni Finans tasarımında en güvenilir sabit nokta "Kredilerim" kartıdır.
     const allCards=[...finance.querySelectorAll('a,button,.menu-card')];
     const loansCard=allCards.find(el=>{
       const h=el.querySelector&&el.querySelector('h4');
@@ -47,7 +46,6 @@
       return;
     }
 
-    // Eski Finans yapısı için yedek hedef.
     const heads=[...finance.querySelectorAll('.section-head')];
     const banking=heads.find(h=>norm(h.textContent).includes('bankacılık'));
     const grid=banking&&banking.nextElementSibling;
@@ -63,7 +61,7 @@
   setInterval(refresh,1200);
 })();
 
-/* Ek güvenlik katmanlarını ana oyun fonksiyonları yüklendikten sonra ekle. */
+/* Ek güvenlik ve ekonomi katmanlarını ana oyun fonksiyonları yüklendikten sonra ekle. */
 (function(){
   function loadOnce(src,attr){
     if(document.querySelector('script['+attr+']'))return;
@@ -72,6 +70,7 @@
     s.setAttribute(attr,'1');
     document.body.appendChild(s);
   }
+  loadOnce('credit-progression.js','data-eot-credit-progression');
   loadOnce('construction-fixes.js','data-eot-construction-fixes');
   loadOnce('investment-fixes.js','data-eot-investment-fixes');
 })();
