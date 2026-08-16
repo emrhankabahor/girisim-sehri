@@ -127,9 +127,13 @@
       list.innerHTML=deposits.map((d,i)=>{const ready=Date.now()>=Number(d.maturity||0),total=Number(d.amount||0)+Number(d.ret||0);return '<div class="portfolio-row"><div><b>'+d.months+' Ay Vadeli</b><br><span>Vade: '+new Date(d.maturity).toLocaleDateString('tr-TR')+' • %'+String(d.rate).replace('.',',')+'</span></div><div style="text-align:right"><b>'+fmt(d.amount)+'</b><br><span class="profit">+'+fmt(d.ret)+'</span><br><button '+(ready?'':'disabled aria-disabled="true"')+' onclick="window.collectMaturedDeposit('+i+')" style="margin-top:7px;padding:7px 9px;border:0;border-radius:9px;font-size:9px;font-weight:800">'+(ready?'Vade Sonunu Tahsil Et':'Vade Bekleniyor')+'</button><div style="font-size:8px;color:#8ea2ba;margin-top:4px">Vade sonu: '+fmt(total)+'</div></div></div>'}).join('');
     }catch(e){}
   }
+  function loadCareerSafety(){
+    if(document.querySelector('script[data-eot-career-safety]'))return;
+    const s=document.createElement('script');s.src='career-persistence-fixes.js?v=1&_='+Date.now();s.dataset.eotCareerSafety='1';document.body.appendChild(s);
+  }
   function refresh(){normalizeLoans();normalizeDeposits();patchLoans();patchDeposits();refreshDepositUI()}
   window.addEventListener('pagehide',persistCareer);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)persistCareer();else setTimeout(refresh,80)});
   window.addEventListener('hashchange',()=>setTimeout(refresh,80));
-  setInterval(refresh,4000);setTimeout(refresh,600);
+  setInterval(refresh,4000);setTimeout(refresh,600);setTimeout(loadCareerSafety,900);
 })();
