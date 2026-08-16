@@ -79,8 +79,12 @@
   }
 
   function refresh(){patchAcceptLoan();refreshLoanScreens()}
-  window.addEventListener('hashchange',()=>setTimeout(refresh,30));
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(refresh,30)});
-  setTimeout(refresh,80);
+  const bootPoll=setInterval(()=>{
+    refresh();
+    if(typeof window.acceptLoan==='function'&&window.acceptLoan.__eotProgressive)clearInterval(bootPoll);
+  },100);
+  window.addEventListener('hashchange',()=>setTimeout(refresh,20));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(refresh,20)});
+  setTimeout(refresh,30);
   setInterval(refresh,3000);
 })();
