@@ -1,5 +1,8 @@
 /* Girişim Şehri V1.69 • Kredi Yönetimi */
 (function(){
+  if(window.__eotLoanManagementLoaded)return;
+  window.__eotLoanManagementLoaded=true;
+
   function fmt(n){try{return '₺'+Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:2})}catch(e){return '₺0'}}
   function list(){try{return Array.isArray(loans)?loans.map((l,i)=>({l,i})).filter(x=>!x.l.closed&&Number(x.l.remaining||0)>.01):[]}catch(e){return []}}
   function ensureStyle(){if(document.getElementById('loanMgmtStyle'))return;const s=document.createElement('style');s.id='loanMgmtStyle';s.textContent=`
@@ -11,17 +14,37 @@
   function ensureOverlay(){if(document.getElementById('loanMgmtOverlay'))return;const o=document.createElement('div');o.id='loanMgmtOverlay';o.className='loan-mgmt-overlay';o.innerHTML='<div class="loan-mgmt-sheet"><div class="loan-mgmt-head"><div><h3>Kredi Yönetimi</h3><div style="font-size:10px;color:#91a4bb;margin-top:3px">Aktif kredilerini görüntüle ve yönet</div></div><button class="loan-mgmt-close" onclick="window.closeLoanManager()">×</button></div><div id="loanMgmtList"></div></div>';o.addEventListener('click',e=>{if(e.target===o)window.closeLoanManager()});document.body.appendChild(o)}
   function renderManager(){ensureStyle();ensureOverlay();const root=document.getElementById('loanMgmtList');if(!root)return;const arr=list();if(!arr.length){root.innerHTML='<div class="loan-mgmt-empty">Aktif kredin bulunmuyor.</div>';return}root.innerHTML=arr.map(({l,i})=>{const inst=Math.min(Number(l.installment||0),Number(l.remaining||0)),due=Number(l.nextDue||0),late=due&&Date.now()>due;return '<div class="loan-mgmt-card"><div class="loan-mgmt-bank"><div><b>'+String(l.name||'Banka Kredisi')+'</b><div style="font-size:9px;color:#91a4bb;margin-top:3px">Kredi hesabı</div></div><span class="loan-mgmt-status">'+(late?'GECİKMİŞ':'AKTİF')+'</span></div><div class="loan-mgmt-grid"><div class="loan-mgmt-stat"><span>KALAN BORÇ</span><b>'+fmt(l.remaining)+'</b></div><div class="loan-mgmt-stat"><span>SONRAKİ TAKSİT</span><b>'+fmt(inst)+'</b></div><div class="loan-mgmt-stat"><span>KULLANILAN KREDİ</span><b>'+fmt(l.amount||l.requestedAmount||0)+'</b></div><div class="loan-mgmt-stat"><span>ERKEN KAPAMA</span><b>'+fmt(l.remaining)+'</b></div></div><div class="loan-mgmt-due">Sonraki ödeme: <b>'+(due?new Date(due).toLocaleString('tr-TR'):'—')+'</b></div><div class="loan-mgmt-actions"><button class="loan-pay" onclick="window.loanMgmtPay('+i+')">Taksiti Öde</button><button class="loan-close" onclick="window.loanMgmtClose('+i+')">Krediyi Erken Kapat</button></div><div class="loan-close-note">Erken kapama işleminde kalan borcun tamamı tek seferde nakit bakiyenden tahsil edilir.</div></div>'}).join('')}
   window.openLoanManager=function(){renderManager();document.getElementById('loanMgmtOverlay')?.classList.add('open')};window.closeLoanManager=function(){document.getElementById('loanMgmtOverlay')?.classList.remove('open')};window.loanMgmtPay=function(i){if(typeof payInstallment==='function')payInstallment(i);setTimeout(renderManager,80)};window.loanMgmtClose=function(i){const arr=list(),item=arr.find(x=>x.i===i);if(!item)return;const amt=Number(item.l.remaining||0);if(!confirm('Bu krediyi '+fmt(amt)+' ödeyerek erken kapatmak istiyor musun?'))return;if(typeof closeLoan==='function')closeLoan(i);setTimeout(renderManager,80)};
+
   function addLauncher(){
-    ensureStyle();ensureOverlay();if(document.getElementById('loanMgmtLauncher'))return;
     const finance=document.getElementById('finance');if(!finance)return;
     const heads=Array.from(finance.querySelectorAll('.section-head'));
-    const banking=heads.find(h=>(h.textContent||'').includes('Bankacılık'));
+    const banking=heads.find(h=>(h.textContent||'').toLocaleLowerCase('tr-TR').includes('bankacılık'));
     const grid=banking&&banking.nextElementSibling;
     if(!grid)return;
-    const a=document.createElement('a');a.id='loanMgmtLauncher';a.href='javascript:void(0)';a.className='menu-card';a.innerHTML='<div class="iconbox">💳</div><h4>Kredilerimi Yönet</h4><p>Aktif kredileri, taksitleri ve erken kapama tutarını gör.</p><span class="arrow">›</span>';a.addEventListener('click',e=>{e.preventDefault();window.openLoanManager()});grid.appendChild(a);
+
+    let a=document.getElementById('loanMgmtLauncher')||grid.querySelector('[data-eot-banking-action="deposits"]');
+    if(!a){
+      a=document.createElement('a');
+      a.id='loanMgmtLauncher';
+      a.className='menu-card';
+      a.dataset.eotBankingAction='deposits';
+      grid.appendChild(a);
+    }
+    if(a.tagName!=='A')return;
+    a.href='#deposits';
+    a.onclick=null;
+    a.innerHTML='<div class="iconbox">💰</div><h4>Vadeli Hesap</h4><p>Nakitini vadeli değerlendir.</p><span class="arrow">›</span>';
   }
+
   function refresh(){try{addLauncher();if(document.getElementById('loanMgmtOverlay')?.classList.contains('open'))renderManager()}catch(e){}}
-  window.addEventListener('hashchange',()=>setTimeout(refresh,80));setInterval(refresh,2000);setTimeout(refresh,300);
+
+  // İçerik bootstrap tarafından eklendiği anda kartı oluştur; 2-3 saniyelik gecikmeyi kaldır.
+  const observer=new MutationObserver(()=>refresh());
+  const observe=()=>{try{observer.observe(document.getElementById('app-root')||document.body,{childList:true,subtree:true})}catch(e){}};
+  if(document.body)observe();else document.addEventListener('DOMContentLoaded',observe,{once:true});
+  window.addEventListener('hashchange',refresh);
+  refresh();
+  setInterval(refresh,2000);
 })();
 
 /* Ek güvenlik katmanlarını ana oyun fonksiyonları yüklendikten sonra ekle. */
