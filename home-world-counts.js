@@ -39,35 +39,51 @@
     return n;
   }
   function companyValue(){
-    try{
-      return runtimeCompanies().reduce((sum,c)=>sum+Math.max(0,Number(c.value||c.companyValue||c.capital||0))+Math.max(0,Number(c.companyCash||0)),0);
-    }catch(e){return 0}
+    try{return runtimeCompanies().reduce((sum,c)=>sum+Math.max(0,Number(c.value||c.companyValue||c.capital||0))+Math.max(0,Number(c.companyCash||0)),0)}catch(e){return 0}
   }
   function money(n){try{return '₺'+Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:2})}catch(e){return '₺0'}}
 
-  // Bankacılık menüsü başka render katmanları tarafından tekrar oluşturulsa bile
-  // "Kredilerimi Yönet / Kredi Kartı" kartını kalıcı olarak Vadeli Hesap'a dönüştür.
+  // Finans > Bankacılık: Vadeli Hesap, Bankalar/Kredilerim gibi standart bir menu-card olarak açılır.
   function ensureDepositBankingAction(){
     try{
-      const finance=document.getElementById('finance');
-      if(!finance)return;
-      const cards=[...finance.querySelectorAll('.menu-card,a,button')];
-      let card=cards.find(el=>{
+      const finance=document.getElementById('finance');if(!finance)return;
+      const heads=[...finance.querySelectorAll('.section-head')];
+      const bankingHead=heads.find(h=>norm(h.textContent).includes('bankacılık')||norm(h.textContent).includes('bankacilik'));
+      const grid=bankingHead&&bankingHead.nextElementSibling&&bankingHead.nextElementSibling.classList.contains('menu-grid')?bankingHead.nextElementSibling:finance.querySelector('.menu-grid');
+      if(!grid)return;
+
+      const candidates=[...grid.querySelectorAll('.menu-card,a,button')];
+      let card=candidates.find(el=>{
         const title=el.querySelector&&el.querySelector('h4');
         const t=norm(title?title.textContent:el.textContent);
-        return t==='kredilerimi yönet'||t==='kredilerimi yonet'||t==='kredi kartı'||t==='kredi karti';
+        const href=el.getAttribute&&el.getAttribute('href');
+        return t==='vadeli hesap'||t==='kredilerimi yönet'||t==='kredilerimi yonet'||t==='kredi kartı'||t==='kredi karti'||href==='#deposits';
       });
       if(!card)return;
-      if(card.tagName==='A')card.setAttribute('href','#deposits');
+
+      // Kart başka bir render tarafından button/div olarak kurulursa standart menü bağlantısına çevir.
+      if(card.tagName!=='A'){
+        const a=document.createElement('a');
+        a.className=card.className||'menu-card';
+        [...card.attributes].forEach(attr=>{if(!['class','onclick'].includes(attr.name))a.setAttribute(attr.name,attr.value)});
+        a.innerHTML=card.innerHTML;
+        card.replaceWith(a);card=a;
+      }
+      card.classList.add('menu-card');
+      card.setAttribute('href','#deposits');
       card.removeAttribute('onclick');
       card.dataset.eotBankingAction='deposits';
-      const icon=card.querySelector&&card.querySelector('.iconbox');
-      const title=card.querySelector&&card.querySelector('h4');
-      const desc=card.querySelector&&card.querySelector('p');
+      const icon=card.querySelector('.iconbox'),title=card.querySelector('h4'),desc=card.querySelector('p'),arrow=card.querySelector('.arrow');
       if(icon)icon.textContent='💰';
       if(title)title.textContent='Vadeli Hesap';
-      else if(!card.children.length)card.textContent='Vadeli Hesap';
       if(desc)desc.textContent='Nakitini vadeli değerlendir.';
+      if(arrow)arrow.textContent='›';
+
+      // Aynı kartın başka kopyaları oluşursa tek bir Vadeli Hesap kartı bırak.
+      const duplicates=[...grid.querySelectorAll('.menu-card')].filter(el=>el!==card&&(
+        norm(el.querySelector('h4')?.textContent)==='vadeli hesap'||el.getAttribute('href')==='#deposits'
+      ));
+      duplicates.forEach(el=>el.remove());
     }catch(e){console.warn('Vadeli hesap menüsü güncellenemedi:',e)}
   }
 
