@@ -44,6 +44,16 @@
     }catch(e){return 0}
   }
   function money(n){try{return '₺'+Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:2})}catch(e){return '₺0'}}
+
+  function removeManageLoansAction(){
+    try{
+      document.querySelectorAll('a,button').forEach(el=>{
+        const t=norm(el.textContent);
+        if(t.includes('kredilerimi yönet')||t.includes('kredilerimi yonet'))el.remove();
+      });
+    }catch(e){}
+  }
+
   function sync(){
     try{
       const cards=[...document.querySelectorAll('#home .eot-business')];
@@ -60,6 +70,7 @@
       }
       const stats=[...document.querySelectorAll('#home .eot-profile-stats > div')];
       if(stats[0]){const b=stats[0].querySelector('b,strong');if(b)b.textContent=money(companyValue())}
+      removeManageLoansAction();
     }catch(e){console.warn('İş Dünyam sayaçları güncellenemedi:',e)}
   }
   window.syncEotBusinessCounts=sync;
