@@ -21,7 +21,7 @@
     const s=document.createElement('style');
     s.id='eot-deposit-ref-style';
     s.textContent=`
-      #deposits .deposit-card{display:none!important}
+      #deposits .deposit-card,#deposits .portfolio-box{display:none!important}
       #deposits .eot-deposit-panel{margin:14px 0 22px;padding:22px;border:1px solid rgba(126,166,204,.2);border-radius:24px;background:linear-gradient(145deg,#122b46,#0c2035);box-shadow:0 18px 45px rgba(0,0,0,.18)}
       #deposits .eot-deposit-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
       #deposits .eot-deposit-title h2{margin:0;color:#fff;font-size:24px;line-height:1.1}
@@ -93,9 +93,7 @@
         setTimeout(()=>refresh(panel),50);
       });
       panel.querySelector('.eot-deposit-take').addEventListener('click',()=>{
-        const portfolio=screen.querySelector('.portfolio-box');
-        if(portfolio){portfolio.scrollIntoView({behavior:'smooth',block:'start'});return;}
-        if(typeof toast==='function')toast('Aktif vadeli hesabın bulunmuyor');
+        if(typeof toast==='function')toast('Para çekme işlemi vade durumuna göre gerçekleştirilecektir.');
       });
     }
     refresh(panel);
