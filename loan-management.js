@@ -71,6 +71,7 @@
     document.body.appendChild(s);
   }
   loadOnce('credit-progression.js','data-eot-credit-progression');
+  loadOnce('economy-balance-v1.js','data-eot-economy-balance-v1');
   loadOnce('construction-fixes.js','data-eot-construction-fixes');
   loadOnce('investment-fixes.js','data-eot-investment-fixes');
 })();
