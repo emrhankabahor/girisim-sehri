@@ -11,16 +11,6 @@
     document.head.appendChild(safeScript);
   }
 
-  // Bankacılık menüsü bootstrap'ın uzun script zincirini beklemesin.
-  // loan-management.js kendi tekrar-yükleme korumasına sahiptir.
-  if(!document.getElementById('eot-early-banking-loader')){
-    var bankingScript=document.createElement('script');
-    bankingScript.id='eot-early-banking-loader';
-    bankingScript.src='loan-management.js?v=191&_='+Date.now();
-    bankingScript.async=true;
-    document.head.appendChild(bankingScript);
-  }
-
   function money(n){
     return '₺'+Number(n||0).toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
   }
