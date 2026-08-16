@@ -21,6 +21,23 @@
     return Number.isFinite(n)?n:0;
   }
 
+  function readCardBuyPrice(card){
+    if(!card)return 0;
+    var boxes=card.querySelectorAll('.asset-mini>div');
+    if(!boxes.length)return 0;
+    var buyBox=boxes[0];
+    var value=buyBox.querySelector('b,strong');
+    var s=String(value?value.textContent:buyBox.textContent||'').trim().replace(/₺/g,'').replace(/\s/g,'');
+    if(!s)return 0;
+    if(s.indexOf(',')>-1)s=s.replace(/\./g,'').replace(',','.');
+    else{
+      var parts=s.split('.');
+      if(parts.length>2 || (parts.length===2 && parts[1].length===3))s=parts.join('');
+    }
+    var n=Number(s.replace(/[^0-9.-]/g,''));
+    return Number.isFinite(n)?n:0;
+  }
+
   function updateTotal(input){
     if(!input || !input.id)return;
     var sym=input.id.replace('tradeqty_','');
@@ -50,10 +67,39 @@
     updateTotal(input);
   }
 
+  function updateCardTotal(input){
+    if(!input || !input.id)return;
+    var card=input.closest('.asset-card');
+    if(!card)return;
+    var q=Number(input.value||0);
+    if(!Number.isFinite(q) || q<0)q=0;
+    var out=card.querySelector('[data-eot-card-total]');
+    if(out)out.textContent=money(q*readCardBuyPrice(card));
+  }
+
+  function attachCardTotal(input){
+    if(!input || input.dataset.eotCardTotalReady==='1')return;
+    var card=input.closest('.asset-card');
+    if(!card)return;
+    var mini=card.querySelector('.asset-mini');
+    if(!mini)return;
+    var box=document.createElement('div');
+    box.className='eot-card-total-box';
+    box.innerHTML='<span>TOPLAM TUTAR</span><b data-eot-card-total>₺0</b>';
+    mini.appendChild(box);
+    mini.classList.add('eot-card-total-ready');
+    input.dataset.eotCardTotalReady='1';
+    input.addEventListener('input',function(){updateCardTotal(input)});
+    input.addEventListener('change',function(){updateCardTotal(input)});
+    updateCardTotal(input);
+  }
+
   function install(){
     try{
       document.querySelectorAll('input[id^="tradeqty_"]').forEach(attachToInput);
       document.querySelectorAll('input[id^="tradeqty_"][data-eot-total-ready="1"]').forEach(updateTotal);
+      document.querySelectorAll('.asset-card input[id^="qty_"]').forEach(attachCardTotal);
+      document.querySelectorAll('.asset-card input[id^="qty_"][data-eot-card-total-ready="1"]').forEach(updateCardTotal);
     }catch(e){
       console.warn('Yatırım toplam göstergesi yüklenemedi:',e);
     }
@@ -63,7 +109,18 @@
     if(document.getElementById('eot-trade-total-safe-style'))return;
     var st=document.createElement('style');
     st.id='eot-trade-total-safe-style';
-    st.textContent='.eot-trade-total-safe{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:9px 0 3px}.eot-trade-total-safe>div{min-width:0;padding:10px 11px;border:1px solid rgba(148,190,224,.14);border-radius:12px;background:rgba(12,34,54,.72)}.eot-trade-total-safe span{display:block;margin-bottom:4px;color:#8fa6bb;font-size:7px;font-weight:800;letter-spacing:.08em}.eot-trade-total-safe b{display:block;color:#f7fbff;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eot-trade-total-safe>div:first-child b{color:#74e6b6}.eot-trade-total-safe>div:last-child b{color:#8fdcff}';
+    st.textContent='\
+.eot-trade-total-safe{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:9px 0 3px}\
+.eot-trade-total-safe>div{min-width:0;padding:10px 11px;border:1px solid rgba(148,190,224,.14);border-radius:12px;background:rgba(12,34,54,.72)}\
+.eot-trade-total-safe span{display:block;margin-bottom:4px;color:#8fa6bb;font-size:7px;font-weight:800;letter-spacing:.08em}\
+.eot-trade-total-safe b{display:block;color:#f7fbff;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
+.eot-trade-total-safe>div:first-child b{color:#74e6b6}\
+.eot-trade-total-safe>div:last-child b{color:#8fdcff}\
+.asset-mini.eot-card-total-ready{grid-template-columns:repeat(3,minmax(0,1fr))!important}\
+.asset-mini .eot-card-total-box{grid-column:1/-1!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:11px 13px!important;margin-top:2px!important;border:1px solid rgba(88,196,225,.22)!important;border-radius:13px!important;background:linear-gradient(90deg,rgba(18,55,82,.88),rgba(12,36,57,.88))!important}\
+.asset-mini .eot-card-total-box span{font-size:8px!important;font-weight:900!important;letter-spacing:.08em!important;color:#8fa6bb!important}\
+.asset-mini .eot-card-total-box b{font-size:13px!important;color:#7de6c1!important;white-space:nowrap!important}\
+';
     document.head.appendChild(st);
   }
 
@@ -71,7 +128,6 @@
   window.addEventListener('hashchange',function(){setTimeout(install,80)});
   window.addEventListener('load',function(){setTimeout(install,250)});
 
-  /* İçerik bootstrap.js ile sonradan geldiği için kısa ve sınırlı bir ilk kurulum kontrolü. */
   var tries=0;
   var bootTimer=setInterval(function(){
     tries++;
@@ -79,8 +135,8 @@
     if(tries>=20)clearInterval(bootTimer);
   },500);
 
-  /* Fiyatlar hareket ettiğinde toplamın da güncel kalması için sadece mevcut alanları okur. */
   setInterval(function(){
     document.querySelectorAll('input[id^="tradeqty_"][data-eot-total-ready="1"]').forEach(updateTotal);
+    document.querySelectorAll('.asset-card input[id^="qty_"][data-eot-card-total-ready="1"]').forEach(updateCardTotal);
   },3000);
 })();
