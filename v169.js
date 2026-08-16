@@ -1,4 +1,4 @@
-/* Empire of Trade V1.70 • Oynanabilirlik ve yönlendirme */
+/* Empire of Trade V1.70 • Oynanabilirlik, yönlendirme ve varlık güvenliği */
 (function(){
  const KEY='gs_v170_progress';
  function money(n){try{return '₺'+Math.round(Number(n||0)).toLocaleString('tr-TR')}catch(e){return '₺0'}}
@@ -23,6 +23,7 @@
  .v169-panel{margin:14px 0;padding:16px;border:1px solid rgba(96,165,250,.22);border-radius:20px;background:linear-gradient(145deg,rgba(15,36,58,.96),rgba(8,24,40,.96));box-shadow:0 12px 28px rgba(0,0,0,.14)}
  .v169-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.v169-head b{font-size:15px}.v169-badge{font-size:10px;padding:5px 8px;border-radius:999px;background:rgba(45,212,191,.12);color:#79e6d1;border:1px solid rgba(45,212,191,.2)}
  .v169-goal{padding:11px 0;border-top:1px solid rgba(148,163,184,.12)}.v169-goal:first-of-type{border-top:0}.v169-title{font-size:12px;font-weight:850;display:flex;gap:8px;align-items:center}.v169-detail{font-size:10px;color:#91a4bb;margin:5px 0 0 24px;line-height:1.45}.v169-done{color:#72dfc5}.v169-tip{margin-top:12px;padding:11px;border-radius:14px;background:rgba(59,130,246,.09);font-size:10px;line-height:1.55;color:#b8c9dc}
+ .eot-owned-buy{opacity:.62!important;pointer-events:none!important;filter:saturate(.65)}
  `;document.head.appendChild(s)}
  function mount(){
    ensureStyle();
@@ -38,9 +39,87 @@
     if(changed)saveState(s)
    }catch(e){}
  }
- function refresh(){try{mount();dueReminder()}catch(e){}}
+
+ function persistCareer(){
+   try{
+     if(typeof saveOwned==='function')saveOwned();
+     if(typeof save==='function')save();
+     if(typeof saveUnifiedState==='function')saveUnifiedState();
+     if(typeof currentAccount==='function'&&typeof saveAccountCareer==='function'){
+       const u=currentAccount();if(u&&u.id&&u.id!=='guest')saveAccountCareer(u.id);
+     }
+   }catch(e){console.warn('Varlık kaydı güvenli biçimde tamamlanamadı:',e)}
+ }
+ function purchaseAssetIdFromButton(el){
+   const code=el&&el.getAttribute?String(el.getAttribute('onclick')||''):'';
+   const m=code.match(/buyAsset\(\s*['"]([^'"]+)['"]/);return m?m[1]:'';
+ }
+ function refreshAssetPurchaseUI(){
+   try{
+     const owned=new Set(assets().map(a=>String(a&&a.id||'')).filter(Boolean));
+     document.querySelectorAll('[onclick*="buyAsset("]').forEach(el=>{
+       const id=purchaseAssetIdFromButton(el);if(!id)return;
+       const isOwned=owned.has(id);el.classList.toggle('eot-owned-buy',isOwned);
+       if(isOwned){
+         el.setAttribute('aria-disabled','true');
+         if(!el.dataset.eotOriginalText)el.dataset.eotOriginalText=el.textContent||'';
+         el.textContent='✓ Portföyünde';
+       }else{
+         el.removeAttribute('aria-disabled');
+         if(el.dataset.eotOriginalText)el.textContent=el.dataset.eotOriginalText;
+       }
+     });
+     owned.forEach(id=>{
+       const p='purchase_'+id,t=document.getElementById(p+'_title'),x=document.getElementById(p+'_text'),d=document.getElementById(p+'_detail');
+       const a=assets().find(v=>String(v&&v.id||'')===id);if(!a)return;
+       if(t)t.textContent='✅ Varlık portföyünde';
+       if(x)x.textContent=(a.name||'Varlık')+' başarıyla kayıtlı.';
+       if(d)d.innerHTML='Portföy değeri: <b>'+money(a.price)+'</b> • Satın alma kaydı korunuyor.';
+     });
+   }catch(e){}
+ }
+ function patchAssetTransactions(){
+   try{
+     if(typeof window.buyAsset==='function'&&!window.buyAsset.__eotAssetSafe){
+       const original=window.buyAsset;
+       const wrapped=function(id,name,type,price,rent){
+         id=String(id||'').trim();name=String(name||'').trim();type=String(type||'').trim();price=Number(price);rent=Number(rent||0);
+         if(!id||!name||!type||!Number.isFinite(price)||price<=0){if(typeof toast==='function')toast('Varlık bilgisi geçersiz');return false}
+         if(assets().some(a=>String(a&&a.id||'')===id)){
+           if(typeof setPurchaseResult==='function')setPurchaseResult(id,name,price,true);
+           if(typeof toast==='function')toast('Bu varlık zaten portföyünde');refreshAssetPurchaseUI();return false;
+         }
+         if(runtimeCash()<price){if(typeof toast==='function')toast('Yetersiz nakit');return false}
+         const beforeCash=runtimeCash(),beforeCount=assets().length;
+         const result=original.call(this,id,name,type,price,rent);
+         const purchased=assets().length===beforeCount+1&&assets().some(a=>String(a&&a.id||'')===id)&&runtimeCash()<=beforeCash-price+.01;
+         if(purchased){persistCareer();refreshAssetPurchaseUI();setTimeout(()=>{try{render();renderGameExtras()}catch(e){}},30)}
+         return purchased?true:result;
+       };
+       wrapped.__eotAssetSafe=true;window.buyAsset=wrapped;
+     }
+     if(typeof window.sellOwned==='function'&&!window.sellOwned.__eotAssetSafe){
+       const original=window.sellOwned;
+       const wrapped=function(index){
+         const a=assets()[index],id=a&&a.id,count=assets().length,r=original.apply(this,arguments);
+         if(id&&assets().length<count&&!assets().some(x=>x&&x.id===id)){persistCareer();refreshAssetPurchaseUI()}
+         return r;
+       };wrapped.__eotAssetSafe=true;window.sellOwned=wrapped;
+     }
+     if(typeof window.sellManagedProperty==='function'&&!window.sellManagedProperty.__eotAssetSafe){
+       const original=window.sellManagedProperty;
+       const wrapped=function(index){const a=assets()[index],id=a&&a.id,count=assets().length,r=original.apply(this,arguments);if(id&&assets().length<count){persistCareer();refreshAssetPurchaseUI()}return r};wrapped.__eotAssetSafe=true;window.sellManagedProperty=wrapped;
+     }
+     if(typeof window.togglePropertyRent==='function'&&!window.togglePropertyRent.__eotAssetSafe){
+       const original=window.togglePropertyRent;
+       const wrapped=function(){const r=original.apply(this,arguments);persistCareer();return r};wrapped.__eotAssetSafe=true;window.togglePropertyRent=wrapped;
+     }
+   }catch(e){console.warn('Varlık işlem güvenliği kurulamadı:',e)}
+ }
+ function refresh(){try{mount();dueReminder();patchAssetTransactions();refreshAssetPurchaseUI()}catch(e){}}
  const oldRender=window.render;if(typeof oldRender==='function')window.render=function(){let r=oldRender.apply(this,arguments);setTimeout(refresh,30);return r};
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(refresh,100)});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(refresh,100);else persistCareer()});
+ window.addEventListener('pagehide',persistCareer);
  window.addEventListener('hashchange',()=>setTimeout(refresh,80));
  setInterval(refresh,5000);setTimeout(refresh,500);
 })();
