@@ -77,6 +77,17 @@
     if(out)out.textContent=money(q*readCardBuyPrice(card));
   }
 
+  function normalizeCryptoInputs(){
+    ['BTC','ETH','SOL','XRP'].forEach(function(sym){
+      var input=document.getElementById('qty_'+sym);
+      if(!input || input.dataset.eotCryptoOne==='1')return;
+      input.min='1';
+      input.step='1';
+      input.value='1';
+      input.dataset.eotCryptoOne='1';
+    });
+  }
+
   function attachCardTotal(input){
     if(!input || input.dataset.eotCardTotalReady==='1')return;
     var card=input.closest('.asset-card');
@@ -96,6 +107,7 @@
 
   function install(){
     try{
+      normalizeCryptoInputs();
       document.querySelectorAll('input[id^="tradeqty_"]').forEach(attachToInput);
       document.querySelectorAll('input[id^="tradeqty_"][data-eot-total-ready="1"]').forEach(updateTotal);
       document.querySelectorAll('.asset-card input[id^="qty_"]').forEach(attachCardTotal);
