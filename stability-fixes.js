@@ -91,7 +91,11 @@
           #bank .finance-meta>div{min-width:0!important;overflow:visible!important;padding:12px 8px!important}
           #bank .finance-meta b{display:block!important;width:100%!important;max-width:none!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(8px,2.45vw,11.5px)!important;letter-spacing:-.055em!important;line-height:1.1!important;font-variant-numeric:tabular-nums!important}
           #bank .finance-meta span{display:block!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(7px,2.2vw,10px)!important}
-          @media(max-width:390px){#bank .finance-meta{gap:5px!important}#bank .finance-meta>div{padding:10px 6px!important}#bank .finance-meta b{font-size:clamp(7.5px,2.35vw,10px)!important;letter-spacing:-.065em!important}}
+          .eot-wallet{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+          .eot-wallet-card{min-width:0!important;overflow:visible!important;padding-left:7px!important;padding-right:7px!important}
+          .eot-wallet-card b{display:block!important;width:100%!important;max-width:none!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(7.5px,2.35vw,11px)!important;letter-spacing:-.06em!important;line-height:1.08!important;font-variant-numeric:tabular-nums!important}
+          .eot-wallet-card span{white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(6px,1.9vw,7px)!important}
+          @media(max-width:390px){#bank .finance-meta{gap:5px!important}#bank .finance-meta>div{padding:10px 6px!important}#bank .finance-meta b{font-size:clamp(7.5px,2.35vw,10px)!important;letter-spacing:-.065em!important}.eot-wallet{gap:5px!important}.eot-wallet-card{padding-left:6px!important;padding-right:6px!important}.eot-wallet-card b{font-size:clamp(7px,2.2vw,9.5px)!important;letter-spacing:-.07em!important}}
         `;document.head.appendChild(s);
       }
 
