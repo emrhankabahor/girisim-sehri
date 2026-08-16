@@ -24,11 +24,15 @@
   window.addEventListener('hashchange',()=>setTimeout(refresh,80));setInterval(refresh,2000);setTimeout(refresh,300);
 })();
 
-/* İnşaat güvenlik katmanını ana oyun fonksiyonları yüklendikten sonra ekle. */
+/* Ek güvenlik katmanlarını ana oyun fonksiyonları yüklendikten sonra ekle. */
 (function(){
-  if(document.querySelector('script[data-eot-construction-fixes]'))return;
-  const s=document.createElement('script');
-  s.src='construction-fixes.js?v=190&_='+Date.now();
-  s.dataset.eotConstructionFixes='1';
-  document.body.appendChild(s);
+  function loadOnce(src,attr){
+    if(document.querySelector('script['+attr+']'))return;
+    const s=document.createElement('script');
+    s.src=src+'?v=190&_='+Date.now();
+    s.setAttribute(attr,'1');
+    document.body.appendChild(s);
+  }
+  loadOnce('construction-fixes.js','data-eot-construction-fixes');
+  loadOnce('investment-fixes.js','data-eot-investment-fixes');
 })();
