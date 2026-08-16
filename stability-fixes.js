@@ -25,9 +25,7 @@
     return d;
   }
 
-  function backupBadRaw(id,raw){
-    try{if(raw)localStorage.setItem(BACKUP_PREFIX+id+'_'+Date.now(),raw)}catch(e){}
-  }
+  function backupBadRaw(id,raw){try{if(raw)localStorage.setItem(BACKUP_PREFIX+id+'_'+Date.now(),raw)}catch(e){}}
 
   function persistNow(){
     try{
@@ -44,66 +42,68 @@
     if(patched)return true;
     if(typeof currentAccount!=='function'||typeof applyCareerState!=='function'||typeof captureCareerState!=='function')return false;
 
-    // Finansal durum kötü diye kariyeri sıfırlama. Yalnızca yapısal olarak okunamayan kayıt bozuk kabul edilir.
     window.careerStateLooksBroken=function(d){
       return !d||typeof d!=='object'||!d.sim||typeof d.sim!=='object'||!Number.isFinite(Number(d.cash));
     };
 
-    // Bozuk/yarım kayıt durumunda oyuncu verisini otomatik silme veya yeni kariyerle ezme.
     window.loadAccountCareer=function(id){
       if(!id||id==='guest')return false;
-      const key=accountKey(id);
-      let raw=null;
+      const key=accountKey(id);let raw=null;
       try{
-        raw=localStorage.getItem(key);
-        if(!raw)return false;
-        const parsed=JSON.parse(raw);
-        const data=normalizeCareer(parsed);
+        raw=localStorage.getItem(key);if(!raw)return false;
+        const data=normalizeCareer(JSON.parse(raw));
         if(!data){backupBadRaw(id,raw);return false}
         const ok=applyCareerState(data);
-        if(ok){
-          try{render();renderFinanceExtras();renderGameExtras()}catch(e){}
-          return true;
-        }
+        if(ok){try{render();renderFinanceExtras();renderGameExtras()}catch(e){}return true}
         backupBadRaw(id,raw);return false;
-      }catch(e){
-        backupBadRaw(id,raw);
-        console.warn('Kariyer güvenli yükleme:',e);
-        return false;
-      }
+      }catch(e){backupBadRaw(id,raw);console.warn('Kariyer güvenli yükleme:',e);return false}
     };
 
-    // Kaydetmeden önce geçerli state üretildiğini doğrula; boş/yarım state mevcut kariyeri ezmesin.
     window.saveAccountCareer=function(id){
       if(!id||id==='guest')return false;
       try{
-        const state=normalizeCareer(captureCareerState());
-        if(!state)return false;
-        localStorage.setItem(accountKey(id),JSON.stringify(state));
-        return true;
+        const state=normalizeCareer(captureCareerState());if(!state)return false;
+        localStorage.setItem(accountKey(id),JSON.stringify(state));return true;
       }catch(e){console.warn('Kariyer güvenli kayıt:',e);return false}
     };
 
-    // Eski otomatik kariyer onarımı artık finansal eşiklere göre sıfırlama yapmasın.
     window.repairLegacyCareerBeforeRender=function(){
       try{localStorage.setItem('gs_v170_safe_repair_done','1')}catch(e){}
       return false;
     };
 
-    patched=true;
-    persistNow();
-    return true;
+    patched=true;persistNow();return true;
+  }
+
+  function releaseClosedLoanCollateral(index){
+    try{
+      if(typeof loans==='undefined'||!Array.isArray(loans))return;
+      const l=loans[index];
+      if(!l||!l.closed||!l.collateralId||typeof ownedAssets==='undefined'||!Array.isArray(ownedAssets))return;
+      const a=ownedAssets.find(x=>x&&x.id===l.collateralId);
+      if(a)a.collateral=false;
+    }catch(e){}
   }
 
   function patchLoanActions(){
     try{
       if(typeof window.loanMgmtPay==='function'&&!window.loanMgmtPay.__eotSafe){
         const original=window.loanMgmtPay;
-        const wrapped=function(){const r=original.apply(this,arguments);setTimeout(persistNow,120);return r};wrapped.__eotSafe=true;window.loanMgmtPay=wrapped;
+        const wrapped=function(i){
+          const r=original.apply(this,arguments);
+          setTimeout(()=>{releaseClosedLoanCollateral(i);persistNow();try{renderFinanceExtras();renderGameExtras()}catch(e){}},120);
+          return r;
+        };
+        wrapped.__eotSafe=true;window.loanMgmtPay=wrapped;
       }
       if(typeof window.loanMgmtClose==='function'&&!window.loanMgmtClose.__eotSafe){
         const original=window.loanMgmtClose;
-        const wrapped=function(){const r=original.apply(this,arguments);setTimeout(persistNow,120);return r};wrapped.__eotSafe=true;window.loanMgmtClose=wrapped;
+        const wrapped=function(i){
+          const r=original.apply(this,arguments);
+          setTimeout(()=>{releaseClosedLoanCollateral(i);persistNow();try{renderFinanceExtras();renderGameExtras()}catch(e){}},120);
+          return r;
+        };
+        wrapped.__eotSafe=true;window.loanMgmtClose=wrapped;
       }
     }catch(e){}
   }
