@@ -78,18 +78,8 @@
       body>.bottom-nav .nav-btn.active .nav-ico{color:#d9efff!important}
       body>.bottom-nav .nav-btn:active{transform:scale(.97)!important;background:rgba(96,165,250,.1)!important}
       .app{padding-bottom:calc(102px + env(safe-area-inset-bottom))!important}
-
       @media(max-width:390px){
-        body>.bottom-nav{
-          width:calc(100% - 16px)!important;
-          height:72px!important;
-          min-height:72px!important;
-          gap:3px!important;
-          padding-left:6px!important;
-          padding-right:6px!important;
-          border-top-left-radius:22px!important;
-          border-top-right-radius:22px!important;
-        }
+        body>.bottom-nav{width:calc(100% - 16px)!important;height:72px!important;min-height:72px!important;gap:3px!important;padding-left:6px!important;padding-right:6px!important;border-top-left-radius:22px!important;border-top-right-radius:22px!important}
         body>.bottom-nav .nav-btn{font-size:8px!important;gap:4px!important;padding:6px 2px 5px!important}
         body>.bottom-nav .nav-btn .nav-ico{width:25px!important;height:25px!important;font-size:20px!important}
       }
@@ -97,20 +87,67 @@
     document.head.appendChild(s);
   }
 
+  function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
+  function sectionOf(btn){
+    const t=textOf(btn),href=String(btn&&btn.getAttribute('href')||'').replace(/^#/,'');
+    if(t.includes('ana sayfa'))return 'home';
+    if(t.includes('pazar'))return 'market';
+    if(t.includes('işlet'))return 'companies';
+    if(t.includes('finans'))return 'finance';
+    if(t.includes('profil'))return 'profile';
+    return href;
+  }
+  function belongs(section,current){
+    if(section==='home')return current===''||current==='home';
+    if(section==='market')return ['market','opportun','land','propert','vehicle'].some(x=>current.includes(x));
+    if(section==='companies')return ['compan','business','factory','construction','asset'].some(x=>current.includes(x));
+    if(section==='finance')return ['finance','bank','loan','credit','deposit','stock','crypto','gold','investment'].some(x=>current.includes(x));
+    if(section==='profile')return ['profile','account','career'].some(x=>current.includes(x));
+    return current===section;
+  }
+  function syncActive(){
+    const nav=document.querySelector('.bottom-nav');if(!nav)return;
+    const current=(location.hash||'#home').slice(1).toLocaleLowerCase('tr-TR');
+    let matched=false;
+    nav.querySelectorAll('.nav-btn').forEach(btn=>{const active=!matched&&belongs(sectionOf(btn),current);btn.classList.toggle('active',active);if(active)matched=true});
+  }
+  function resetTop(){
+    requestAnimationFrame(()=>{
+      const scroller=document.scrollingElement||document.documentElement;
+      if(scroller)scroller.scrollTop=0;
+      document.documentElement.scrollTop=0;document.body.scrollTop=0;
+      const app=document.querySelector('.app');if(app)app.scrollTop=0;
+      window.scrollTo(0,0);
+    });
+  }
   function lock(){
     ensureStyle();
     const nav=document.querySelector('.bottom-nav');
     if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
+    syncActive();
   }
 
-  const observer=new MutationObserver(lock);
-  function start(){
-    lock();
-    observer.observe(document.getElementById('app-root')||document.body,{childList:true,subtree:true});
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
-  else start();
-  window.addEventListener('hashchange',lock);
+  document.addEventListener('click',e=>{
+    const btn=e.target&&e.target.closest?e.target.closest('.bottom-nav .nav-btn'):null;
+    if(!btn)return;
+    const section=sectionOf(btn);if(!section)return;
+    const href=btn.getAttribute('href');
+    if(section==='home'){
+      e.preventDefault();
+      if(location.hash!=='#home')location.hash='home';
+      resetTop();
+      setTimeout(resetTop,30);
+      return;
+    }
+    if(href&&href.startsWith('#')){
+      const target=document.getElementById(href.slice(1));
+      if(!target){e.preventDefault();return;}
+    }
+  },true);
+
+  function start(){lock()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+  window.addEventListener('hashchange',()=>{syncActive();resetTop()});
   window.addEventListener('pageshow',lock);
 })();
