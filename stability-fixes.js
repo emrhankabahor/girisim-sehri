@@ -88,10 +88,10 @@
       if(!document.getElementById('eot-finance-fix-style')){
         const s=document.createElement('style');s.id='eot-finance-fix-style';s.textContent=`
           #bank .finance-meta{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important}
-          #bank .finance-meta>div{min-width:0!important;overflow:hidden!important;padding:12px 10px!important}
-          #bank .finance-meta b{display:block!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:clamp(10px,3vw,15px)!important;letter-spacing:-.035em!important;line-height:1.15!important}
-          #bank .finance-meta span{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-          @media(max-width:390px){#bank .finance-meta{gap:6px!important}#bank .finance-meta>div{padding:10px 8px!important}#bank .finance-meta b{font-size:clamp(9px,2.8vw,12px)!important}}
+          #bank .finance-meta>div{min-width:0!important;overflow:visible!important;padding:12px 8px!important}
+          #bank .finance-meta b{display:block!important;width:100%!important;max-width:none!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(8px,2.45vw,11.5px)!important;letter-spacing:-.055em!important;line-height:1.1!important;font-variant-numeric:tabular-nums!important}
+          #bank .finance-meta span{display:block!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(7px,2.2vw,10px)!important}
+          @media(max-width:390px){#bank .finance-meta{gap:5px!important}#bank .finance-meta>div{padding:10px 6px!important}#bank .finance-meta b{font-size:clamp(7.5px,2.35vw,10px)!important;letter-spacing:-.065em!important}}
         `;document.head.appendChild(s);
       }
 
