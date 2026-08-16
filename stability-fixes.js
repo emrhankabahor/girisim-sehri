@@ -8,6 +8,7 @@
   function safeNumber(v,d=0){v=Number(v);return Number.isFinite(v)?v:d}
   function safeArray(v){return Array.isArray(v)?v:[]}
   function safeObject(v){return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}
+  function money(n){try{return '₺'+Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:0})}catch(e){return '₺0'}}
 
   function normalizeCareer(data){
     if(!data||typeof data!=='object'||!data.sim||typeof data.sim!=='object')return null;
@@ -108,6 +109,34 @@
     }catch(e){}
   }
 
+  function syncDashboardTruth(){
+    try{
+      if(typeof sim==='undefined'||!sim)return;
+      const companies=safeArray(sim.companies);
+      const assets=typeof ownedAssets!=='undefined'?safeArray(ownedAssets):[];
+      const has=(text,words)=>words.some(w=>String(text||'').toLocaleLowerCase('tr-TR').includes(w));
+      const counts=[
+        companies.filter(c=>has(c.sector,['perakende','mağaza','market'])).length,
+        companies.filter(c=>has(c.sector,['sanayi','üretim','fabrika'])).length+assets.filter(a=>a.id==='factory_basic'||has(a.type,['fabrika'])).length,
+        companies.filter(c=>has(c.sector,['inşaat'])).length,
+        companies.filter(c=>has(c.sector,['otomotiv','galeri'])).length,
+        assets.filter(a=>has(a.type,['gayrimenkul','konut','emlak'])).length,
+        assets.filter(a=>has(a.type,['arsa'])||String(a.id||'').includes('land')).length
+      ];
+      document.querySelectorAll('.eot-business .eot-count').forEach((el,i)=>{if(i<counts.length)el.textContent=counts[i]+' ADET'});
+
+      const companyValue=companies.reduce((s,c)=>s+Math.max(0,safeNumber(c.companyCash))+Math.max(0,safeNumber(c.brand)),0);
+      const stat=document.querySelector('.eot-profile-stats>div:first-child b');if(stat)stat.textContent=money(companyValue);
+
+      const notifications=safeArray(sim.notifications);
+      const badge=document.querySelector('.eot-badge');
+      if(badge){if(notifications.length){badge.style.display='grid';badge.textContent=String(Math.min(99,notifications.length))}else badge.style.display='none'}
+
+      const alert=document.querySelector('.eot-account-alert span');
+      if(alert)alert.textContent='Hesabın aktif • Kariyerin bu cihazda kayıtlı.';
+    }catch(e){}
+  }
+
   function improveMobileUsability(){
     if(document.getElementById('eot-v170-usability'))return;
     const s=document.createElement('style');s.id='eot-v170-usability';s.textContent=`
@@ -124,12 +153,13 @@
   }
 
   const timer=setInterval(function(){
-    patchCore();patchLoanActions();improveMobileUsability();
+    patchCore();patchLoanActions();improveMobileUsability();syncDashboardTruth();
     if(patched&&typeof window.loanMgmtPay==='function')clearInterval(timer);
   },250);
   setTimeout(()=>clearInterval(timer),20000);
 
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistNow()});
   window.addEventListener('pagehide',persistNow);
-  setInterval(()=>{if(patched)persistNow()},30000);
+  setInterval(()=>{if(patched){persistNow();syncDashboardTruth()}},30000);
+  setInterval(syncDashboardTruth,2000);
 })();
