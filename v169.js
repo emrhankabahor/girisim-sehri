@@ -1,19 +1,21 @@
-/* Girişim Şehri V1.69 • Oynanabilirlik ve yönlendirme */
+/* Empire of Trade V1.70 • Oynanabilirlik ve yönlendirme */
 (function(){
- const KEY='gs_v169_progress';
+ const KEY='gs_v170_progress';
  function money(n){try{return '₺'+Math.round(Number(n||0)).toLocaleString('tr-TR')}catch(e){return '₺0'}}
  function state(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
  function saveState(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
- function companies(){try{return Array.isArray(sim?.companies)?sim.companies:[]}catch(e){return []}}
- function assets(){try{return Array.isArray(ownedAssets)?ownedAssets:[]}catch(e){return []}}
- function activeLoans(){try{return Array.isArray(loans)?loans.filter(x=>!x.closed&&Number(x.remaining||0)>0):[]}catch(e){return []}}
+ function companies(){try{return typeof sim!=='undefined'&&Array.isArray(sim?.companies)?sim.companies:[]}catch(e){return []}}
+ function assets(){try{return typeof ownedAssets!=='undefined'&&Array.isArray(ownedAssets)?ownedAssets:[]}catch(e){return []}}
+ function activeLoans(){try{return typeof loans!=='undefined'&&Array.isArray(loans)?loans.filter(x=>!x.closed&&Number(x.remaining||0)>0):[]}catch(e){return []}}
+ function runtimeCash(){try{return typeof cash!=='undefined'&&Number.isFinite(Number(cash))?Number(cash):Number(localStorage.getItem('gs124_cash')||0)}catch(e){return 0}}
+ function runtimeCredit(){try{return typeof creditScore!=='undefined'&&Number.isFinite(Number(creditScore))?Number(creditScore):Number(localStorage.getItem('gs111_credit')||50)}catch(e){return 50}}
  function goals(){
-   const cs=companies(),as=assets(),ls=activeLoans(),c=Number(window.cash||0);
+   const cs=companies(),as=assets(),ls=activeLoans(),c=runtimeCash(),credit=runtimeCredit();
    return [
     {id:'company',title:'İlk şirketini kur',done:cs.length>0,detail:cs.length?'Şirket portföyün aktif.':'Bir sektör seçip ilk şirketini kur.'},
     {id:'asset',title:'İlk varlığını edin',done:as.length>0,detail:as.length?'Varlık portföyün oluştu.':'Pazar bölümünden arsa, ev veya araç edin.'},
     {id:'reserve',title:'Nakit rezervi oluştur',done:c>=500000,detail:'Hedef: '+money(500000)+' • Mevcut: '+money(c)},
-    {id:'credit',title:'Finansal güvenini geliştir',done:Number(window.creditScore||0)>=60,detail:'Kredi puanı hedefi: 60 • Mevcut: '+Math.round(Number(window.creditScore||0))},
+    {id:'credit',title:'Finansal güvenini geliştir',done:credit>=60,detail:'Kredi puanı hedefi: 60 • Mevcut: '+Math.round(credit)},
     {id:'debt',title:'Borcu kontrol altında tut',done:ls.length<=2,detail:'Aktif kredi: '+ls.length+' / 2'}
    ];
  }
@@ -24,8 +26,8 @@
  `;document.head.appendChild(s)}
  function mount(){
    ensureStyle();
-   const home=document.querySelector('#homeView,.home-view,[data-view="home"],main');if(!home)return;
-   let box=document.getElementById('v169Goals');if(!box){box=document.createElement('section');box.id='v169Goals';box.className='v169-panel';let anchor=home.querySelector('.home-status-row,.home-main-card,.quick-access');if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(box,anchor.nextSibling);else home.appendChild(box)}
+   const home=document.querySelector('#home,#homeView,.home-view,[data-view="home"]');if(!home)return;
+   let box=document.getElementById('v169Goals');if(!box){box=document.createElement('section');box.id='v169Goals';box.className='v169-panel';let anchor=home.querySelector('.eot-ui-dashboard,.home-status-row,.home-main-card,.quick-access');if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(box,anchor.nextSibling);else home.appendChild(box)}
    const gs=goals(),done=gs.filter(g=>g.done).length;
    box.innerHTML='<div class="v169-head"><b>🎯 Kariyer Hedefleri</b><span class="v169-badge">'+done+'/'+gs.length+' tamamlandı</span></div>'+gs.map(g=>'<div class="v169-goal"><div class="v169-title '+(g.done?'v169-done':'')+'"><span>'+(g.done?'✓':'○')+'</span>'+g.title+'</div><div class="v169-detail">'+g.detail+'</div></div>').join('')+'<div class="v169-tip">💡 Öneri: Bütün paranı tek yatırıma bağlama. Nakit rezervi bırak, şirket ve varlık gelirlerini çeşitlendir, kredi taksitlerini gerçek vade tarihine göre takip et.</div>';
  }
