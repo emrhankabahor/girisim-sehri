@@ -42,13 +42,12 @@
     window.careerStateLooksBroken=function(d){return !validState(d)};
   }catch(e){}
 
-  function backupValidCurrent(id){
+  // Her yeni hesap kaydından hemen önceki geçerli sürümü tek adım geri dönüş yedeği olarak sakla.
+  function backupCurrentBeforeWrite(id){
     if(!id)return;
     try{
       const raw=localStorage.getItem(key(id)),data=parse(raw);
-      if(!validState(data))return;
-      const prev=parse(localStorage.getItem(backupKey(id)));
-      if(!prev||Number(data.savedAt||0)>=Number(prev.savedAt||0))localStorage.setItem(backupKey(id),JSON.stringify(data));
+      if(validState(data))localStorage.setItem(backupKey(id),JSON.stringify(data));
     }catch(e){}
   }
 
@@ -57,13 +56,10 @@
       const original=window.saveAccountCareer;
       const wrapped=function(id){
         id=id&&id!=='guest'?String(id):null;if(!id)return;
-        backupValidCurrent(id);
+        backupCurrentBeforeWrite(id);
         const r=original.apply(this,arguments);
         const now=parse(localStorage.getItem(key(id)));
-        if(validState(now)){
-          localStorage.setItem(recoveryKey(id),JSON.stringify(now));
-          backupValidCurrent(id);
-        }
+        if(validState(now))localStorage.setItem(recoveryKey(id),JSON.stringify(now));
         return r;
       };
       wrapped.__eotSafe=true;window.saveAccountCareer=wrapped;
@@ -104,7 +100,6 @@
         if(!ok)return false;
         localStorage.setItem(key(id),JSON.stringify(chosen.data));
         localStorage.setItem(recoveryKey(id),JSON.stringify(chosen.data));
-        backupValidCurrent(id);
         try{if(typeof render==='function')render();if(typeof renderFinanceExtras==='function')renderFinanceExtras();if(typeof renderGameExtras==='function')renderGameExtras()}catch(e){}
         if(chosen.source!=='hesap kaydı'&&typeof toast==='function')toast('Kariyer güvenli yedekten kurtarıldı');
         return true;
@@ -124,7 +119,6 @@
       localStorage.setItem(recoveryKey(id),raw);
       const existing=parse(localStorage.getItem(key(id)));
       if(!validState(existing))localStorage.setItem(key(id),raw);
-      backupValidCurrent(id);
     }catch(e){}
   }
 
