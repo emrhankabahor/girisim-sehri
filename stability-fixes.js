@@ -56,10 +56,30 @@
     try{if(typeof loans==='undefined'||!Array.isArray(loans))return;const l=loans[index];if(!l||!l.closed||!l.collateralId||typeof ownedAssets==='undefined'||!Array.isArray(ownedAssets))return;const a=ownedAssets.find(x=>x&&x.id===l.collateralId);if(a)a.collateral=false}catch(e){}
   }
 
+  function reconcileCollateralLocks(){
+    try{
+      if(typeof loans==='undefined'||!Array.isArray(loans)||typeof ownedAssets==='undefined'||!Array.isArray(ownedAssets))return false;
+      const activeIds=new Set();
+      loans.forEach(l=>{
+        if(!l||!l.collateralId)return;
+        const remaining=Number(l.remaining??l.balance??l.debt??l.totalRemaining??0);
+        const active=l.closed!==true && (remaining>0 || l.active===true || l.status==='active');
+        if(active)activeIds.add(String(l.collateralId));
+      });
+      let changed=false;
+      ownedAssets.forEach(a=>{
+        if(!a||!a.collateral)return;
+        if(!activeIds.has(String(a.id))){a.collateral=false;changed=true;}
+      });
+      if(changed){persistNow();try{renderFinanceExtras();renderGameExtras()}catch(e){}}
+      return changed;
+    }catch(e){return false}
+  }
+
   function patchLoanActions(){
     try{
-      if(typeof window.loanMgmtPay==='function'&&!window.loanMgmtPay.__eotSafe){const original=window.loanMgmtPay;const wrapped=function(i){const r=original.apply(this,arguments);setTimeout(()=>{releaseClosedLoanCollateral(i);persistNow();try{renderFinanceExtras();renderGameExtras()}catch(e){}},120);return r};wrapped.__eotSafe=true;window.loanMgmtPay=wrapped}
-      if(typeof window.loanMgmtClose==='function'&&!window.loanMgmtClose.__eotSafe){const original=window.loanMgmtClose;const wrapped=function(i){const r=original.apply(this,arguments);setTimeout(()=>{releaseClosedLoanCollateral(i);persistNow();try{renderFinanceExtras();renderGameExtras()}catch(e){}},120);return r};wrapped.__eotSafe=true;window.loanMgmtClose=wrapped}
+      if(typeof window.loanMgmtPay==='function'&&!window.loanMgmtPay.__eotSafe){const original=window.loanMgmtPay;const wrapped=function(i){const r=original.apply(this,arguments);setTimeout(()=>{releaseClosedLoanCollateral(i);reconcileCollateralLocks();persistNow();try{renderFinanceExtras();renderGameExtras()}catch(e){}},120);return r};wrapped.__eotSafe=true;window.loanMgmtPay=wrapped}
+      if(typeof window.loanMgmtClose==='function'&&!window.loanMgmtClose.__eotSafe){const original=window.loanMgmtClose;const wrapped=function(i){const r=original.apply(this,arguments);setTimeout(()=>{releaseClosedLoanCollateral(i);reconcileCollateralLocks();persistNow();try{renderFinanceExtras();renderGameExtras()}catch(e){}},120);return r};wrapped.__eotSafe=true;window.loanMgmtClose=wrapped}
     }catch(e){}
   }
 
@@ -98,44 +118,25 @@
           @media(max-width:390px){#bank .finance-meta{gap:5px!important}#bank .finance-meta>div{padding:10px 6px!important}#bank .finance-meta b{font-size:clamp(7.5px,2.35vw,10px)!important;letter-spacing:-.065em!important}.eot-wallet{gap:5px!important}.eot-wallet-card{padding-left:6px!important;padding-right:6px!important}.eot-wallet-card b{font-size:clamp(7px,2.2vw,9.5px)!important;letter-spacing:-.07em!important}}
         `;document.head.appendChild(s);
       }
-
       const finance=document.getElementById('finance');
       if(finance){
         const cards=[...finance.querySelectorAll('.menu-card')];
         const creditCard=cards.find(a=>String(a.textContent||'').toLocaleLowerCase('tr-TR').includes('kredi kartı'));
-        if(creditCard){
-          creditCard.href='#loans';
-          const icon=creditCard.querySelector('.iconbox');if(icon)icon.textContent='💳';
-          const h=creditCard.querySelector('h4');if(h)h.textContent='Kredilerim';
-          const p=creditCard.querySelector('p');if(p)p.textContent='Aktif kredilerini, taksitlerini ve borçlarını görüntüle.';
-          creditCard.dataset.eotLoansShortcut='1';
-        }
-        cards.forEach(a=>{
-          const t=String(a.textContent||'').toLocaleLowerCase('tr-TR');
-          if(t.includes('hisse araştırma')||t.includes('hisse arastirma'))a.remove();
-        });
+        if(creditCard){creditCard.href='#loans';const icon=creditCard.querySelector('.iconbox');if(icon)icon.textContent='💳';const h=creditCard.querySelector('h4');if(h)h.textContent='Kredilerim';const p=creditCard.querySelector('p');if(p)p.textContent='Aktif kredilerini, taksitlerini ve borçlarını görüntüle.';creditCard.dataset.eotLoansShortcut='1'}
+        cards.forEach(a=>{const t=String(a.textContent||'').toLocaleLowerCase('tr-TR');if(t.includes('hisse araştırma')||t.includes('hisse arastirma'))a.remove()});
       }
     }catch(e){console.warn('Finans arayüz düzeltmesi:',e)}
   }
 
   function syncDashboardTruth(){
-    try{
-      if(typeof sim==='undefined'||!sim)return;const companies=safeArray(sim.companies),assets=typeof ownedAssets!=='undefined'?safeArray(ownedAssets):[];const has=(text,words)=>words.some(w=>String(text||'').toLocaleLowerCase('tr-TR').includes(w));
-      const counts=[companies.filter(c=>has(c.sector,['perakende','mağaza','market'])).length,companies.filter(c=>has(c.sector,['sanayi','üretim','fabrika'])).length+assets.filter(a=>a.id==='factory_basic'||has(a.type,['fabrika'])).length,companies.filter(c=>has(c.sector,['inşaat'])).length,companies.filter(c=>has(c.sector,['otomotiv','galeri'])).length,assets.filter(a=>has(a.type,['gayrimenkul','konut','emlak'])).length,assets.filter(a=>has(a.type,['arsa'])||String(a.id||'').includes('land')).length];
-      document.querySelectorAll('.eot-business .eot-count').forEach((el,i)=>{if(i<counts.length)el.textContent=counts[i]+' ADET'});
-      const companyValue=companies.reduce((s,c)=>s+Math.max(0,safeNumber(c.companyCash))+Math.max(0,safeNumber(c.brand)),0),stat=document.querySelector('.eot-profile-stats>div:first-child b');if(stat)stat.textContent=money(companyValue);
-      const notifications=safeArray(sim.notifications),badge=document.querySelector('.eot-badge');if(badge){if(notifications.length){badge.style.display='grid';badge.textContent=String(Math.min(99,notifications.length))}else badge.style.display='none'}
-      const alert=document.querySelector('.eot-account-alert span');if(alert)alert.textContent='Hesabın aktif • Kariyerin bu cihazda kayıtlı.';
-    }catch(e){}
+    try{if(typeof sim==='undefined'||!sim)return;const companies=safeArray(sim.companies),assets=typeof ownedAssets!=='undefined'?safeArray(ownedAssets):[];const has=(text,words)=>words.some(w=>String(text||'').toLocaleLowerCase('tr-TR').includes(w));const counts=[companies.filter(c=>has(c.sector,['perakende','mağaza','market'])).length,companies.filter(c=>has(c.sector,['sanayi','üretim','fabrika'])).length+assets.filter(a=>a.id==='factory_basic'||has(a.type,['fabrika'])).length,companies.filter(c=>has(c.sector,['inşaat'])).length,companies.filter(c=>has(c.sector,['otomotiv','galeri'])).length,assets.filter(a=>has(a.type,['gayrimenkul','konut','emlak'])).length,assets.filter(a=>has(a.type,['arsa'])||String(a.id||'').includes('land')).length];document.querySelectorAll('.eot-business .eot-count').forEach((el,i)=>{if(i<counts.length)el.textContent=counts[i]+' ADET'});const companyValue=companies.reduce((s,c)=>s+Math.max(0,safeNumber(c.companyCash))+Math.max(0,safeNumber(c.brand)),0),stat=document.querySelector('.eot-profile-stats>div:first-child b');if(stat)stat.textContent=money(companyValue);const notifications=safeArray(sim.notifications),badge=document.querySelector('.eot-badge');if(badge){if(notifications.length){badge.style.display='grid';badge.textContent=String(Math.min(99,notifications.length))}else badge.style.display='none'}const alert=document.querySelector('.eot-account-alert span');if(alert)alert.textContent='Hesabın aktif • Kariyerin bu cihazda kayıtlı.'}catch(e){}
   }
 
-  function improveMobileUsability(){
-    if(document.getElementById('eot-v170-usability'))return;const s=document.createElement('style');s.id='eot-v170-usability';s.textContent=`button,a,input,select{touch-action:manipulation}button,.menu-card,.nav-btn,.eot-quick,.eot-business{min-height:44px}input,select,textarea{font-size:16px!important}.loan-mgmt-sheet{-webkit-overflow-scrolling:touch}@media(max-width:430px){.menu-grid{gap:9px!important}.menu-card{padding:13px!important}.section-head{margin-top:17px!important}.modal,.sheet,.panel{max-width:100%!important}}`;document.head.appendChild(s);
-  }
+  function improveMobileUsability(){if(document.getElementById('eot-v170-usability'))return;const s=document.createElement('style');s.id='eot-v170-usability';s.textContent=`button,a,input,select{touch-action:manipulation}button,.menu-card,.nav-btn,.eot-quick,.eot-business{min-height:44px}input,select,textarea{font-size:16px!important}.loan-mgmt-sheet{-webkit-overflow-scrolling:touch}@media(max-width:430px){.menu-grid{gap:9px!important}.menu-card{padding:13px!important}.section-head{margin-top:17px!important}.modal,.sheet,.panel{max-width:100%!important}}`;document.head.appendChild(s)}
 
-  const timer=setInterval(function(){patchCore();patchLoanActions();patchRealtimeWealthHistory();patchRealtimeUI();patchFinanceUI();improveMobileUsability();syncDashboardTruth();if(patched&&typeof window.loanMgmtPay==='function')clearInterval(timer)},250);
+  const timer=setInterval(function(){patchCore();patchLoanActions();reconcileCollateralLocks();patchRealtimeWealthHistory();patchRealtimeUI();patchFinanceUI();improveMobileUsability();syncDashboardTruth();if(patched&&typeof window.loanMgmtPay==='function')clearInterval(timer)},250);
   setTimeout(()=>clearInterval(timer),20000);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistNow()});window.addEventListener('pagehide',persistNow);
-  window.addEventListener('hashchange',()=>setTimeout(patchFinanceUI,50));
-  setInterval(()=>{if(patched){persistNow();syncDashboardTruth();patchRealtimeWealthHistory();patchRealtimeUI();patchFinanceUI()}},30000);setInterval(()=>{syncDashboardTruth();patchRealtimeUI();patchFinanceUI()},2000);
+  window.addEventListener('hashchange',()=>{setTimeout(patchFinanceUI,50);setTimeout(reconcileCollateralLocks,80)});
+  setInterval(()=>{if(patched){persistNow();reconcileCollateralLocks();syncDashboardTruth();patchRealtimeWealthHistory();patchRealtimeUI();patchFinanceUI()}},30000);setInterval(()=>{syncDashboardTruth();patchRealtimeUI();patchFinanceUI()},2000);
 })();
