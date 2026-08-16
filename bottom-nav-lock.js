@@ -32,11 +32,11 @@
         border-bottom-right-radius:0!important;
         border-top-left-radius:24px!important;
         border-top-right-radius:24px!important;
-        background:rgba(8,22,37,.98)!important;
-        backdrop-filter:blur(22px)!important;
-        -webkit-backdrop-filter:blur(22px)!important;
-        box-shadow:0 -10px 35px rgba(0,0,0,.28)!important;
-        will-change:transform!important;
+        background:#081625!important;
+        backdrop-filter:none!important;
+        -webkit-backdrop-filter:none!important;
+        box-shadow:0 -6px 18px rgba(0,0,0,.22)!important;
+        contain:layout paint!important;
       }
       body>.bottom-nav .nav-btn{
         position:relative!important;
@@ -73,7 +73,7 @@
         color:#9eb6cd!important;
       }
       body>.bottom-nav .nav-btn.active{
-        background:linear-gradient(180deg,rgba(44,98,153,.34),rgba(27,61,99,.28))!important;
+        background:rgba(35,75,116,.52)!important;
         color:#f5fbff!important;
       }
       body>.bottom-nav .nav-btn.active .nav-ico{color:#d9efff!important}
