@@ -2,6 +2,7 @@
 (function(){
   if(window.__eotInvestmentFixesLoaded)return;
   window.__eotInvestmentFixesLoaded=true;
+  let refreshTimer=0;
   function runtimeCash(){try{return typeof cash!=='undefined'&&Number.isFinite(Number(cash))?Number(cash):Number(localStorage.getItem('gs124_cash')||0)}catch(e){return 0}}
   function persistCareer(){try{if(typeof save==='function')save();if(typeof saveUnifiedState==='function')saveUnifiedState();if(typeof currentAccount==='function'&&typeof saveAccountCareer==='function'){const u=currentAccount();if(u&&u.id&&u.id!=='guest')saveAccountCareer(u.id)}}catch(e){console.warn('Yatırım kaydı tamamlanamadı:',e)}}
   function normalizePortfolio(){try{if(typeof pf==='undefined'||!pf||typeof pf!=='object')return;Object.keys(pf).forEach(sym=>{const p=pf[sym];if(!p||typeof p!=='object'){delete pf[sym];return}p.qty=Number(p.qty||0);p.avg=Number(p.avg||0);if(!Number.isFinite(p.qty)||p.qty<0)p.qty=0;if(!Number.isFinite(p.avg)||p.avg<0)p.avg=0;if(p.qty<=1e-10){p.qty=0;p.avg=0}})}catch(e){}}
@@ -13,8 +14,16 @@
   function ensureHomeCounts(){if(document.querySelector('script[data-eot-home-counts]'))return;const s=document.createElement('script');s.src='home-world-counts.js?v=1';s.dataset.eotHomeCounts='1';document.body.appendChild(s)}
   function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs();ensureFinanceLayer();ensureHomeCounts()}
   function onRelevantScreen(){const h=(location.hash||'').toLowerCase();return /finance|invest|stock|crypto|gold/.test(h)}
+  function scheduleRefresh(delay=180){
+    if(refreshTimer)clearTimeout(refreshTimer);
+    refreshTimer=setTimeout(()=>{
+      refreshTimer=0;
+      if(!onRelevantScreen()||document.hidden)return;
+      if('requestIdleCallback' in window)requestIdleCallback(()=>refresh(),{timeout:450});else setTimeout(refresh,0);
+    },delay);
+  }
   window.addEventListener('pagehide',persistCareer);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)persistCareer();else if(onRelevantScreen())setTimeout(refresh,80)});
-  window.addEventListener('hashchange',()=>{if(onRelevantScreen())setTimeout(refresh,50)});
-  setTimeout(refresh,500);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)persistCareer();else if(onRelevantScreen())scheduleRefresh(180)});
+  window.addEventListener('hashchange',()=>{if(onRelevantScreen())scheduleRefresh(180)});
+  setTimeout(()=>{patchTrade();patchScreenTrade();ensureFinanceLayer();ensureHomeCounts();if(onRelevantScreen())scheduleRefresh(100)},500);
 })();
