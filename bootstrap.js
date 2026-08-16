@@ -1,6 +1,6 @@
 (async function(){
   const root=document.getElementById('app-root');
-  const APP_VERSION='188';
+  const APP_VERSION='189';
 
   if('serviceWorker' in navigator){
     let refreshing=false;
@@ -31,6 +31,23 @@
     });
   }
 
+  function restoreOriginalBottomNav(){
+    let style=document.getElementById('eot-nav-restore-style');
+    if(!style){
+      style=document.createElement('style');
+      style.id='eot-nav-restore-style';
+      style.textContent=`
+        .eot-bottom-nav{display:none!important}
+        .bottom-nav{position:fixed!important;z-index:30!important;left:50%!important;bottom:max(10px,env(safe-area-inset-bottom))!important;transform:translateX(-50%)!important;width:min(calc(100% - 24px),556px)!important;height:70px!important;padding:7px!important;display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:4px!important;border:1px solid var(--line)!important;border-radius:23px!important;background:rgba(9,20,34,.94)!important;backdrop-filter:blur(20px)!important;box-shadow:0 16px 45px rgba(0,0,0,.35)!important}
+        .bottom-nav .nav-btn{position:static!important;margin:0!important;width:auto!important;height:auto!important;aspect-ratio:auto!important;border:0!important;border-radius:16px!important;background:transparent!important;box-shadow:none!important;color:#8aa0b8!important;font-size:8.5px!important;font-weight:700!important;padding:6px 2px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important}
+        .bottom-nav .nav-btn:hover,.bottom-nav .nav-btn:active{background:rgba(96,165,250,.1)!important;color:#fff!important;transform:scale(.985)!important}
+        .bottom-nav .nav-ico{font-size:18px!important;color:inherit!important}
+      `;
+      document.head.appendChild(style);
+    }
+    document.querySelectorAll('.eot-bottom-nav').forEach(el=>el.remove());
+  }
+
   function hrefFor(words,fallback='#home'){
     const keys=words.map(x=>x.toLocaleLowerCase('tr'));
     const links=[...document.querySelectorAll('a[href^="#"]')];
@@ -53,10 +70,11 @@
     });
     document.querySelectorAll('.account-brand-logo,.career-brand-mark').forEach(el=>{
       el.textContent='';
-      el.style.backgroundImage="url('./apple-touch-icon.png?v=188')";
+      el.style.backgroundImage="url('./apple-touch-icon.png?v=189')";
       el.style.backgroundSize='cover';
       el.style.backgroundPosition='center';
     });
+    restoreOriginalBottomNav();
   }
 
   function findTextValue(label){
@@ -93,7 +111,7 @@
   function buildDemoUI(){
     const home=document.getElementById('home');
     const topbar=document.querySelector('.topbar');
-    if(!home || home.dataset.eotExact==='1') return;
+    if(!home || home.dataset.eotExact==='1') { restoreOriginalBottomNav(); return; }
     home.dataset.eotExact='1';
 
     const targets={
@@ -149,13 +167,7 @@
       <div class="eot-section-head"><div><h3>Piyasa Özeti</h3><p>Örnek canlı piyasa görünümü</p></div><a href="${targets.investments}">DETAY</a></div>
       <section class="eot-market-card"><div class="eot-market-top"><b>Bugünün Piyasası</b><span>● PİYASA AÇIK</span></div><div class="eot-market-row"><div><b>BIST 100</b><small>Türkiye</small></div><span class="eot-price">10.842</span><span class="eot-gain">+1,24%</span></div><div class="eot-market-row"><div><b>Gram Altın</b><small>₺ / gram</small></div><span class="eot-price">₺4.281</span><span class="eot-gain">+0,48%</span></div><div class="eot-market-row"><div><b>Bitcoin</b><small>BTC / USD</small></div><span class="eot-price">$116.420</span><span class="eot-loss">-0,31%</span></div></section>`;
     home.prepend(dash);
-
-    if(!document.querySelector('.eot-bottom-nav')){
-      const nav=document.createElement('nav');
-      nav.className='eot-bottom-nav';
-      nav.innerHTML=`<a class="eot-nav-item active" href="#home"><span>⌂</span>Ana Sayfa</a><a class="eot-nav-item" href="${targets.companies}"><span>▥</span>Şirketler</a><a class="eot-nav-item center" href="${targets.market}"><span>▦</span></a><a class="eot-nav-item" href="${targets.bank}"><span>₺</span>Finans</a><a class="eot-nav-item" href="${targets.profile}"><span>♙</span>Profil</a>`;
-      document.body.appendChild(nav);
-    }
+    restoreOriginalBottomNav();
     syncDemo();
     setInterval(syncDemo,600);
   }
@@ -166,7 +178,7 @@
     root.innerHTML=parts.join('');
     applyBranding();
     buildDemoUI();
-    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v='+APP_VERSION;s.onload=()=>{applyBranding();buildDemoUI();syncDemo();next&&next()};document.body.appendChild(s)};
+    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v='+APP_VERSION;s.onload=()=>{applyBranding();buildDemoUI();syncDemo();restoreOriginalBottomNav();next&&next()};document.body.appendChild(s)};
     load('app.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('loan-management.js'))))))));
   }catch(err){
     console.error(err);
