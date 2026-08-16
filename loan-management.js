@@ -5,6 +5,7 @@
 
   function fmt(n){try{return '₺'+Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:2})}catch(e){return '₺0'}}
   function list(){try{return Array.isArray(loans)?loans.map((l,i)=>({l,i})).filter(x=>!x.l.closed&&Number(x.l.remaining||0)>.01):[]}catch(e){return []}}
+  function norm(v){return String(v||'').trim().toLocaleLowerCase('tr-TR')}
   function ensureStyle(){if(document.getElementById('loanMgmtStyle'))return;const s=document.createElement('style');s.id='loanMgmtStyle';s.textContent=`
   .loan-mgmt-overlay{position:fixed;inset:0;z-index:99999;background:rgba(2,8,20,.82);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center}.loan-mgmt-overlay.open{display:flex}
   .loan-mgmt-sheet{width:min(760px,100%);max-height:88vh;overflow:auto;border-radius:24px 24px 0 0;background:#081522;border:1px solid rgba(148,163,184,.2);padding:18px 16px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -18px 50px rgba(0,0,0,.35)}
@@ -15,36 +16,51 @@
   function renderManager(){ensureStyle();ensureOverlay();const root=document.getElementById('loanMgmtList');if(!root)return;const arr=list();if(!arr.length){root.innerHTML='<div class="loan-mgmt-empty">Aktif kredin bulunmuyor.</div>';return}root.innerHTML=arr.map(({l,i})=>{const inst=Math.min(Number(l.installment||0),Number(l.remaining||0)),due=Number(l.nextDue||0),late=due&&Date.now()>due;return '<div class="loan-mgmt-card"><div class="loan-mgmt-bank"><div><b>'+String(l.name||'Banka Kredisi')+'</b><div style="font-size:9px;color:#91a4bb;margin-top:3px">Kredi hesabı</div></div><span class="loan-mgmt-status">'+(late?'GECİKMİŞ':'AKTİF')+'</span></div><div class="loan-mgmt-grid"><div class="loan-mgmt-stat"><span>KALAN BORÇ</span><b>'+fmt(l.remaining)+'</b></div><div class="loan-mgmt-stat"><span>SONRAKİ TAKSİT</span><b>'+fmt(inst)+'</b></div><div class="loan-mgmt-stat"><span>KULLANILAN KREDİ</span><b>'+fmt(l.amount||l.requestedAmount||0)+'</b></div><div class="loan-mgmt-stat"><span>ERKEN KAPAMA</span><b>'+fmt(l.remaining)+'</b></div></div><div class="loan-mgmt-due">Sonraki ödeme: <b>'+(due?new Date(due).toLocaleString('tr-TR'):'—')+'</b></div><div class="loan-mgmt-actions"><button class="loan-pay" onclick="window.loanMgmtPay('+i+')">Taksiti Öde</button><button class="loan-close" onclick="window.loanMgmtClose('+i+')">Krediyi Erken Kapat</button></div><div class="loan-close-note">Erken kapama işleminde kalan borcun tamamı tek seferde nakit bakiyenden tahsil edilir.</div></div>'}).join('')}
   window.openLoanManager=function(){renderManager();document.getElementById('loanMgmtOverlay')?.classList.add('open')};window.closeLoanManager=function(){document.getElementById('loanMgmtOverlay')?.classList.remove('open')};window.loanMgmtPay=function(i){if(typeof payInstallment==='function')payInstallment(i);setTimeout(renderManager,80)};window.loanMgmtClose=function(i){const arr=list(),item=arr.find(x=>x.i===i);if(!item)return;const amt=Number(item.l.remaining||0);if(!confirm('Bu krediyi '+fmt(amt)+' ödeyerek erken kapatmak istiyor musun?'))return;if(typeof closeLoan==='function')closeLoan(i);setTimeout(renderManager,80)};
 
-  function addLauncher(){
-    const finance=document.getElementById('finance');if(!finance)return;
-    const heads=Array.from(finance.querySelectorAll('.section-head'));
-    const banking=heads.find(h=>(h.textContent||'').toLocaleLowerCase('tr-TR').includes('bankacılık'));
-    const grid=banking&&banking.nextElementSibling;
-    if(!grid)return;
-
-    let a=document.getElementById('loanMgmtLauncher')||grid.querySelector('[data-eot-banking-action="deposits"]');
-    if(!a){
-      a=document.createElement('a');
-      a.id='loanMgmtLauncher';
-      a.className='menu-card';
-      a.dataset.eotBankingAction='deposits';
-      grid.appendChild(a);
-    }
-    if(a.tagName!=='A')return;
+  function buildDepositCardFrom(reference){
+    const a=document.createElement('a');
+    a.id='eotDepositLauncher';
     a.href='#deposits';
-    a.onclick=null;
+    a.dataset.eotBankingAction='deposits';
+    a.className=(reference&&reference.className)||'menu-card';
     a.innerHTML='<div class="iconbox">💰</div><h4>Vadeli Hesap</h4><p>Nakitini vadeli değerlendir.</p><span class="arrow">›</span>';
+    return a;
   }
 
-  function refresh(){try{addLauncher();if(document.getElementById('loanMgmtOverlay')?.classList.contains('open'))renderManager()}catch(e){}}
+  function addDepositLauncher(){
+    const finance=document.getElementById('finance');if(!finance)return;
+    let existing=document.getElementById('eotDepositLauncher')||finance.querySelector('[data-eot-banking-action="deposits"]');
+    if(existing){
+      existing.setAttribute('href','#deposits');
+      existing.removeAttribute('onclick');
+      return;
+    }
 
-  // İçerik bootstrap tarafından eklendiği anda kartı oluştur; 2-3 saniyelik gecikmeyi kaldır.
+    // Yeni Finans tasarımında en güvenilir sabit nokta "Kredilerim" kartıdır.
+    const allCards=[...finance.querySelectorAll('a,button,.menu-card')];
+    const loansCard=allCards.find(el=>{
+      const h=el.querySelector&&el.querySelector('h4');
+      const t=norm(h?h.textContent:el.textContent);
+      return t==='kredilerim'||t.includes('kredilerim');
+    });
+    if(loansCard&&loansCard.parentElement){
+      loansCard.insertAdjacentElement('afterend',buildDepositCardFrom(loansCard));
+      return;
+    }
+
+    // Eski Finans yapısı için yedek hedef.
+    const heads=[...finance.querySelectorAll('.section-head')];
+    const banking=heads.find(h=>norm(h.textContent).includes('bankacılık'));
+    const grid=banking&&banking.nextElementSibling;
+    if(grid)grid.appendChild(buildDepositCardFrom(grid.querySelector('.menu-card,a')));
+  }
+
+  function refresh(){try{addDepositLauncher();if(document.getElementById('loanMgmtOverlay')?.classList.contains('open'))renderManager()}catch(e){}}
   const observer=new MutationObserver(()=>refresh());
   const observe=()=>{try{observer.observe(document.getElementById('app-root')||document.body,{childList:true,subtree:true})}catch(e){}};
   if(document.body)observe();else document.addEventListener('DOMContentLoaded',observe,{once:true});
   window.addEventListener('hashchange',refresh);
   refresh();
-  setInterval(refresh,2000);
+  setInterval(refresh,1200);
 })();
 
 /* Ek güvenlik katmanlarını ana oyun fonksiyonları yüklendikten sonra ekle. */
