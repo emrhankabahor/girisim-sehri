@@ -11,13 +11,12 @@
     s.textContent=`
       html,body{scroll-behavior:auto!important}
       #finance,#profile{
-        transform:translate3d(0,0,0);
-        -webkit-transform:translate3d(0,0,0);
+        transform:translateZ(0);
+        -webkit-transform:translateZ(0);
         backface-visibility:hidden;
         -webkit-backface-visibility:hidden;
-        contain:paint;
-        isolation:isolate;
-        overflow-anchor:none;
+        perspective:1000px;
+        -webkit-perspective:1000px;
       }
       body>.bottom-nav{
         position:fixed!important;
