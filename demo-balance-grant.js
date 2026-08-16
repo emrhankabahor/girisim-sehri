@@ -1,14 +1,14 @@
-/* Girişim Şehri • Kalıcı demo test bakiyesi */
+/* Empire of Trade • Tek seferlik demo test bakiyesi */
 (function(){
   const TARGET=200000000;
-  const KEY='gs_demo_balance_200m_v3';
+  const KEY='gs_demo_balance_200m_v4';
 
   function account(){
     try{return typeof currentAccount==='function'?currentAccount():null}catch(e){return null}
   }
   function accountKey(u){return KEY+'_'+(u&&u.id?u.id:'guest')}
 
-  function writeCareer(u){
+  function persist(u){
     try{localStorage.setItem('gs124_cash',String(cash))}catch(e){}
     try{if(typeof save==='function')save()}catch(e){}
     try{if(typeof simSave==='function')simSave()}catch(e){}
@@ -17,7 +17,7 @@
     try{
       if(typeof captureCareerState==='function'){
         const state=captureCareerState();
-        state.cash=TARGET;
+        state.cash=Number(cash||0);
         state.savedAt=Date.now();
         localStorage.setItem('gs140_state',JSON.stringify(state));
         if(u&&u.id&&u.id!=='guest')localStorage.setItem('gs_account_career_'+u.id,JSON.stringify(state));
@@ -27,37 +27,31 @@
     }catch(e){}
   }
 
-  function apply(){
+  function applyOnce(){
     try{
       const u=account();
       if(!u||!u.id||u.id==='guest')return false;
-      const k=accountKey(u);
       if(typeof cash!=='number')return false;
+      const k=accountKey(u);
 
-      // Kariyer yüklendikten sonra demo hesabının nakdini doğrudan hedef değere getir.
-      // Böylece eski ₺0 kayıt tekrar yüklenip desteği ezemez.
-      if(localStorage.getItem(k)!=='1' || Number(cash)!==TARGET){
-        cash=TARGET;
-        if(typeof tx!=='undefined'&&Array.isArray(tx) && !tx.some(x=>x&&x.type==='demo_balance_v3')){
-          tx.unshift({t:Date.now(),kind:'system',type:'demo_balance_v3',sym:'Demo Test Bakiyesi',total:TARGET});
-        }
-        writeCareer(u);
-        localStorage.setItem(k,'1');
-        try{render();renderFinanceExtras();renderGameExtras()}catch(e){}
-        try{toast('Demo test bakiyesi ₺200.000.000 olarak ayarlandı')}catch(e){}
+      // Demo desteği sadece bir kez uygulanır. Sonraki açılışlarda mevcut bakiye korunur.
+      if(localStorage.getItem(k)==='1')return true;
+
+      cash=Number(cash||0)+TARGET;
+      if(typeof tx!=='undefined'&&Array.isArray(tx) && !tx.some(x=>x&&x.type==='demo_balance_v4')){
+        tx.unshift({t:Date.now(),kind:'system',type:'demo_balance_v4',sym:'Demo Test Bakiyesi',total:TARGET});
       }
+      persist(u);
+      localStorage.setItem(k,'1');
+      try{render();renderFinanceExtras();renderGameExtras()}catch(e){}
+      try{toast('Demo bakiyene tek seferlik +₺200.000.000 eklendi')}catch(e){}
       return true;
-    }catch(e){console.warn('Demo bakiye ayarı:',e);return false}
+    }catch(e){console.warn('Demo bakiye desteği:',e);return false}
   }
 
-  // Hesap/kariyer yükleme akışının tamamlanmasını bekle.
   let attempts=0;
   const timer=setInterval(function(){
     attempts++;
-    if(apply()||attempts>=60)clearInterval(timer);
+    if(applyOnce()||attempts>=60)clearInterval(timer);
   },500);
-
-  // Sekmeye geri dönüldüğünde eski kayıt bakiyeyi ezdiyse tekrar düzelt.
-  document.addEventListener('visibilitychange',function(){if(!document.hidden)setTimeout(apply,250)});
-  window.addEventListener('pageshow',function(){setTimeout(apply,250)});
 })();
