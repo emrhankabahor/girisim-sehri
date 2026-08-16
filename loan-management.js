@@ -29,23 +29,10 @@
   function addDepositLauncher(){
     const finance=document.getElementById('finance');if(!finance)return;
     let existing=document.getElementById('eotDepositLauncher')||finance.querySelector('[data-eot-banking-action="deposits"]');
-    if(existing){
-      existing.setAttribute('href','#deposits');
-      existing.removeAttribute('onclick');
-      return;
-    }
-
+    if(existing){existing.setAttribute('href','#deposits');existing.removeAttribute('onclick');return;}
     const allCards=[...finance.querySelectorAll('a,button,.menu-card')];
-    const loansCard=allCards.find(el=>{
-      const h=el.querySelector&&el.querySelector('h4');
-      const t=norm(h?h.textContent:el.textContent);
-      return t==='kredilerim'||t.includes('kredilerim');
-    });
-    if(loansCard&&loansCard.parentElement){
-      loansCard.insertAdjacentElement('afterend',buildDepositCardFrom(loansCard));
-      return;
-    }
-
+    const loansCard=allCards.find(el=>{const h=el.querySelector&&el.querySelector('h4');const t=norm(h?h.textContent:el.textContent);return t==='kredilerim'||t.includes('kredilerim');});
+    if(loansCard&&loansCard.parentElement){loansCard.insertAdjacentElement('afterend',buildDepositCardFrom(loansCard));return;}
     const heads=[...finance.querySelectorAll('.section-head')];
     const banking=heads.find(h=>norm(h.textContent).includes('bankacılık'));
     const grid=banking&&banking.nextElementSibling;
@@ -57,19 +44,15 @@
   const observe=()=>{try{observer.observe(document.getElementById('app-root')||document.body,{childList:true,subtree:true})}catch(e){}};
   if(document.body)observe();else document.addEventListener('DOMContentLoaded',observe,{once:true});
   window.addEventListener('hashchange',refresh);
-  refresh();
-  setInterval(refresh,1200);
+  refresh();setInterval(refresh,1200);
 })();
 
-/* Ek güvenlik ve ekonomi katmanlarını ana oyun fonksiyonları yüklendikten sonra ekle. */
 (function(){
   function loadOnce(src,attr){
     if(document.querySelector('script['+attr+']'))return;
-    const s=document.createElement('script');
-    s.src=src+'?v=190&_='+Date.now();
-    s.setAttribute(attr,'1');
-    document.body.appendChild(s);
+    const s=document.createElement('script');s.src=src+'?v=190&_='+Date.now();s.setAttribute(attr,'1');document.body.appendChild(s);
   }
+  loadOnce('bottom-nav-lock.js','data-eot-bottom-nav-lock');
   loadOnce('credit-progression.js','data-eot-credit-progression');
   loadOnce('economy-balance-v1.js','data-eot-economy-balance-v1');
   loadOnce('construction-fixes.js','data-eot-construction-fixes');
