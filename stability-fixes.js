@@ -83,6 +83,37 @@
     }catch(e){}
   }
 
+  function patchFinanceUI(){
+    try{
+      if(!document.getElementById('eot-finance-fix-style')){
+        const s=document.createElement('style');s.id='eot-finance-fix-style';s.textContent=`
+          #bank .finance-meta{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important}
+          #bank .finance-meta>div{min-width:0!important;overflow:hidden!important;padding:12px 10px!important}
+          #bank .finance-meta b{display:block!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:clamp(10px,3vw,15px)!important;letter-spacing:-.035em!important;line-height:1.15!important}
+          #bank .finance-meta span{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+          @media(max-width:390px){#bank .finance-meta{gap:6px!important}#bank .finance-meta>div{padding:10px 8px!important}#bank .finance-meta b{font-size:clamp(9px,2.8vw,12px)!important}}
+        `;document.head.appendChild(s);
+      }
+
+      const finance=document.getElementById('finance');
+      if(finance){
+        const cards=[...finance.querySelectorAll('.menu-card')];
+        const creditCard=cards.find(a=>String(a.textContent||'').toLocaleLowerCase('tr-TR').includes('kredi kartı'));
+        if(creditCard){
+          creditCard.href='#loans';
+          const icon=creditCard.querySelector('.iconbox');if(icon)icon.textContent='💳';
+          const h=creditCard.querySelector('h4');if(h)h.textContent='Kredilerim';
+          const p=creditCard.querySelector('p');if(p)p.textContent='Aktif kredilerini, taksitlerini ve borçlarını görüntüle.';
+          creditCard.dataset.eotLoansShortcut='1';
+        }
+        cards.forEach(a=>{
+          const t=String(a.textContent||'').toLocaleLowerCase('tr-TR');
+          if(t.includes('hisse araştırma')||t.includes('hisse arastirma'))a.remove();
+        });
+      }
+    }catch(e){console.warn('Finans arayüz düzeltmesi:',e)}
+  }
+
   function syncDashboardTruth(){
     try{
       if(typeof sim==='undefined'||!sim)return;const companies=safeArray(sim.companies),assets=typeof ownedAssets!=='undefined'?safeArray(ownedAssets):[];const has=(text,words)=>words.some(w=>String(text||'').toLocaleLowerCase('tr-TR').includes(w));
@@ -98,8 +129,9 @@
     if(document.getElementById('eot-v170-usability'))return;const s=document.createElement('style');s.id='eot-v170-usability';s.textContent=`button,a,input,select{touch-action:manipulation}button,.menu-card,.nav-btn,.eot-quick,.eot-business{min-height:44px}input,select,textarea{font-size:16px!important}.loan-mgmt-sheet{-webkit-overflow-scrolling:touch}@media(max-width:430px){.menu-grid{gap:9px!important}.menu-card{padding:13px!important}.section-head{margin-top:17px!important}.modal,.sheet,.panel{max-width:100%!important}}`;document.head.appendChild(s);
   }
 
-  const timer=setInterval(function(){patchCore();patchLoanActions();patchRealtimeWealthHistory();patchRealtimeUI();improveMobileUsability();syncDashboardTruth();if(patched&&typeof window.loanMgmtPay==='function')clearInterval(timer)},250);
+  const timer=setInterval(function(){patchCore();patchLoanActions();patchRealtimeWealthHistory();patchRealtimeUI();patchFinanceUI();improveMobileUsability();syncDashboardTruth();if(patched&&typeof window.loanMgmtPay==='function')clearInterval(timer)},250);
   setTimeout(()=>clearInterval(timer),20000);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistNow()});window.addEventListener('pagehide',persistNow);
-  setInterval(()=>{if(patched){persistNow();syncDashboardTruth();patchRealtimeWealthHistory();patchRealtimeUI()}},30000);setInterval(()=>{syncDashboardTruth();patchRealtimeUI()},2000);
+  window.addEventListener('hashchange',()=>setTimeout(patchFinanceUI,50));
+  setInterval(()=>{if(patched){persistNow();syncDashboardTruth();patchRealtimeWealthHistory();patchRealtimeUI();patchFinanceUI()}},30000);setInterval(()=>{syncDashboardTruth();patchRealtimeUI();patchFinanceUI()},2000);
 })();
