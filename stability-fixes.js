@@ -109,6 +109,30 @@
     }catch(e){}
   }
 
+  function patchRealtimeWealthHistory(){
+    try{
+      if(typeof sim==='undefined'||!sim||typeof totalWealth!=='function')return;
+      if(window.recordWealth&&window.recordWealth.__eotRealtime)return;
+      const record=function(){
+        try{
+          if(!Array.isArray(sim.wealthHistory))sim.wealthHistory=[];
+          const now=new Date(),dayKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+          const value=Number(totalWealth()||0),first=sim.wealthHistory[0];
+          if(first&&first.day===dayKey){first.value=value;first.t=Date.now()}
+          else sim.wealthHistory.unshift({day:dayKey,value,t:Date.now()});
+          sim.wealthHistory=sim.wealthHistory.slice(0,30);
+        }catch(e){}
+      };
+      record.__eotRealtime=true;window.recordWealth=record;
+      window.renderWealth=function(){
+        record();
+        const e=document.getElementById('wealthChart'),l=document.getElementById('wealthHistoryList'),vals=safeArray(sim.wealthHistory).slice(0,12);
+        if(e){const rev=vals.slice().reverse(),mx=Math.max(1,...rev.map(x=>Math.max(0,Number(x.value||0))));e.innerHTML=rev.map(x=>'<div class="wealth-bar" style="height:'+Math.max(8,Math.round(Math.max(0,Number(x.value||0))/mx*100))+'%"><span>'+new Date(x.t||Date.now()).toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit'})+'</span></div>').join('')}
+        if(l)l.innerHTML=vals.map(x=>'<div class="wealth-row"><span>'+new Date(x.t||Date.now()).toLocaleDateString('tr-TR')+'</span><b>'+money(x.value)+'</b></div>').join('');
+      };
+    }catch(e){}
+  }
+
   function syncDashboardTruth(){
     try{
       if(typeof sim==='undefined'||!sim)return;
@@ -124,16 +148,11 @@
         assets.filter(a=>has(a.type,['arsa'])||String(a.id||'').includes('land')).length
       ];
       document.querySelectorAll('.eot-business .eot-count').forEach((el,i)=>{if(i<counts.length)el.textContent=counts[i]+' ADET'});
-
       const companyValue=companies.reduce((s,c)=>s+Math.max(0,safeNumber(c.companyCash))+Math.max(0,safeNumber(c.brand)),0);
       const stat=document.querySelector('.eot-profile-stats>div:first-child b');if(stat)stat.textContent=money(companyValue);
-
-      const notifications=safeArray(sim.notifications);
-      const badge=document.querySelector('.eot-badge');
+      const notifications=safeArray(sim.notifications),badge=document.querySelector('.eot-badge');
       if(badge){if(notifications.length){badge.style.display='grid';badge.textContent=String(Math.min(99,notifications.length))}else badge.style.display='none'}
-
-      const alert=document.querySelector('.eot-account-alert span');
-      if(alert)alert.textContent='Hesabın aktif • Kariyerin bu cihazda kayıtlı.';
+      const alert=document.querySelector('.eot-account-alert span');if(alert)alert.textContent='Hesabın aktif • Kariyerin bu cihazda kayıtlı.';
     }catch(e){}
   }
 
@@ -153,13 +172,13 @@
   }
 
   const timer=setInterval(function(){
-    patchCore();patchLoanActions();improveMobileUsability();syncDashboardTruth();
+    patchCore();patchLoanActions();patchRealtimeWealthHistory();improveMobileUsability();syncDashboardTruth();
     if(patched&&typeof window.loanMgmtPay==='function')clearInterval(timer);
   },250);
   setTimeout(()=>clearInterval(timer),20000);
 
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistNow()});
   window.addEventListener('pagehide',persistNow);
-  setInterval(()=>{if(patched){persistNow();syncDashboardTruth()}},30000);
+  setInterval(()=>{if(patched){persistNow();syncDashboardTruth();patchRealtimeWealthHistory()}},30000);
   setInterval(syncDashboardTruth,2000);
 })();
