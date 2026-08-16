@@ -1,6 +1,46 @@
 (async function(){
   const root=document.getElementById('app-root');
-  const APP_VERSION='189';
+  const APP_VERSION='190';
+  let versionCheckRunning=false;
+
+  async function forceFreshVersion(remoteVersion){
+    try{
+      if('caches' in window){
+        const keys=await caches.keys();
+        await Promise.all(keys.map(k=>caches.delete(k)));
+      }
+      if('serviceWorker' in navigator){
+        const regs=await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r=>r.unregister()));
+      }
+    }catch(e){console.warn('Eski önbellek temizlenemedi:',e)}
+    const url=new URL(location.href);
+    url.searchParams.set('v',remoteVersion);
+    url.searchParams.set('_fresh',Date.now().toString());
+    location.replace(url.toString());
+  }
+
+  async function checkRemoteVersion(){
+    if(versionCheckRunning) return;
+    versionCheckRunning=true;
+    try{
+      const res=await fetch('./version.json?_='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+      if(res.ok){
+        const data=await res.json();
+        const remote=String(data.version||'');
+        if(remote && remote!==APP_VERSION){
+          await forceFreshVersion(remote);
+          return;
+        }
+      }
+    }catch(e){console.warn('Sürüm kontrolü yapılamadı:',e)}
+    finally{versionCheckRunning=false}
+  }
+
+  window.addEventListener('pageshow',()=>checkRemoteVersion());
+  window.addEventListener('focus',()=>checkRemoteVersion());
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkRemoteVersion()});
+  setInterval(checkRemoteVersion,30000);
 
   if('serviceWorker' in navigator){
     let refreshing=false;
@@ -70,7 +110,7 @@
     });
     document.querySelectorAll('.account-brand-logo,.career-brand-mark').forEach(el=>{
       el.textContent='';
-      el.style.backgroundImage="url('./apple-touch-icon.png?v=189')";
+      el.style.backgroundImage="url('./apple-touch-icon.png?v=190')";
       el.style.backgroundSize='cover';
       el.style.backgroundPosition='center';
     });
@@ -173,12 +213,13 @@
   }
 
   try{
+    await checkRemoteVersion();
     const files=['content-1.html','content-2.html','content-3.html','content-4.html','content-5.html','content-6.html'];
-    const parts=await Promise.all(files.map(f=>fetch(f+'?v='+APP_VERSION,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
+    const parts=await Promise.all(files.map(f=>fetch(f+'?v='+APP_VERSION+'&_='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
     root.innerHTML=parts.join('');
     applyBranding();
     buildDemoUI();
-    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v='+APP_VERSION;s.onload=()=>{applyBranding();buildDemoUI();syncDemo();restoreOriginalBottomNav();next&&next()};document.body.appendChild(s)};
+    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v='+APP_VERSION+'&_='+Date.now();s.onload=()=>{applyBranding();buildDemoUI();syncDemo();restoreOriginalBottomNav();next&&next()};document.body.appendChild(s)};
     load('app.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('loan-management.js'))))))));
   }catch(err){
     console.error(err);
