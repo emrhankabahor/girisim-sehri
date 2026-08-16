@@ -45,13 +45,30 @@
   }
   function money(n){try{return '₺'+Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:2})}catch(e){return '₺0'}}
 
-  function removeManageLoansAction(){
+  // Bankacılık menüsü başka render katmanları tarafından tekrar oluşturulsa bile
+  // "Kredilerimi Yönet / Kredi Kartı" kartını kalıcı olarak Vadeli Hesap'a dönüştür.
+  function ensureDepositBankingAction(){
     try{
-      document.querySelectorAll('a,button').forEach(el=>{
-        const t=norm(el.textContent);
-        if(t.includes('kredilerimi yönet')||t.includes('kredilerimi yonet'))el.remove();
+      const finance=document.getElementById('finance');
+      if(!finance)return;
+      const cards=[...finance.querySelectorAll('.menu-card,a,button')];
+      let card=cards.find(el=>{
+        const title=el.querySelector&&el.querySelector('h4');
+        const t=norm(title?title.textContent:el.textContent);
+        return t==='kredilerimi yönet'||t==='kredilerimi yonet'||t==='kredi kartı'||t==='kredi karti';
       });
-    }catch(e){}
+      if(!card)return;
+      if(card.tagName==='A')card.setAttribute('href','#deposits');
+      card.removeAttribute('onclick');
+      card.dataset.eotBankingAction='deposits';
+      const icon=card.querySelector&&card.querySelector('.iconbox');
+      const title=card.querySelector&&card.querySelector('h4');
+      const desc=card.querySelector&&card.querySelector('p');
+      if(icon)icon.textContent='💰';
+      if(title)title.textContent='Vadeli Hesap';
+      else if(!card.children.length)card.textContent='Vadeli Hesap';
+      if(desc)desc.textContent='Nakitini vadeli değerlendir.';
+    }catch(e){console.warn('Vadeli hesap menüsü güncellenemedi:',e)}
   }
 
   function sync(){
@@ -70,10 +87,21 @@
       }
       const stats=[...document.querySelectorAll('#home .eot-profile-stats > div')];
       if(stats[0]){const b=stats[0].querySelector('b,strong');if(b)b.textContent=money(companyValue())}
-      removeManageLoansAction();
+      ensureDepositBankingAction();
     }catch(e){console.warn('İş Dünyam sayaçları güncellenemedi:',e)}
   }
   window.syncEotBusinessCounts=sync;
+  window.ensureDepositBankingAction=ensureDepositBankingAction;
+
+  let menuRefreshQueued=false;
+  const observer=new MutationObserver(()=>{
+    if(menuRefreshQueued)return;
+    menuRefreshQueued=true;
+    requestAnimationFrame(()=>{menuRefreshQueued=false;ensureDepositBankingAction()});
+  });
+  const startObserver=()=>{try{observer.observe(document.body,{childList:true,subtree:true})}catch(e){}};
+  if(document.body)startObserver();else document.addEventListener('DOMContentLoaded',startObserver,{once:true});
+
   window.addEventListener('hashchange',()=>setTimeout(sync,80));
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(sync,80)});
   setInterval(sync,1200);setTimeout(sync,250);setTimeout(sync,1200);
