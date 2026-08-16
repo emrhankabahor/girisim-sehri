@@ -1,11 +1,32 @@
 (async function(){
   const root=document.getElementById('app-root');
+  const APP_VERSION='187';
 
   if('serviceWorker' in navigator){
+    let refreshing=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      if(refreshing) return;
+      refreshing=true;
+      const key='eot-sw-reload-'+APP_VERSION;
+      if(sessionStorage.getItem(key)!=='1'){
+        sessionStorage.setItem(key,'1');
+        location.reload();
+      }
+    });
     window.addEventListener('load',async()=>{
       try{
-        const reg=await navigator.serviceWorker.register('./sw.js?v=186',{scope:'./'});
+        const reg=await navigator.serviceWorker.register('./sw.js?v='+APP_VERSION,{scope:'./',updateViaCache:'none'});
         await reg.update();
+        if(reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
+        reg.addEventListener('updatefound',()=>{
+          const worker=reg.installing;
+          if(!worker) return;
+          worker.addEventListener('statechange',()=>{
+            if(worker.state==='installed' && navigator.serviceWorker.controller){
+              worker.postMessage({type:'SKIP_WAITING'});
+            }
+          });
+        });
       }catch(err){console.warn('Service worker kaydı başarısız:',err)}
     });
   }
@@ -13,7 +34,7 @@
   function applyLogo(el){
     if(!el) return;
     el.textContent='';
-    el.style.backgroundImage="url('./apple-touch-icon.png?v=186')";
+    el.style.backgroundImage="url('./apple-touch-icon.png?v=187')";
     el.style.backgroundSize='cover';
     el.style.backgroundPosition='center';
     el.style.backgroundRepeat='no-repeat';
@@ -130,10 +151,10 @@
 
   try{
     const files=['content-1.html','content-2.html','content-3.html','content-4.html','content-5.html','content-6.html'];
-    const parts=await Promise.all(files.map(f=>fetch(f+'?v=186',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
+    const parts=await Promise.all(files.map(f=>fetch(f+'?v=187',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
     root.innerHTML=parts.join('');
     applyEmpireBranding();
-    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v=186';s.onload=()=>{applyEmpireBranding();syncDashboard();next&&next()};document.body.appendChild(s)};
+    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v=187';s.onload=()=>{applyEmpireBranding();syncDashboard();next&&next()};document.body.appendChild(s)};
     load('app.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('loan-management.js'))))))));
   }catch(err){
     console.error(err);
