@@ -4,7 +4,7 @@
   if('serviceWorker' in navigator){
     window.addEventListener('load',async()=>{
       try{
-        const reg=await navigator.serviceWorker.register('./sw.js?v=185',{scope:'./'});
+        const reg=await navigator.serviceWorker.register('./sw.js?v=186',{scope:'./'});
         await reg.update();
       }catch(err){console.warn('Service worker kaydı başarısız:',err)}
     });
@@ -13,31 +13,101 @@
   function applyLogo(el){
     if(!el) return;
     el.textContent='';
-    el.style.backgroundImage="url('./apple-touch-icon.png?v=185')";
+    el.style.backgroundImage="url('./apple-touch-icon.png?v=186')";
     el.style.backgroundSize='cover';
     el.style.backgroundPosition='center';
     el.style.backgroundRepeat='no-repeat';
   }
 
-  function upgradeHomeCommand(){
-    const command=document.querySelector('.home-command');
-    if(!command || command.dataset.eotUpgraded==='1') return;
-    command.dataset.eotUpgraded='1';
-    const copy=command.querySelector('.home-command-top > div:first-child');
-    if(copy){
-      const eyebrow=copy.querySelector('.eyebrow');
-      const title=copy.querySelector('h2');
-      const text=copy.querySelector('p');
-      if(eyebrow) eyebrow.textContent='YÖNETİM MERKEZİ';
-      if(title) title.textContent='İmparatorluğunu yönet';
-      if(text) text.textContent='Piyasayı takip et, sermayeni büyüt ve şirketlerini tek merkezden yönet.';
-      if(!copy.querySelector('.home-command-actions')){
-        const actions=document.createElement('div');
-        actions.className='home-command-actions';
-        actions.innerHTML='<a href="#companies">Şirketlerim <span>→</span></a><a href="#investments">Yatırım Merkezi <span>→</span></a>';
-        copy.appendChild(actions);
-      }
-    }
+  function hrefFor(words,fallback='#home'){
+    const keys=words.map(x=>x.toLocaleLowerCase('tr'));
+    const links=[...document.querySelectorAll('a[href^="#"]')];
+    const hit=links.find(a=>{
+      const t=(a.textContent||'').toLocaleLowerCase('tr');
+      return keys.some(k=>t.includes(k));
+    });
+    return hit?.getAttribute('href')||fallback;
+  }
+
+  function syncDashboard(){
+    const old=[...document.querySelectorAll('#home .home-money-grid b')];
+    const cash=document.getElementById('eotDashCash');
+    const worth=document.getElementById('eotDashWorth');
+    const flow=document.getElementById('eotDashFlow');
+    if(cash && old[0]) cash.textContent=old[0].textContent;
+    if(worth && old[1]) worth.textContent=old[1].textContent;
+    if(flow && old[2]) flow.textContent=old[2].textContent;
+    const level=document.getElementById('homeLevel');
+    const dashLevel=document.getElementById('eotDashLevel');
+    if(level&&dashLevel) dashLevel.textContent=level.textContent||'1';
+  }
+
+  function buildEmpireDashboard(){
+    const home=document.getElementById('home');
+    if(!home || home.dataset.eotV2==='1') return;
+    home.dataset.eotV2='1';
+
+    const targets={
+      companies:hrefFor(['şirket','firma']),
+      investments:hrefFor(['yatırım','borsa','kripto']),
+      bank:hrefFor(['banka','kredi']),
+      market:hrefFor(['fırsat','pazar']),
+      land:hrefFor(['arsa','şehir']),
+      property:hrefFor(['gayrimenkul','emlak','konut']),
+      vehicle:hrefFor(['araç','galeri','otomobil']),
+      construction:hrefFor(['inşaat']),
+      profile:hrefFor(['profil','hesap'])
+    };
+
+    [...home.children].forEach(el=>{el.classList.add('eot-home-legacy');});
+
+    const dash=document.createElement('div');
+    dash.className='eot-v2-dashboard';
+    dash.innerHTML=`
+      <section class="eot-v2-resources">
+        <div><span>NAKİT</span><b id="eotDashCash">₺0</b><small>Kullanılabilir bakiye</small></div>
+        <div><span>NET SERVET</span><b id="eotDashWorth">₺0</b><small>Toplam varlık değeri</small></div>
+        <div><span>AYLIK AKIŞ</span><b id="eotDashFlow">₺0</b><small>Gelir - gider</small></div>
+      </section>
+
+      <section class="eot-v2-profile">
+        <div class="eot-v2-profile-main">
+          <div class="eot-v2-avatar">♙</div>
+          <div class="eot-v2-profile-copy">
+            <span>YÖNETİM PROFİLİ</span>
+            <h2>Ekonomi İmparatorluğu</h2>
+            <p>CEO • Empire of Trade</p>
+          </div>
+          <a class="eot-v2-profile-btn" href="${targets.profile}">›</a>
+        </div>
+        <div class="eot-v2-level-row"><b>SEVİYE <strong id="eotDashLevel">1</strong></b><div class="eot-v2-xp"><i></i></div><small>Kariyer gelişimi</small></div>
+      </section>
+
+      <div class="eot-v2-section-title"><div><span>İŞ DÜNYAM</span><h3>İmparatorluğunu yönet</h3></div><small>İŞLETMELER & VARLIKLAR</small></div>
+      <section class="eot-v2-business-grid">
+        <a href="${targets.companies}"><em>🏪</em><b>Mağazalar</b><small>Perakende işletmeleri</small><i>YÖNET</i></a>
+        <a href="${targets.companies}"><em>🏭</em><b>Fabrikalar</b><small>Üretim tesisleri</small><i>YÖNET</i></a>
+        <a href="${targets.construction}"><em>🏗️</em><b>İnşaat</b><small>Projeler & şirketler</small><i>AÇ</i></a>
+        <a href="${targets.vehicle}"><em>🚘</em><b>Galeri</b><small>Araç ticareti</small><i>AÇ</i></a>
+        <a href="${targets.property}"><em>🏢</em><b>Gayrimenkul</b><small>Konut & ticari mülk</small><i>AÇ</i></a>
+        <a href="${targets.land}"><em>🗺️</em><b>Arsalar</b><small>Şehir & arsa pazarı</small><i>AÇ</i></a>
+      </section>
+
+      <div class="eot-v2-section-title eot-v2-quick-head"><div><span>HIZLI İŞLEMLER</span><h3>Finans & fırsatlar</h3></div></div>
+      <section class="eot-v2-actions">
+        <a href="${targets.investments}"><span>📈</span><div><b>Yatırım Merkezi</b><small>Borsa, kripto ve altın</small></div><strong>›</strong></a>
+        <a href="${targets.bank}"><span>💳</span><div><b>Banka & Kredi</b><small>Finansman yönetimi</small></div><strong>›</strong></a>
+        <a href="${targets.market}"><span>🛒</span><div><b>Fırsat Pazarı</b><small>Yeni ticaret fırsatları</small></div><strong>›</strong></a>
+        <a href="${targets.companies}"><span>🏛️</span><div><b>Şirket Merkezi</b><small>Operasyon ve büyüme</small></div><strong>›</strong></a>
+      </section>
+
+      <section class="eot-v2-market-strip">
+        <div><span>PİYASA DURUMU</span><b>Canlı ekonomi aktif</b></div>
+        <div><span>STRATEJİ</span><b>Nakit akışını koru</b></div>
+      </section>`;
+    home.prepend(dash);
+    syncDashboard();
+    setInterval(syncDashboard,600);
   }
 
   function applyEmpireBranding(){
@@ -55,15 +125,15 @@
     document.querySelectorAll('.account-brand-logo,.topbar .logo,.career-brand-mark').forEach(applyLogo);
     const versionLabel=document.querySelector('.topbar small');
     if(versionLabel) versionLabel.textContent='MOBİL DEMO • V1.69 • OYNANABİLİRLİK';
-    upgradeHomeCommand();
+    buildEmpireDashboard();
   }
 
   try{
     const files=['content-1.html','content-2.html','content-3.html','content-4.html','content-5.html','content-6.html'];
-    const parts=await Promise.all(files.map(f=>fetch(f+'?v=185',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
+    const parts=await Promise.all(files.map(f=>fetch(f+'?v=186',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
     root.innerHTML=parts.join('');
     applyEmpireBranding();
-    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v=185';s.onload=()=>{applyEmpireBranding();next&&next()};document.body.appendChild(s)};
+    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v=186';s.onload=()=>{applyEmpireBranding();syncDashboard();next&&next()};document.body.appendChild(s)};
     load('app.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('loan-management.js'))))))));
   }catch(err){
     console.error(err);
