@@ -1,28 +1,28 @@
-const CACHE_NAME='empire-of-trade-v186';
+const CACHE_NAME='empire-of-trade-v187';
 const CORE=[
   './',
   './index.html',
-  './styles.css?v=186',
-  './bootstrap.js?v=186',
-  './app.js?v=186',
-  './v167.js?v=186',
-  './v169.js?v=186',
-  './loan-management.js?v=186',
-  './realtime-finance.js?v=186',
-  './state-integrity.js?v=186',
-  './company-list-fix.js?v=186',
-  './demo-balance-grant.js?v=186',
-  './investment-visibility.js?v=186',
-  './manifest.webmanifest?v=186',
-  './content-1.html?v=186',
-  './content-2.html?v=186',
-  './content-3.html?v=186',
-  './content-4.html?v=186',
-  './content-5.html?v=186',
-  './content-6.html?v=186',
-  './icon-192.png?v=186',
-  './icon-512.png?v=186',
-  './apple-touch-icon.png?v=186'
+  './styles.css?v=187',
+  './bootstrap.js?v=187',
+  './app.js?v=187',
+  './v167.js?v=187',
+  './v169.js?v=187',
+  './loan-management.js?v=187',
+  './realtime-finance.js?v=187',
+  './state-integrity.js?v=187',
+  './company-list-fix.js?v=187',
+  './demo-balance-grant.js?v=187',
+  './investment-visibility.js?v=187',
+  './manifest.webmanifest?v=187',
+  './content-1.html?v=187',
+  './content-2.html?v=187',
+  './content-3.html?v=187',
+  './content-4.html?v=187',
+  './content-5.html?v=187',
+  './content-6.html?v=187',
+  './icon-192.png?v=187',
+  './icon-512.png?v=187',
+  './apple-touch-icon.png?v=187'
 ];
 
 self.addEventListener('install',event=>{
@@ -36,6 +36,10 @@ self.addEventListener('activate',event=>{
       .then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))))
       .then(()=>self.clients.claim())
   );
+});
+
+self.addEventListener('message',event=>{
+  if(event.data && event.data.type==='SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('fetch',event=>{
