@@ -9,6 +9,7 @@
     const s=document.createElement('style');
     s.id='eot-bottom-nav-lock-style';
     s.textContent=`
+      html,body{scroll-behavior:auto!important}
       body>.bottom-nav{
         position:fixed!important;
         left:50%!important;
@@ -111,15 +112,19 @@
     let matched=false;
     nav.querySelectorAll('.nav-btn').forEach(btn=>{const active=!matched&&belongs(sectionOf(btn),current);btn.classList.toggle('active',active);if(active)matched=true});
   }
-  function resetTop(){
-    requestAnimationFrame(()=>{
+
+  let topFrame=0;
+  function resetTopOnce(){
+    if(topFrame)cancelAnimationFrame(topFrame);
+    topFrame=requestAnimationFrame(()=>{
+      topFrame=0;
       const scroller=document.scrollingElement||document.documentElement;
-      if(scroller)scroller.scrollTop=0;
-      document.documentElement.scrollTop=0;document.body.scrollTop=0;
-      const app=document.querySelector('.app');if(app)app.scrollTop=0;
-      window.scrollTo(0,0);
+      if(scroller&&scroller.scrollTop!==0)scroller.scrollTop=0;
+      const app=document.querySelector('.app');
+      if(app&&app.scrollTop!==0)app.scrollTop=0;
     });
   }
+
   function lock(){
     ensureStyle();
     const nav=document.querySelector('.bottom-nav');
@@ -133,13 +138,19 @@
     if(!btn)return;
     const section=sectionOf(btn);if(!section)return;
     const href=btn.getAttribute('href');
+
     if(section==='home'){
       e.preventDefault();
-      if(location.hash!=='#home')location.hash='home';
-      resetTop();
-      setTimeout(resetTop,30);
+      e.stopImmediatePropagation();
+      btn.parentElement&&btn.parentElement.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x===btn));
+      if(location.hash==='#home'||!location.hash){
+        resetTopOnce();
+      }else{
+        location.hash='home';
+      }
       return;
     }
+
     if(href&&href.startsWith('#')){
       const target=document.getElementById(href.slice(1));
       if(!target){e.preventDefault();return;}
@@ -148,6 +159,9 @@
 
   function start(){lock()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-  window.addEventListener('hashchange',()=>{syncActive();resetTop()});
+  window.addEventListener('hashchange',()=>{
+    syncActive();
+    if((location.hash||'#home')==='#home')resetTopOnce();
+  });
   window.addEventListener('pageshow',lock);
 })();
