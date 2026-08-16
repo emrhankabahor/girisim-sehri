@@ -33,9 +33,7 @@
       #deposits .eot-deposit-field{margin-top:14px}
       #deposits .eot-deposit-field label{display:block;margin:0 0 7px;color:#a8bbce;font-size:10px;font-weight:900;letter-spacing:.08em}
       #deposits .eot-deposit-field input{width:100%;box-sizing:border-box;min-height:58px;padding:0 17px;border:2px solid rgba(186,204,229,.65);border-radius:17px;background:#f7f9fc;color:#08111d;font-size:18px;font-weight:800;outline:none}
-      #deposits .eot-deposit-rate{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:13px 16px;border-radius:15px;background:rgba(8,25,42,.42);border:1px solid rgba(130,174,213,.16)}
-      #deposits .eot-deposit-rate span{font-size:11px;font-weight:800;color:#a9bdd0}#deposits .eot-deposit-rate b{font-size:16px;color:#70e0bd}
-      #deposits .eot-deposit-note{margin-top:11px;color:#8fa8be;font-size:10px;line-height:1.45;text-align:center}
+      #deposits .eot-deposit-note{margin-top:13px;color:#8fa8be;font-size:10px;line-height:1.45;text-align:center}
       #deposits .eot-deposit-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
       #deposits .eot-deposit-actions button{min-height:56px;border:0;border-radius:16px;color:#fff;font-size:15px;font-weight:900;box-shadow:0 5px 0 rgba(0,0,0,.16)}
       #deposits .eot-deposit-put{background:linear-gradient(135deg,#35b94b,#73d873)}#deposits .eot-deposit-take{background:linear-gradient(135deg,#2475c9,#4d92e5)}
@@ -77,7 +75,6 @@
           <div class="eot-deposit-row"><span>Gelir Zamanı</span><b data-dep-maturity>—</b></div>
         </div>
         <div class="eot-deposit-field"><label for="eotDepositAmount">YATIRILACAK TUTAR</label><input id="eotDepositAmount" type="number" min="1" step="1000" inputmode="decimal" placeholder="Tutar girmek için dokun"></div>
-        <div class="eot-deposit-rate"><span>24 SAATLİK SABİT FAİZ ORANI</span><b>%0,99</b></div>
         <div class="eot-deposit-note">Para yatırdığın tarih ve saatten tam 24 saat sonra ana para + %0,99 faiz otomatik olarak nakit bakiyene aktarılır.</div>
         <div class="eot-deposit-actions"><button class="eot-deposit-put" type="button">Para Yatır</button><button class="eot-deposit-take" type="button">Para Çek</button></div>`;
       const portfolio=screen.querySelector('.portfolio-box');
