@@ -1,4 +1,4 @@
-/* Arayüz görünürlük ve profil rehberi yamaları. */
+/* Arayüz görünürlük, profil rehberi ve yatırım toplam tutar yamaları. */
 (function(){
   function norm(s){return String(s||'').toLocaleLowerCase('tr-TR').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c').replace(/\s+/g,' ').trim()}
 
@@ -62,14 +62,88 @@
     }
   }
 
+  function parseTry(text){
+    let s=String(text||'').replace(/\s/g,'').replace(/₺/g,'').replace(/[^0-9,.-]/g,'');
+    if(!s)return 0;
+    if(s.includes(',')) s=s.replace(/\./g,'').replace(',','.');
+    else{
+      const parts=s.split('.');
+      if(parts.length>2 || (parts.length===2 && parts[1].length===3)) s=parts.join('');
+    }
+    const n=Number(s);
+    return Number.isFinite(n)?n:0;
+  }
+
+  function formatTry(n){
+    return '₺'+Number(n||0).toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
+  }
+
+  function ensureInvestmentTotalStyle(){
+    if(document.getElementById('eot-investment-total-style'))return;
+    const st=document.createElement('style');
+    st.id='eot-investment-total-style';
+    st.textContent=`
+      .eot-investment-total{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 2px}
+      .eot-investment-total>div{min-width:0;padding:10px 11px;border-radius:12px;border:1px solid rgba(148,190,224,.14);background:rgba(12,34,54,.72)}
+      .eot-investment-total span{display:block;font-size:7px;letter-spacing:.08em;color:#8fa6bb;font-weight:800;margin-bottom:4px}
+      .eot-investment-total b{display:block;font-size:11px;color:#f7fbff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .eot-investment-total>div:first-child b{color:#74e6b6}
+      .eot-investment-total>div:last-child b{color:#8fdcff}
+      @media(max-width:390px){.eot-investment-total{gap:6px}.eot-investment-total>div{padding:9px}.eot-investment-total b{font-size:10px}}
+    `;
+    document.head.appendChild(st);
+  }
+
+  function updateInvestmentTotal(input){
+    if(!input||!input.id||!input.id.startsWith('tradeqty_'))return;
+    const sym=input.id.slice('tradeqty_'.length);
+    const qty=Math.max(0,Number(input.value)||0);
+    const buyEl=document.getElementById('buy_'+sym);
+    const sellEl=document.getElementById('sell_'+sym);
+    const buy=parseTry(buyEl&&buyEl.textContent);
+    const sell=parseTry(sellEl&&sellEl.textContent);
+    const box=document.getElementById('trade_total_'+sym);
+    if(!box)return;
+    const buyOut=box.querySelector('[data-buy-total]');
+    const sellOut=box.querySelector('[data-sell-total]');
+    if(buyOut)buyOut.textContent=formatTry(qty*buy);
+    if(sellOut)sellOut.textContent=formatTry(qty*sell);
+  }
+
+  function installInvestmentTotals(){
+    ensureInvestmentTotalStyle();
+    document.querySelectorAll('input[id^="tradeqty_"]').forEach(input=>{
+      const sym=input.id.slice('tradeqty_'.length);
+      let box=document.getElementById('trade_total_'+sym);
+      if(!box){
+        box=document.createElement('div');
+        box.id='trade_total_'+sym;
+        box.className='eot-investment-total';
+        box.innerHTML='<div><span>ALIM TOPLAMI</span><b data-buy-total>₺0</b></div><div><span>SATIŞ TOPLAMI</span><b data-sell-total>₺0</b></div>';
+        input.insertAdjacentElement('afterend',box);
+      }
+      if(input.dataset.totalBound!=='1'){
+        input.dataset.totalBound='1';
+        input.addEventListener('input',()=>updateInvestmentTotal(input));
+        input.addEventListener('change',()=>updateInvestmentTotal(input));
+      }
+      updateInvestmentTotal(input);
+    });
+  }
+
   function applyAll(){
     hideStockResearch();
     upgradeProfileGuide();
+    installInvestmentTotals();
   }
 
   const obs=new MutationObserver(applyAll);
   obs.observe(document.body,{childList:true,subtree:true});
   window.addEventListener('hashchange',()=>setTimeout(applyAll,0));
-  setInterval(applyAll,1000);
+  setInterval(()=>{
+    hideStockResearch();
+    upgradeProfileGuide();
+    document.querySelectorAll('input[id^="tradeqty_"]').forEach(updateInvestmentTotal);
+  },700);
   setTimeout(applyAll,0);
 })();
