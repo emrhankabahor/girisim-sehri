@@ -25,7 +25,9 @@
     }catch(e){}
   }
   function inputQty(sym){
-    const el=document.getElementById('tradeqty_'+sym)||document.getElementById('qty_'+sym);
+    // Ana trade() fonksiyonu qty_ alanını okur. Detay ekranı da işlemden hemen önce tradeqty_ değerini qty_ alanına kopyalar.
+    // Böylece gizli/eski bir detay alanı doğrudan karttan yapılan işlemi yanlışlıkla ezemez.
+    const el=document.getElementById('qty_'+sym)||document.getElementById('tradeqty_'+sym);
     const raw=String(el&&el.value||'').trim().replace(/\s/g,'').replace(',','.');
     return Number(raw);
   }
@@ -48,11 +50,11 @@
         const beforeCash=runtimeCash(),beforeQty=Number(pos.qty||0),beforeTx=Array.isArray(tx)?tx.length:0;
         const r=original.call(this,sym,type);
         normalizePortfolio();
-        const after=pf[sym]||{qty:0,avg:0},changed=type==='buy'?Number(after.qty)>beforeQty: Number(after.qty)<beforeQty;
+        const after=pf[sym]||{qty:0,avg:0},changed=type==='buy'?Number(after.qty)>beforeQty:Number(after.qty)<beforeQty;
         if(changed||runtimeCash()!==beforeCash||(Array.isArray(tx)&&tx.length!==beforeTx)){
           if(Array.isArray(tx)&&tx.length>250)tx=tx.slice(0,250);
           persistCareer();
-          try{render();renderFinanceExtras&&renderFinanceExtras();renderGameExtras&&renderGameExtras()}catch(e){}
+          try{if(typeof render==='function')render();if(typeof renderFinanceExtras==='function')renderFinanceExtras();if(typeof renderGameExtras==='function')renderGameExtras()}catch(e){}
         }
         return changed?true:r;
       };
