@@ -2,6 +2,15 @@
 (function(){
   'use strict';
 
+  // V1.70 güvenli kayıt/oynanış katmanını her açılışta yükle.
+  if(!document.getElementById('eot-stability-loader')){
+    var safeScript=document.createElement('script');
+    safeScript.id='eot-stability-loader';
+    safeScript.src='stability-fixes.js?v=170&_='+Date.now();
+    safeScript.async=true;
+    document.head.appendChild(safeScript);
+  }
+
   function money(n){
     return '₺'+Number(n||0).toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
   }
@@ -83,7 +92,7 @@
       if(!input || input.dataset.eotCryptoOne==='1')return;
       input.min='1';
       input.step='1';
-      input.value='1';
+      if(!input.value || Number(input.value)<1)input.value='1';
       input.dataset.eotCryptoOne='1';
     });
   }
@@ -112,9 +121,7 @@
       document.querySelectorAll('input[id^="tradeqty_"][data-eot-total-ready="1"]').forEach(updateTotal);
       document.querySelectorAll('.asset-card input[id^="qty_"]').forEach(attachCardTotal);
       document.querySelectorAll('.asset-card input[id^="qty_"][data-eot-card-total-ready="1"]').forEach(updateCardTotal);
-    }catch(e){
-      console.warn('Yatırım toplam göstergesi yüklenemedi:',e);
-    }
+    }catch(e){console.warn('Yatırım toplam göstergesi yüklenemedi:',e)}
   }
 
   function addStyle(){
@@ -144,12 +151,7 @@
   window.addEventListener('load',function(){setTimeout(install,250)});
 
   var tries=0;
-  var bootTimer=setInterval(function(){
-    tries++;
-    install();
-    if(tries>=20)clearInterval(bootTimer);
-  },500);
-
+  var bootTimer=setInterval(function(){tries++;install();if(tries>=20)clearInterval(bootTimer)},500);
   setInterval(function(){
     document.querySelectorAll('input[id^="tradeqty_"][data-eot-total-ready="1"]').forEach(updateTotal);
     document.querySelectorAll('.asset-card input[id^="qty_"][data-eot-card-total-ready="1"]').forEach(updateCardTotal);
