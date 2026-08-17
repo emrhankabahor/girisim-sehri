@@ -13,20 +13,14 @@
   function ensureFinanceLayer(){if(document.querySelector('script[data-eot-finance-fixes]'))return;const s=document.createElement('script');s.src='finance-fixes.js?v=190';s.dataset.eotFinanceFixes='1';document.body.appendChild(s)}
   function ensureHomeCounts(){if(document.querySelector('script[data-eot-home-counts]'))return;const s=document.createElement('script');s.src='home-world-counts.js?v=1';s.dataset.eotHomeCounts='1';document.body.appendChild(s)}
   function ensureHomeCompanyProfile(){if(document.querySelector('script[data-eot-home-company-profile]')||window.__eotHomeCompanyProfileLoaded)return;const s=document.createElement('script');s.src='home-company-profile.js?v=1';s.dataset.eotHomeCompanyProfile='1';document.body.appendChild(s)}
-  function ensureCompanyOnboarding(){if(document.querySelector('script[data-eot-company-onboarding]')||window.__eotCompanyOnboardingLoaded)return;const s=document.createElement('script');s.src='company-onboarding.js?v=1';s.dataset.eotCompanyOnboarding='1';s.onload=ensureCompanyLoginEntry;document.body.appendChild(s)}
+  function ensureCeoIdentity(){if(document.querySelector('script[data-eot-ceo-identity]')||window.__eotCeoIdentityLoaded)return;const s=document.createElement('script');s.src='ceo-identity.js?v=2';s.dataset.eotCeoIdentity='1';document.body.appendChild(s)}
+  function ensureCompanyOnboarding(){if(document.querySelector('script[data-eot-company-onboarding]')||window.__eotCompanyOnboardingLoaded){ensureCeoIdentity();return}const s=document.createElement('script');s.src='company-onboarding.js?v=2';s.dataset.eotCompanyOnboarding='1';s.onload=()=>{ensureCeoIdentity();ensureCompanyLoginEntry()};document.body.appendChild(s)}
   function ensureCompanyLoginEntry(){if(document.querySelector('script[data-eot-company-login-entry]')||window.__eotCompanyLoginEntryLoaded)return;const s=document.createElement('script');s.src='company-login-entry.js?v=1';s.dataset.eotCompanyLoginEntry='1';document.body.appendChild(s)}
-  function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs();ensureFinanceLayer();ensureHomeCounts();ensureHomeCompanyProfile();ensureCompanyOnboarding();ensureCompanyLoginEntry()}
+  function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs();ensureFinanceLayer();ensureHomeCounts();ensureHomeCompanyProfile();ensureCompanyOnboarding();ensureCeoIdentity();ensureCompanyLoginEntry()}
   function onRelevantScreen(){const h=(location.hash||'').toLowerCase();return /finance|invest|stock|crypto|gold/.test(h)}
-  function scheduleRefresh(delay=180){
-    if(refreshTimer)clearTimeout(refreshTimer);
-    refreshTimer=setTimeout(()=>{
-      refreshTimer=0;
-      if(!onRelevantScreen()||document.hidden)return;
-      if('requestIdleCallback' in window)requestIdleCallback(()=>refresh(),{timeout:450});else setTimeout(refresh,0);
-    },delay);
-  }
+  function scheduleRefresh(delay=180){if(refreshTimer)clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>{refreshTimer=0;if(!onRelevantScreen()||document.hidden)return;if('requestIdleCallback' in window)requestIdleCallback(()=>refresh(),{timeout:450});else setTimeout(refresh,0)},delay)}
   window.addEventListener('pagehide',persistCareer);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)persistCareer();else if(onRelevantScreen())scheduleRefresh(180)});
   window.addEventListener('hashchange',()=>{if(onRelevantScreen())scheduleRefresh(180)});
-  setTimeout(()=>{patchTrade();patchScreenTrade();ensureFinanceLayer();ensureHomeCounts();ensureHomeCompanyProfile();ensureCompanyOnboarding();ensureCompanyLoginEntry();if(onRelevantScreen())scheduleRefresh(100)},500);
+  setTimeout(()=>{patchTrade();patchScreenTrade();ensureFinanceLayer();ensureHomeCounts();ensureHomeCompanyProfile();ensureCompanyOnboarding();ensureCeoIdentity();ensureCompanyLoginEntry();if(onRelevantScreen())scheduleRefresh(100)},500);
 })();
