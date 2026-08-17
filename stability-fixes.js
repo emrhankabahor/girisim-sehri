@@ -107,6 +107,7 @@
     try{
       if(!document.getElementById('eot-finance-fix-style')){
         const s=document.createElement('style');s.id='eot-finance-fix-style';s.textContent=`
+          #finance>.panel-head,#profile>.panel-head{display:none!important}
           #bank .finance-meta{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important}
           #bank .finance-meta>div{min-width:0!important;overflow:visible!important;padding:12px 8px!important}
           #bank .finance-meta b{display:block!important;width:100%!important;max-width:none!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(8px,2.45vw,11.5px)!important;letter-spacing:-.055em!important;line-height:1.1!important;font-variant-numeric:tabular-nums!important}
