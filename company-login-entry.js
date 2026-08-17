@@ -1,4 +1,4 @@
-/* Empire of Trade • Şirket kuruluş ekranındaki tekrar eden mevcut hesap giriş alanını temizle */
+/* Empire of Trade • Şirket kuruluş ekranındaki tekrar eden giriş alanını temizle + CEO entegrasyonu */
 (function(){
   'use strict';
   if(window.__eotCompanyLoginEntryLoaded)return;
@@ -9,10 +9,19 @@
     if(duplicate)duplicate.remove();
   }
 
-  removeDuplicateEntry();
+  function ensureCeoIntegration(){
+    if(window.__eotCeoIdentityLoaded||document.querySelector('script[data-eot-ceo-identity]'))return;
+    const s=document.createElement('script');
+    s.src='ceo-identity.js?v=190';
+    s.dataset.eotCeoIdentity='1';
+    document.body.appendChild(s);
+  }
 
-  const observer=new MutationObserver(removeDuplicateEntry);
+  removeDuplicateEntry();
+  ensureCeoIntegration();
+
+  const observer=new MutationObserver(()=>{removeDuplicateEntry();ensureCeoIntegration()});
   observer.observe(document.documentElement,{childList:true,subtree:true});
 
-  window.addEventListener('pageshow',removeDuplicateEntry);
+  window.addEventListener('pageshow',()=>{removeDuplicateEntry();ensureCeoIntegration()});
 })();
