@@ -55,10 +55,20 @@
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
     syncActive();
   }
+  function profileTopFix(){
+    if(location.hash!=='#profile')return;
+    const top=()=>{
+      const scroller=document.scrollingElement||document.documentElement;
+      if(scroller)scroller.scrollTop=0;
+      if(window.scrollY!==0)window.scrollTo(0,0);
+    };
+    top();
+    requestAnimationFrame(top);
+  }
 
   /* Tıklamaları yakalamıyoruz. Alt menüdeki gerçek href değerleri (#home, #market,
      #companies, #finance, #profile) tarayıcının doğal :target sistemini çalıştırır. */
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock,{once:true});else lock();
-  window.addEventListener('hashchange',syncActive);
-  window.addEventListener('pageshow',lock);
+  window.addEventListener('hashchange',()=>{syncActive();profileTopFix()});
+  window.addEventListener('pageshow',()=>{lock();profileTopFix()});
 })();
