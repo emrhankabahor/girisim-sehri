@@ -4,7 +4,7 @@
   if(window.__eotCeoIdentityLoaded)return;
   window.__eotCeoIdentityLoaded=true;
 
-  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]))}
   function current(){try{return typeof currentAccount==='function'?currentAccount():JSON.parse(localStorage.getItem('gs_current_account')||'null')}catch(e){return null}}
   function saveAccountCeo(ceo){
     ceo=String(ceo||'').trim();if(!ceo)return;
@@ -41,7 +41,7 @@
     const city=document.getElementById('eotCompanyCity');
     if(!city||document.getElementById('eotCompanyCeo'))return;
     const cityField=city.closest('.eot-field');if(!cityField)return;
-    const field=document.createElement('div');field.className='eot-field';field.innerHTML='<label>Şirket CEO\'su</label><input id="eotCompanyCeo" maxlength="40" autocomplete="name" placeholder="Örn. Emirhan Kabahor">';
+    const field=document.createElement('div');field.className='eot-field';field.innerHTML='<label>Şirket CEO Adı</label><input id="eotCompanyCeo" maxlength="40" autocomplete="name" placeholder="Örn. Emirhan Kabahor">';
     cityField.parentNode.insertBefore(field,cityField);
     const preset=accountCeo();if(preset)field.querySelector('input').value=preset;
     const btn=document.getElementById('eotCompanySubmit');
