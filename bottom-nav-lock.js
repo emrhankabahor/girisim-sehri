@@ -121,22 +121,29 @@
     nav.querySelectorAll('.nav-btn').forEach(btn=>{const active=!matched&&belongs(sectionOf(btn),current);btn.classList.toggle('active',active);if(active)matched=true});
   }
 
-  let topFrame=0;
-  function resetTopOnce(){
-    if(topFrame)cancelAnimationFrame(topFrame);
-    topFrame=requestAnimationFrame(()=>{
-      topFrame=0;
-      const scroller=document.scrollingElement||document.documentElement;
-      if(scroller&&scroller.scrollTop!==0)scroller.scrollTop=0;
-      const app=document.querySelector('.app');
-      if(app&&app.scrollTop!==0)app.scrollTop=0;
-    });
+  function resetTopImmediate(){
+    const scroller=document.scrollingElement||document.documentElement;
+    if(scroller)scroller.scrollTop=0;
+    const app=document.querySelector('.app');
+    if(app)app.scrollTop=0;
   }
 
   function setActiveOnly(btn){
     const nav=btn&&btn.parentElement;
     if(!nav)return;
     nav.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x===btn));
+  }
+
+  function setHashWithoutAnchorJump(targetId){
+    const oldURL=location.href;
+    const url=new URL(location.href);
+    url.hash=targetId;
+    history.pushState(null,'',url);
+    try{
+      window.dispatchEvent(new HashChangeEvent('hashchange',{oldURL:oldURL,newURL:url.href}));
+    }catch(e){
+      window.dispatchEvent(new Event('hashchange'));
+    }
   }
 
   function directMainNavigation(e,btn,section){
@@ -148,12 +155,12 @@
     e.stopImmediatePropagation();
     setActiveOnly(btn);
 
+    /* Önce ekranı tek seferde üste al, ardından hash'i tarayıcı anchor kaydırması
+       çalıştırmadan değiştir. Böylece önce aşağı inip sonra yukarı çıkma olmaz. */
+    resetTopImmediate();
     const targetHash='#'+targetId;
-    if(location.hash===targetHash){
-      resetTopOnce();
-    }else{
-      location.hash=targetId;
-    }
+    if(location.hash!==targetHash)setHashWithoutAnchorJump(targetId);
+    else syncActive();
     return true;
   }
 
@@ -183,10 +190,7 @@
 
   function start(){lock()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-  window.addEventListener('hashchange',()=>{
-    syncActive();
-    const current=(location.hash||'#home').slice(1).toLocaleLowerCase('tr-TR');
-    if(current==='home'||current==='finance'||current==='profile')resetTopOnce();
-  });
+  window.addEventListener('hashchange',syncActive);
+  window.addEventListener('popstate',syncActive);
   window.addEventListener('pageshow',lock);
 })();
