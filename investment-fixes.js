@@ -12,7 +12,8 @@
   function refreshInvestmentInputs(){try{document.querySelectorAll('input[id^="tradeqty_"],input[id^="qty_"]').forEach(el=>{const id=String(el.id||''),sym=id.replace(/^tradeqty_/,'').replace(/^qty_/,'');if(!sym)return;if(['BTC','ETH','SOL','XRP'].includes(sym)){el.setAttribute('inputmode','decimal');el.setAttribute('step',sym==='BTC'?'0.000001':sym==='ETH'?'0.00001':sym==='SOL'?'0.001':'0.01')}else{el.setAttribute('inputmode','numeric');el.setAttribute('step','1')}el.setAttribute('min','0')});if(typeof pf!=='undefined'&&typeof qtyWithUnit==='function'){Object.keys(pf||{}).forEach(sym=>{const h=document.getElementById('held_'+sym);if(h)h.textContent=qtyWithUnit((pf[sym]||{qty:0}).qty,sym)})}}catch(e){}}
   function ensureFinanceLayer(){if(document.querySelector('script[data-eot-finance-fixes]'))return;const s=document.createElement('script');s.src='finance-fixes.js?v=190';s.dataset.eotFinanceFixes='1';document.body.appendChild(s)}
   function ensureHomeCounts(){if(document.querySelector('script[data-eot-home-counts]'))return;const s=document.createElement('script');s.src='home-world-counts.js?v=1';s.dataset.eotHomeCounts='1';document.body.appendChild(s)}
-  function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs();ensureFinanceLayer();ensureHomeCounts()}
+  function ensureCompanyOnboarding(){if(document.querySelector('script[data-eot-company-onboarding]')||window.__eotCompanyOnboardingLoaded)return;const s=document.createElement('script');s.src='company-onboarding.js?v=1';s.dataset.eotCompanyOnboarding='1';document.body.appendChild(s)}
+  function refresh(){patchTrade();patchScreenTrade();normalizePortfolio();refreshInvestmentInputs();ensureFinanceLayer();ensureHomeCounts();ensureCompanyOnboarding()}
   function onRelevantScreen(){const h=(location.hash||'').toLowerCase();return /finance|invest|stock|crypto|gold/.test(h)}
   function scheduleRefresh(delay=180){
     if(refreshTimer)clearTimeout(refreshTimer);
@@ -25,5 +26,5 @@
   window.addEventListener('pagehide',persistCareer);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)persistCareer();else if(onRelevantScreen())scheduleRefresh(180)});
   window.addEventListener('hashchange',()=>{if(onRelevantScreen())scheduleRefresh(180)});
-  setTimeout(()=>{patchTrade();patchScreenTrade();ensureFinanceLayer();ensureHomeCounts();if(onRelevantScreen())scheduleRefresh(100)},500);
+  setTimeout(()=>{patchTrade();patchScreenTrade();ensureFinanceLayer();ensureHomeCounts();ensureCompanyOnboarding();if(onRelevantScreen())scheduleRefresh(100)},500);
 })();
