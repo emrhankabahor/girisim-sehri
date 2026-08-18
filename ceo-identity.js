@@ -78,7 +78,10 @@
   }
 
   function tick(){patchAccountMode();patchAccountSubmit();ensureCompanyCeoField();syncProfile()}
-  setTimeout(tick,200);setTimeout(tick,800);setInterval(tick,1500);
+  setTimeout(tick,200);setTimeout(tick,800);
+
+  // Sürekli 1,5 saniyelik tarama yerine yalnızca gerçekten gerekli anlarda çalıştır.
   window.addEventListener('hashchange',()=>setTimeout(tick,80));
   window.addEventListener('pageshow',()=>setTimeout(tick,120));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(tick,80)});
 })();
