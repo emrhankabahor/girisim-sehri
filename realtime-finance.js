@@ -109,5 +109,11 @@
 
   // Gerçek saat üzerinden vade kontrolü. Vade gelmediyse hiçbir finansal hareket yapmaz.
   setInterval(processRealDueLoans,60000);
-  setInterval(hideLegacyGameMonthUI,1500);
+
+  // Eski oyun-ayı alanı başlangıçta zaten kaldırılıyor. Sürekli 1,5 saniyede bir
+  // tüm DOM'u taramak yerine yalnızca sayfa/sekme değişimlerinde tekrar kontrol et.
+  window.addEventListener('hashchange',hideLegacyGameMonthUI);
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible')hideLegacyGameMonthUI();
+  });
 })();
