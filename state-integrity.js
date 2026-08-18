@@ -87,5 +87,9 @@
   window.addEventListener('hashchange',()=>{normalizeStateInPlace();scheduleIdleSnapshot(1000)});
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistSnapshot()});
   window.addEventListener('pagehide',persistSnapshot);
-  setInterval(()=>{if(!document.hidden)scheduleIdleSnapshot(0)},20000);
+
+  // Tam durum anlık görüntüsü; JSON kopyalama + birkaç localStorage yazımı içerdiği için
+  // mobilde kısa takılma oluşturabilir. Oyun zaten menü değişimlerinde ve arka plana
+  // geçerken kaydediliyor; periyodik güvenlik kaydını 20 sn yerine 60 sn'de bir yap.
+  setInterval(()=>{if(!document.hidden)scheduleIdleSnapshot(0)},60000);
 })();
