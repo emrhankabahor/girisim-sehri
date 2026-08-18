@@ -131,7 +131,14 @@
     return b?.textContent?.trim()||null;
   }
 
+  function homeDashboardVisible(){
+    if(document.visibilityState==='hidden')return false;
+    const hash=location.hash||'#home';
+    return hash==='#home';
+  }
+
   function syncDemo(){
+    if(!homeDashboardVisible())return;
     const legacy=[...document.querySelectorAll('#home .home-money-grid b')];
     const cash=document.getElementById('eotCash');
     const worth=document.getElementById('eotWorth');
@@ -209,7 +216,7 @@
     home.prepend(dash);
     restoreOriginalBottomNav();
     syncDemo();
-    setInterval(syncDemo,600);
+    setInterval(syncDemo,1800);
   }
 
   try{
