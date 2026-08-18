@@ -43,14 +43,6 @@
     sc.async=true;
     document.head.appendChild(sc);
   }
-  function ensureRouteVirtualizer(){
-    if(window.__eotRouteVirtualizer||document.getElementById('eot-route-virtualizer-loader'))return;
-    const sc=document.createElement('script');
-    sc.id='eot-route-virtualizer-loader';
-    sc.src='route-virtualizer.js?v=1&_='+Date.now();
-    sc.async=true;
-    document.head.appendChild(sc);
-  }
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){
@@ -92,14 +84,12 @@
   function bindFastNavigation(){
     const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='1')return;
     nav.dataset.eotFastNav='1';
-
     nav.addEventListener('pointerdown',function(e){
       const btn=e.target.closest('.nav-btn');
       if(!btn||!nav.contains(btn))return;
       pendingSection=sectionOf(btn);
       setActiveSection(pendingSection);
     },{capture:true,passive:true});
-
     nav.addEventListener('click',function(e){
       const btn=e.target.closest('.nav-btn');
       if(!btn||!nav.contains(btn))return;
@@ -108,7 +98,6 @@
       e.stopPropagation();
       pendingSection=section;
       setActiveSection(section);
-      if(typeof window.eotMountRoute==='function')window.eotMountRoute(section);
       if((location.hash||'#home')===target)return;
       if(lastTarget===target&&now-lastNavAt<180)return;
       lastTarget=target;lastNavAt=now;
@@ -119,7 +108,6 @@
     ensureStyle();
     ensureTransitionPerformance();
     ensurePersistenceDedupe();
-    ensureRouteVirtualizer();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
     bindFastNavigation();
