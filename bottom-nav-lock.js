@@ -40,6 +40,10 @@
     if(section==='profile')return['profile','account','career'].some(x=>current.includes(x));
     return current===section;
   }
+  function setActiveButton(activeBtn){
+    const nav=document.querySelector('.bottom-nav');if(!nav||!activeBtn)return;
+    nav.querySelectorAll('.nav-btn').forEach(btn=>btn.classList.toggle('active',btn===activeBtn));
+  }
   function syncActive(){
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     const current=(location.hash||'#home').slice(1).toLocaleLowerCase('tr-TR');
@@ -50,16 +54,29 @@
       if(active)matched=true;
     });
   }
+  function bindImmediateActive(){
+    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotImmediateActive==='1')return;
+    nav.dataset.eotImmediateActive='1';
+    nav.addEventListener('pointerdown',function(e){
+      const btn=e.target.closest('.nav-btn');
+      if(btn&&nav.contains(btn))setActiveButton(btn);
+    },{passive:true});
+    nav.addEventListener('click',function(e){
+      const btn=e.target.closest('.nav-btn');
+      if(btn&&nav.contains(btn))setActiveButton(btn);
+    });
+  }
   function lock(){
     ensureStyle();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
+    bindImmediateActive();
     syncActive();
   }
 
-  /* Menü tıklamalarını ve hash yönlendirmesini değiştirmiyoruz. Ana Sayfa, Profil
-     ve Finans hedeflerinin scroll-margin değeri tarayıcının anchor geçişinde ekranı
-     aşağı kaydırmasını daha oluşmadan engeller. */
+  /* Yönlendirme mantığını değiştirmiyoruz. Seçili alt menü tıklama anında güncellenir;
+     hashchange ise son durumu doğrular. Böylece yeni sayfa görünürken eski sekmenin
+     kısa süre seçili kalması engellenir. */
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock,{once:true});else lock();
   window.addEventListener('hashchange',syncActive);
   window.addEventListener('pageshow',lock);
