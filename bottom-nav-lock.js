@@ -35,6 +35,14 @@
     sc.async=true;
     document.head.appendChild(sc);
   }
+  function ensurePersistenceDedupe(){
+    if(window.__eotPersistenceDedupe||document.getElementById('eot-persistence-dedupe-loader'))return;
+    const sc=document.createElement('script');
+    sc.id='eot-persistence-dedupe-loader';
+    sc.src='persistence-dedupe.js?v=1&_='+Date.now();
+    sc.async=true;
+    document.head.appendChild(sc);
+  }
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){
@@ -84,8 +92,6 @@
       setActiveSection(pendingSection);
     },{capture:true,passive:true});
 
-    /* Alt menü için tek yönlendirme yolu. Anchor'ın varsayılan hash işlemini durdurup
-       yalnızca bir kez hash değiştiriyoruz; aynı hedefe seri tıklamalar yok sayılır. */
     nav.addEventListener('click',function(e){
       const btn=e.target.closest('.nav-btn');
       if(!btn||!nav.contains(btn))return;
@@ -94,7 +100,6 @@
       e.stopPropagation();
       pendingSection=section;
       setActiveSection(section);
-
       if((location.hash||'#home')===target)return;
       if(lastTarget===target&&now-lastNavAt<180)return;
       lastTarget=target;lastNavAt=now;
@@ -104,6 +109,7 @@
   function lock(){
     ensureStyle();
     ensureTransitionPerformance();
+    ensurePersistenceDedupe();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
     bindFastNavigation();
