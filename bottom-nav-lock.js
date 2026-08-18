@@ -25,6 +25,15 @@
     document.head.appendChild(s);
   }
 
+  function ensureTransitionPerformance(){
+    if(window.__eotTransitionPerformance||document.getElementById('eot-transition-performance-loader'))return;
+    const sc=document.createElement('script');
+    sc.id='eot-transition-performance-loader';
+    sc.src='transition-performance.js?v=1&_='+Date.now();
+    sc.async=true;
+    document.head.appendChild(sc);
+  }
+
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){
     const t=textOf(btn),href=String(btn&&btn.getAttribute('href')||'').replace(/^#/,'');
@@ -74,6 +83,7 @@
   }
   function lock(){
     ensureStyle();
+    ensureTransitionPerformance();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
     bindImmediateActive();
