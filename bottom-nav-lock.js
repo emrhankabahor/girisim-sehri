@@ -4,6 +4,10 @@
   if(window.__eotBottomNavLock)return;
   window.__eotBottomNavLock=true;
 
+  let transitionBtn=null;
+  let transitionUntil=0;
+  let transitionRaf=0;
+
   function ensureStyle(){
     if(document.getElementById('eot-bottom-nav-lock-style'))return;
     const s=document.createElement('style');
@@ -44,8 +48,21 @@
     const nav=document.querySelector('.bottom-nav');if(!nav||!activeBtn)return;
     nav.querySelectorAll('.nav-btn').forEach(btn=>btn.classList.toggle('active',btn===activeBtn));
   }
+  function keepTransitionActive(){
+    if(!transitionBtn||performance.now()>transitionUntil){transitionBtn=null;transitionRaf=0;syncActive();return;}
+    setActiveButton(transitionBtn);
+    transitionRaf=requestAnimationFrame(keepTransitionActive);
+  }
+  function beginTransition(btn){
+    if(!btn)return;
+    transitionBtn=btn;
+    transitionUntil=performance.now()+700;
+    setActiveButton(btn);
+    if(!transitionRaf)transitionRaf=requestAnimationFrame(keepTransitionActive);
+  }
   function syncActive(){
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
+    if(transitionBtn&&performance.now()<transitionUntil){setActiveButton(transitionBtn);return;}
     const current=(location.hash||'#home').slice(1).toLocaleLowerCase('tr-TR');
     let matched=false;
     nav.querySelectorAll('.nav-btn').forEach(btn=>{
@@ -55,16 +72,16 @@
     });
   }
   function bindImmediateActive(){
-    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotImmediateActive==='1')return;
-    nav.dataset.eotImmediateActive='1';
+    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotImmediateActive==='2')return;
+    nav.dataset.eotImmediateActive='2';
     nav.addEventListener('pointerdown',function(e){
       const btn=e.target.closest('.nav-btn');
-      if(btn&&nav.contains(btn))setActiveButton(btn);
-    },{passive:true});
+      if(btn&&nav.contains(btn))beginTransition(btn);
+    },{capture:true,passive:true});
     nav.addEventListener('click',function(e){
       const btn=e.target.closest('.nav-btn');
-      if(btn&&nav.contains(btn))setActiveButton(btn);
-    });
+      if(btn&&nav.contains(btn))beginTransition(btn);
+    },true);
   }
   function lock(){
     ensureStyle();
@@ -74,10 +91,11 @@
     syncActive();
   }
 
-  /* Yönlendirme mantığını değiştirmiyoruz. Seçili alt menü tıklama anında güncellenir;
-     hashchange ise son durumu doğrular. Böylece yeni sayfa görünürken eski sekmenin
-     kısa süre seçili kalması engellenir. */
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock,{once:true});else lock();
-  window.addEventListener('hashchange',syncActive);
+  window.addEventListener('hashchange',function(){
+    const current=(location.hash||'#home').slice(1).toLocaleLowerCase('tr-TR');
+    if(transitionBtn&&belongs(sectionOf(transitionBtn),current))transitionUntil=performance.now()+120;
+    syncActive();
+  });
   window.addEventListener('pageshow',lock);
 })();
