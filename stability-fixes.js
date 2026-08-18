@@ -135,9 +135,46 @@
 
   function improveMobileUsability(){if(document.getElementById('eot-v170-usability'))return;const s=document.createElement('style');s.id='eot-v170-usability';s.textContent=`button,a,input,select{touch-action:manipulation}button,.menu-card,.nav-btn,.eot-quick,.eot-business{min-height:44px}input,select,textarea{font-size:16px!important}.loan-mgmt-sheet{-webkit-overflow-scrolling:touch}@media(max-width:430px){.menu-grid{gap:9px!important}.menu-card{padding:13px!important}.section-head{margin-top:17px!important}.modal,.sheet,.panel{max-width:100%!important}}`;document.head.appendChild(s)}
 
+  function currentSection(){return String(location.hash||'#home').slice(1).toLocaleLowerCase('tr-TR')}
+  function isFinanceSection(h){return ['finance','bank','loan','credit','deposit','stock','crypto','gold','investment'].some(x=>h.includes(x))}
+  function runIdle(fn,timeout){
+    if('requestIdleCallback' in window)requestIdleCallback(fn,{timeout:timeout||700});
+    else setTimeout(fn,180);
+  }
+  function refreshVisibleUI(){
+    if(document.hidden)return;
+    const h=currentSection();
+    if(h==='home'){syncDashboardTruth();patchRealtimeUI();}
+    if(isFinanceSection(h))patchFinanceUI();
+  }
+
   const timer=setInterval(function(){patchCore();patchLoanActions();reconcileCollateralLocks();patchRealtimeWealthHistory();patchRealtimeUI();patchFinanceUI();improveMobileUsability();syncDashboardTruth();if(patched&&typeof window.loanMgmtPay==='function')clearInterval(timer)},250);
   setTimeout(()=>clearInterval(timer),20000);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistNow()});window.addEventListener('pagehide',persistNow);
-  window.addEventListener('hashchange',()=>{setTimeout(patchFinanceUI,50);setTimeout(reconcileCollateralLocks,80)});
-  setInterval(()=>{if(patched){persistNow();reconcileCollateralLocks();syncDashboardTruth();patchRealtimeWealthHistory();patchRealtimeUI();patchFinanceUI()}},30000);setInterval(()=>{syncDashboardTruth();patchRealtimeUI();patchFinanceUI()},2000);
+
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistNow();else runIdle(refreshVisibleUI,600)});
+  window.addEventListener('pagehide',persistNow);
+
+  /* Menü geçişinde ana thread'i zorlayan finans/teminat taramalarını hashchange anından çıkardık.
+     Önce yeni ekran boyanıyor, ağır kontroller boş zamanda çalışıyor. */
+  window.addEventListener('hashchange',()=>{
+    const h=currentSection();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      if(h==='home')refreshVisibleUI();
+      else if(isFinanceSection(h))runIdle(()=>{patchFinanceUI();reconcileCollateralLocks();},900);
+    }));
+  });
+
+  /* Ağır kayıt ve bütünlük kontrolü seyrek çalışır; menü geçişiyle aynı ana denk gelirse boş zamana bırakılır. */
+  setInterval(()=>{
+    if(document.hidden||!patched)return;
+    runIdle(()=>{
+      persistNow();
+      reconcileCollateralLocks();
+      patchRealtimeWealthHistory();
+      refreshVisibleUI();
+    },1200);
+  },60000);
+
+  /* Eski 2 saniyelik tüm-ekran DOM taraması kaldırıldı. Ana ekran verileri yalnızca gerekli ekranda güncellenir. */
+  setInterval(()=>{if(!document.hidden&&currentSection()==='home')syncDashboardTruth()},8000);
 })();
