@@ -30,7 +30,6 @@
     wrap('renderSimulation',economyVisible);
   }
 
-  /* app.js global fonksiyonları yüklenmiş olmalı; birkaç kısa deneme yeterli. */
   let tries=0;
   const timer=setInterval(function(){
     tries++;
@@ -39,14 +38,24 @@
   },250);
   install();
 
-  /* İlgili ekrana girildiğinde süre/durum hemen güncellensin. */
-  window.addEventListener('hashchange',function(){
-    if(!document.hidden&&businessVisible()){
+  let refreshToken=0;
+  function refreshAfterPaint(){
+    if(document.hidden||!businessVisible())return;
+    const token=++refreshToken;
+    const run=function(){
+      if(token!==refreshToken||document.hidden||!businessVisible())return;
+      try{if(typeof window.updateOps==='function')window.updateOps()}catch(e){}
+      try{if(typeof window.renderEconomy==='function')window.renderEconomy()}catch(e){}
+      try{if(typeof window.renderSimulation==='function')window.renderSimulation()}catch(e){}
+    };
+    requestAnimationFrame(function(){
       requestAnimationFrame(function(){
-        try{if(typeof window.updateOps==='function')window.updateOps()}catch(e){}
-        try{if(typeof window.renderEconomy==='function')window.renderEconomy()}catch(e){}
-        try{if(typeof window.renderSimulation==='function')window.renderSimulation()}catch(e){}
+        if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:350});
+        else setTimeout(run,90);
       });
-    }
-  },true);
+    });
+  }
+
+  window.addEventListener('hashchange',refreshAfterPaint,true);
+  window.addEventListener('pageshow',refreshAfterPaint);
 })();
