@@ -35,7 +35,12 @@
     try{
       if(typeof window.movePrices!=='function'||window.movePrices.__eotTotalSync)return;
       const original=window.movePrices;
-      const wrapped=function(){const r=original.apply(this,arguments);if(onRelevantScreen()&&!document.hidden)scheduleTotalSync();return r};
+      const wrapped=function(){
+        const r=original.apply(this,arguments);
+        /* Fiyat ve toplam aynı piyasa tick'inde güncellenir; frame beklenmez. */
+        if(onRelevantScreen()&&!document.hidden)syncVisibleTotals();
+        return r;
+      };
       wrapped.__eotTotalSync=true;wrapped.__eotOriginal=original;window.movePrices=wrapped;
     }catch(e){}
   }
