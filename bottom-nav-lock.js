@@ -1,8 +1,10 @@
-/* Empire of Trade • Alt menü sabitleme + güvenli tek-yollu yönlendirme */
+/* Empire of Trade • Alt menü sabitleme + tek sahipli güvenli yönlendirme */
 (function(){
   'use strict';
   if(window.__eotBottomNavLock)return;
   window.__eotBottomNavLock=true;
+
+  let syncFrame=0;
 
   function ensureStyle(){
     if(document.getElementById('eot-bottom-nav-lock-style'))return;
@@ -27,7 +29,7 @@
     if(window.__eotTransitionPerformance||document.getElementById('eot-transition-performance-loader'))return;
     const sc=document.createElement('script');
     sc.id='eot-transition-performance-loader';
-    sc.src='transition-performance.js?v=2&_='+Date.now();
+    sc.src='transition-performance.js?v=3&_='+Date.now();
     sc.async=true;
     document.head.appendChild(sc);
   }
@@ -67,30 +69,38 @@
       if(btn.classList.contains('active')!==active)btn.classList.toggle('active',active);
       if(active)matched=true;
     });
-    if(!matched){
+    if(!matched&&current==='home'){
       const home=[...nav.querySelectorAll('.nav-btn')].find(btn=>sectionOf(btn)==='home');
-      if(home&&current==='home')home.classList.add('active');
+      if(home)home.classList.add('active');
     }
+  }
+  function scheduleSync(){
+    if(syncFrame)return;
+    syncFrame=requestAnimationFrame(function(){syncFrame=0;syncActive()});
   }
   function targetFor(btn){
     const href=String(btn&&btn.getAttribute('href')||'');
     if(/^#[A-Za-z0-9_\-]+$/.test(href))return href;
     return '#'+sectionOf(btn);
   }
+  function emitNavigationIntent(target){
+    try{window.dispatchEvent(new CustomEvent('eot:navigation-intent',{detail:{target:target}}))}catch(e){}
+  }
   function bindFastNavigation(){
-    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='2')return;
-    nav.dataset.eotFastNav='2';
+    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='3')return;
+    nav.dataset.eotFastNav='3';
 
-    /* Aktif sekmeyi pointerdown'da değiştirmiyoruz. Kaynak her zaman gerçek hash.
-       Böylece dokunma iptal edilirse Pazar seçili / İşletmeler açık gibi sahte durum oluşmaz. */
+    /* Alt menünün yönlendirmesini yalnızca bu handler yapar.
+       Aktif sekme hash'ten türetilir; pointerdown sırasında sahte ekran durumu oluşturulmaz. */
     nav.addEventListener('click',function(e){
       const btn=e.target.closest('.nav-btn');
       if(!btn||!nav.contains(btn))return;
       const target=targetFor(btn);
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
+      emitNavigationIntent(target);
       if((location.hash||'#home')!==target)location.hash=target;
-      syncActive();
+      scheduleSync();
     },true);
   }
   function lock(){
@@ -100,11 +110,11 @@
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
     bindFastNavigation();
-    syncActive();
+    scheduleSync();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock,{once:true});else lock();
-  window.addEventListener('hashchange',syncActive,true);
-  window.addEventListener('popstate',syncActive,true);
+  window.addEventListener('hashchange',scheduleSync,true);
+  window.addEventListener('popstate',scheduleSync,true);
   window.addEventListener('pageshow',lock);
 })();
