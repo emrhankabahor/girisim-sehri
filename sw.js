@@ -1,4 +1,4 @@
-const CACHE_NAME='empire-of-trade-v199';
+const CACHE_NAME='empire-of-trade-v200';
 const CORE=[
   './',
   './index.html',
@@ -18,8 +18,9 @@ const CORE=[
   './finance-fixes.js?v=190',
   './career-persistence-fixes.js?v=190',
   './stability-fixes.js?v=170',
-  './bottom-nav-lock.js?v=8',
+  './bottom-nav-lock.js?v=9',
   './direct-route-display.js?v=1',
+  './visible-route-guard.js?v=1',
   './manifest.webmanifest?v=190',
   './content-1.html?v=190',
   './content-2.html?v=190',
