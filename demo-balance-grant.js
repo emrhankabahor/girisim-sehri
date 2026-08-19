@@ -40,7 +40,7 @@
 (function(){
   if(document.querySelector('script[data-eot-investment-initial-total]'))return;
   const s=document.createElement('script');
-  s.src='investment-initial-total-fix.js?v=1';
+  s.src='investment-initial-total-fix.js?v=2';
   s.dataset.eotInvestmentInitialTotal='1';
   s.async=true;
   document.body.appendChild(s);
