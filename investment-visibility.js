@@ -1,6 +1,55 @@
 /* Empire of Trade - güvenli yatırım toplam tutar göstergesi. */
 (function(){
   'use strict';
+
+  /* Açılış render kapısı: eski/varsayılan DOM'un güncel katmanlardan önce görünmesini engeller. */
+  if(!window.__eotStartupRenderGate){
+    window.__eotStartupRenderGate=true;
+    document.documentElement.classList.add('eot-startup-pending');
+    var gateStyle=document.createElement('style');
+    gateStyle.id='eot-startup-render-gate-style';
+    gateStyle.textContent='html.eot-startup-pending #app-root{visibility:hidden!important;opacity:0!important}html.eot-startup-ready #app-root{visibility:visible!important;opacity:1!important}#eotStartupCover{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(180deg,#081728,#06111d 58%,#071522);display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif}#eotStartupCover .eot-startup-inner{display:flex;flex-direction:column;align-items:center;gap:14px;color:#f6fbff}#eotStartupCover .eot-startup-logo{width:76px;height:76px;border-radius:21px;background:url("./apple-touch-icon.png?v=190") center/cover no-repeat;box-shadow:0 12px 34px rgba(0,0,0,.38),0 0 0 1px rgba(255,255,255,.08) inset}#eotStartupCover b{font-size:17px;letter-spacing:.08em}#eotStartupCover small{font-size:8px;letter-spacing:.24em;color:#6cdaf0;font-weight:800}#eotStartupCover.eot-leave{opacity:0;transition:opacity .12s linear;pointer-events:none}';
+    document.head.appendChild(gateStyle);
+    var cover=document.createElement('div');cover.id='eotStartupCover';cover.innerHTML='<div class="eot-startup-inner"><div class="eot-startup-logo"></div><b>EMPIRE OF TRADE</b><small>BUSINESS EMPIRE</small></div>';document.body.appendChild(cover);
+    var gateReleased=false,gateStarted=Date.now();
+    function startupCompanyName(){
+      try{
+        var account=JSON.parse(localStorage.getItem('gs_current_account')||'null');
+        if(account&&account.id&&account.id!=='guest'){
+          var career=JSON.parse(localStorage.getItem('gs_account_career_'+account.id)||'null');
+          if(career&&career.sim){
+            var p=career.sim.companyProfile;if(p&&p.established&&String(p.name||'').trim())return String(p.name).trim();
+            var list=Array.isArray(career.sim.companies)?career.sim.companies:[];
+            var main=list.find(function(c){return c&&c.isMainCompany&&String(c.name||'').trim()})||list.find(function(c){return c&&String(c.name||'').trim()});
+            if(main)return String(main.name).trim();
+          }
+        }
+        var simRaw=JSON.parse(localStorage.getItem('gs132_sim')||'null');
+        if(simRaw){var p2=simRaw.companyProfile;if(p2&&p2.established&&String(p2.name||'').trim())return String(p2.name).trim()}
+      }catch(e){}
+      return'';
+    }
+    function releaseStartupGate(){
+      if(gateReleased)return;gateReleased=true;
+      document.documentElement.classList.remove('eot-startup-pending');document.documentElement.classList.add('eot-startup-ready');
+      requestAnimationFrame(function(){requestAnimationFrame(function(){var c=document.getElementById('eotStartupCover');if(c){c.classList.add('eot-leave');setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},140)}})});
+    }
+    function startupReady(){
+      try{
+        var home=document.getElementById('home'),dash=document.querySelector('#home .eot-ui-dashboard'),brand=document.querySelector('.topbar .eot-brand');
+        if(!home||!dash||!brand||home.dataset.eotExact!=='1')return false;
+        if(typeof window.EOTSyncHomeCompanyProfile==='function')try{window.EOTSyncHomeCompanyProfile()}catch(e){}
+        var expected=startupCompanyName();
+        if(expected){var title=document.querySelector('#home .eot-identity h2');if(!title||String(title.textContent||'').trim()!==expected)return false}
+        return true;
+      }catch(e){return false}
+    }
+    var gateTimer=setInterval(function(){
+      if(startupReady()||Date.now()-gateStarted>2600){clearInterval(gateTimer);releaseStartupGate()}
+    },40);
+    window.addEventListener('pageshow',function(){if(!gateReleased&&startupReady()){clearInterval(gateTimer);releaseStartupGate()}},{once:true});
+  }
+
   if(!window.__eotSafeIntervalTuning){window.__eotSafeIntervalTuning=true;var nativeSetInterval=window.setInterval.bind(window);window.setInterval=function(fn,delay){var name=fn&&fn.name?fn.name:'';var nextDelay=delay;if(name==='syncDemo'&&delay===600)nextDelay=1800;else if(name==='checkRemoteVersion'&&delay===30000)nextDelay=120000;var args=Array.prototype.slice.call(arguments,2);return nativeSetInterval.apply(window,[fn,nextDelay].concat(args));};}
   if(!document.getElementById('eot-stability-loader')){var safeScript=document.createElement('script');safeScript.id='eot-stability-loader';safeScript.src='stability-fixes.js?v=170&_='+Date.now();safeScript.async=true;document.head.appendChild(safeScript);}
   if(!document.getElementById('eot-perf-loader')){var perfScript=document.createElement('script');perfScript.id='eot-perf-loader';perfScript.src='perf-monitor.js?v=1&_='+Date.now();perfScript.async=true;document.head.appendChild(perfScript);}
