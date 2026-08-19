@@ -46,6 +46,7 @@
   function ensureMissionRewards(){if(!window.__eotMissionRewards)loadOnce('eot-mission-rewards-loader','mission-rewards.js?v=1')}
   function ensureBusinessHierarchy(){if(!window.__eotBusinessHierarchy)loadOnce('eot-business-hierarchy-loader','business-hierarchy.js?v=1')}
   function ensureHomeCleanup(){if(!window.__eotHomeCleanup)loadOnce('eot-home-cleanup-loader','home-cleanup.js?v=1')}
+  function ensureRouteScrollReset(){if(!window.__eotRouteScrollReset)loadOnce('eot-route-scroll-reset-loader','route-scroll-reset.js?v=1')}
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){const t=textOf(btn);if(t.includes('ana sayfa'))return'home';if(t.includes('pazar'))return'market';if(t.includes('işlet'))return'business';if(t.includes('finans'))return'finance';if(t.includes('profil'))return'profile';return'home'}
@@ -91,7 +92,7 @@
   }
 
   function onRouteChange(){clearInstantPreview();syncRouteClass(location.hash||'#home');scheduleSync()}
-  function lock(){ensureStyle();removeLegacyHasRule();clearInstantPreview();syncRouteClass(location.hash||'#home');ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();ensureBusinessHierarchy();ensureHomeCleanup();const nav=document.querySelector('.bottom-nav');if(!nav)return;if(nav.parentElement!==document.body)document.body.appendChild(nav);bindFastNavigation();scheduleSync()}
+  function lock(){ensureStyle();removeLegacyHasRule();clearInstantPreview();syncRouteClass(location.hash||'#home');ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();ensureBusinessHierarchy();ensureHomeCleanup();ensureRouteScrollReset();const nav=document.querySelector('.bottom-nav');if(!nav)return;if(nav.parentElement!==document.body)document.body.appendChild(nav);bindFastNavigation();scheduleSync()}
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock,{once:true});else lock();
   window.addEventListener('hashchange',onRouteChange,true);window.addEventListener('popstate',onRouteChange,true);window.addEventListener('pageshow',lock);
