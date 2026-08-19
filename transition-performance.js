@@ -59,23 +59,16 @@
   }
 
   function install(){
-    /* Render fonksiyonları özellikle sarılmıyor. Önceki sürüm bunları 320 ms kadar
-       beklettiği için kullanıcı yeni sekmeye basınca eski içerik kısa süre ekranda
-       kalabiliyordu. Yalnızca görünmeyen storage işlemlerini erteliyoruz. */
+    /* Render fonksiyonları özellikle sarılmıyor. Yalnızca görünmeyen storage
+       işlemleri kısa navigasyon patlamalarında birleştiriliyor. */
     ['save','simSave','saveOwned','saveDeposits','saveAccountCareer'].forEach(wrapPersistence);
   }
 
-  function bind(){
-    const nav=document.querySelector('.bottom-nav');
-    if(nav&&!nav.dataset.eotTransitionPerf3){
-      nav.dataset.eotTransitionPerf3='1';
-      nav.addEventListener('click',function(e){
-        if(e.target.closest('.nav-btn'))markBurst();
-      },{capture:true,passive:true});
-    }
-  }
-
-  [0,200,600,1400].forEach(function(ms){setTimeout(function(){install();bind()},ms)});
+  /* Menü click olayını burada ikinci kez dinlemiyoruz.
+     bottom-nav-lock tek yönlendirme sahibi ve sadece intent olayı yayınlıyor. */
+  window.addEventListener('eot:navigation-intent',markBurst,true);
   window.addEventListener('hashchange',function(){markBurst();setTimeout(install,0)},true);
-  window.addEventListener('pageshow',function(){bind();install()});
+  window.addEventListener('pageshow',install);
+
+  [0,200,600,1400].forEach(function(ms){setTimeout(install,ms)});
 })();
