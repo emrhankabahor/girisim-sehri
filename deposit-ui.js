@@ -8,6 +8,9 @@
   const money=n=>'₺'+Number(n||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
 
   function getDeposits(){
+    /* Önce canlı oyun state'ini oku. Kayıt katmanı performans nedeniyle kısa süre
+       gecikebildiği için localStorage yalnızca yedek veri kaynağıdır. */
+    try{if(typeof deposits!=='undefined'&&Array.isArray(deposits))return deposits;}catch(_){}
     try{return JSON.parse(localStorage.getItem('gs113_deposits')||'[]')||[];}catch(_){return [];}
   }
   function stats(){
@@ -90,12 +93,13 @@
         if(typeof window.open24HourDeposit==='function')window.open24HourDeposit('eotDepositAmount');
         else if(typeof window.openDeposit==='function')window.openDeposit(1,FIXED_RATE,'eotDepositAmount');
         else {if(typeof toast==='function')toast('Vadeli hesap sistemi henüz hazır değil');return;}
-        setTimeout(()=>refresh(panel),80);
+        /* Canlı state yatırma fonksiyonu içinde senkron güncellendiği için hemen çiz. */
+        refresh(panel);
       });
       panel.querySelector('.eot-deposit-take').addEventListener('click',()=>{
         if(typeof window.withdrawAllDepositsEarly==='function')window.withdrawAllDepositsEarly();
         else if(typeof toast==='function')toast('Para çekme sistemi henüz hazır değil');
-        setTimeout(()=>refresh(panel),80);
+        refresh(panel);
       });
     }
     refresh(panel);
@@ -106,5 +110,5 @@
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)mount()});
   mount();
   setTimeout(mount,120);
-  setInterval(()=>{const p=document.querySelector('#deposits .eot-deposit-panel');if(p)refresh(p)},30000);
+  setInterval(()=>{const p=document.querySelector('#deposits .eot-deposit-panel');if(p&&location.hash==='#deposits'&&!document.hidden)refresh(p)},30000);
 })();
