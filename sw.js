@@ -1,4 +1,4 @@
-const CACHE_NAME='empire-of-trade-v196';
+const CACHE_NAME='empire-of-trade-v197';
 const CORE=[
   './',
   './index.html',
@@ -29,27 +29,39 @@ const CORE=[
   './icon-512.png?v=190',
   './apple-touch-icon.png?v=190'
 ];
+
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE)));
   self.skipWaiting();
 });
+
 self.addEventListener('activate',event=>{
   event.waitUntil((async()=>{
     const keys=await caches.keys();
     await Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)));
     await self.clients.claim();
-    const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
-    for(const client of clients){
-      try{
-        const u=new URL(client.url);
-        u.searchParams.set('_sw','196');
-        u.searchParams.set('_fresh',Date.now().toString());
-        await client.navigate(u.toString());
-      }catch(e){}
-    }
   })());
 });
-self.addEventListener('message',event=>{if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();});
+
+self.addEventListener('message',event=>{
+  if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();
+});
+
+async function cacheFirst(req){
+  const cache=await caches.open(CACHE_NAME);
+  const exact=await cache.match(req);
+  if(exact)return exact;
+  const normalized=await cache.match(req,{ignoreSearch:true});
+  if(normalized)return normalized;
+  try{
+    const res=await fetch(req);
+    if(res&&res.status===200)await cache.put(req,res.clone());
+    return res;
+  }catch(e){
+    return normalized||Response.error();
+  }
+}
+
 self.addEventListener('fetch',event=>{
   const req=event.request;
   if(req.method!=='GET')return;
@@ -57,32 +69,25 @@ self.addEventListener('fetch',event=>{
   if(url.origin!==self.location.origin)return;
 
   if(url.pathname.endsWith('/version.json')){
-    event.respondWith(fetch(req,{cache:'no-store'}));
-    return;
-  }
-
-  if(url.pathname.endsWith('/investment-visibility.js')||url.pathname.endsWith('/stability-fixes.js')){
-    const file=url.pathname.endsWith('/stability-fixes.js')?'stability-fixes.js':'investment-visibility.js';
-    const fresh=new URL('./'+file,self.location.href);
-    fresh.searchParams.set('v',file==='stability-fixes.js'?'170':'190');
-    fresh.searchParams.set('_fresh',Date.now().toString());
-    event.respondWith(fetch(fresh.toString(),{cache:'no-store'}).then(res=>{
-      if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put('./'+file+'?v='+(file==='stability-fixes.js'?'170':'190'),copy));}
-      return res;
-    }).catch(()=>caches.match('./'+file+'?v='+(file==='stability-fixes.js'?'170':'190'))));
+    event.respondWith(fetch(req,{cache:'no-store'}).catch(()=>caches.match(req,{ignoreSearch:true})));
     return;
   }
 
   if(req.mode==='navigate'){
-    event.respondWith(fetch(req,{cache:'no-store'}).then(res=>{const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put('./index.html',copy));return res}).catch(()=>caches.match('./index.html')));
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE_NAME);
+      const cached=await cache.match('./index.html');
+      if(cached)return cached;
+      try{
+        const res=await fetch(req);
+        if(res&&res.status===200)await cache.put('./index.html',res.clone());
+        return res;
+      }catch(e){
+        return new Response('<h1>Empire of Trade</h1><p>Uygulama çevrimdışı başlatılamadı.</p>',{headers:{'Content-Type':'text/html; charset=utf-8'}});
+      }
+    })());
     return;
   }
 
-  event.respondWith(fetch(req,{cache:'no-store'}).then(res=>{
-    if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy));}
-    return res;
-  }).catch(async()=>{
-    const exact=await caches.match(req);if(exact)return exact;
-    return caches.match(req,{ignoreSearch:true});
-  }));
+  event.respondWith(cacheFirst(req));
 });
