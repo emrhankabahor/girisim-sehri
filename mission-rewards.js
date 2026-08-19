@@ -5,14 +5,14 @@
   window.__eotMissionRewards=true;
 
   const MISSIONS=[
-    {id:'first_trade',title:'İlk işlemini yap',desc:'Borsa, kripto veya altın tarafında ilk alım/satım işlemini gerçekleştir.',difficulty:'Kolay',reward:5000,progress:()=>countTrades(),goal:1,target:'#finance'},
-    {id:'first_asset',title:'İlk varlığını satın al',desc:'Arsa, gayrimenkul veya araç satın alarak portföyünü başlat.',difficulty:'Kolay',reward:10000,progress:()=>assets().length,goal:1,target:'#market'},
-    {id:'first_company',title:'İlk şirketini kur',desc:'Bir sektör seç ve ilk şirketini faaliyete geçir.',difficulty:'Kolay',reward:15000,progress:()=>companies().length,goal:1,target:'#business'},
-    {id:'cash_250k',title:'₺250.000 nakde ulaş',desc:'Nakit rezervini büyüt ve işletme fırsatları için hazırlık yap.',difficulty:'Kolay',reward:10000,progress:()=>cashNow(),goal:250000,target:'#home'},
-    {id:'two_assets',title:'2 varlığa sahip ol',desc:'Portföyünü çeşitlendirmek için iki farklı varlık edin.',difficulty:'Orta',reward:20000,progress:()=>assets().length,goal:2,target:'#market'},
-    {id:'first_employee',title:'İlk çalışanını işe al',desc:'Şirketine ilk personeli alarak operasyon gücünü artır.',difficulty:'Orta',reward:25000,progress:()=>employeeCount(),goal:1,target:'#business'},
-    {id:'credit_60',title:'Kredi puanını 60 yap',desc:'Finansal disiplinini geliştir ve kredi puanını yükselt.',difficulty:'Orta',reward:20000,progress:()=>creditNow(),goal:60,target:'#finance'},
-    {id:'millionaire',title:'₺1.000.000 net servete ulaş',desc:'Nakit, yatırım ve varlıklarını büyüterek ilk büyük servet eşiğini geç.',difficulty:'Zor',reward:50000,progress:()=>netWorth(),goal:1000000,target:'#home'}
+    {id:'first_trade',title:'İlk işlemini yap',desc:'Borsa, kripto veya altın tarafında ilk alım/satım işlemini gerçekleştir.',difficulty:'Kolay',reward:250,progress:()=>countTrades(),goal:1,target:'#finance'},
+    {id:'first_asset',title:'İlk varlığını satın al',desc:'Arsa, gayrimenkul veya araç satın alarak portföyünü başlat.',difficulty:'Kolay',reward:500,progress:()=>assets().length,goal:1,target:'#market'},
+    {id:'first_company',title:'İlk şirketini kur',desc:'Bir sektör seç ve ilk şirketini faaliyete geçir.',difficulty:'Kolay',reward:750,progress:()=>companies().length,goal:1,target:'#business'},
+    {id:'cash_250k',title:'₺250.000 nakde ulaş',desc:'Nakit rezervini büyüt ve işletme fırsatları için hazırlık yap.',difficulty:'Kolay',reward:500,progress:()=>cashNow(),goal:250000,target:'#home'},
+    {id:'two_assets',title:'2 varlığa sahip ol',desc:'Portföyünü çeşitlendirmek için iki farklı varlık edin.',difficulty:'Orta',reward:1000,progress:()=>assets().length,goal:2,target:'#market'},
+    {id:'first_employee',title:'İlk çalışanını işe al',desc:'Şirketine ilk personeli alarak operasyon gücünü artır.',difficulty:'Orta',reward:1500,progress:()=>employeeCount(),goal:1,target:'#business'},
+    {id:'credit_60',title:'Kredi puanını 60 yap',desc:'Finansal disiplinini geliştir ve kredi puanını yükselt.',difficulty:'Orta',reward:1250,progress:()=>creditNow(),goal:60,target:'#finance'},
+    {id:'millionaire',title:'₺1.000.000 net servete ulaş',desc:'Nakit, yatırım ve varlıklarını büyüterek ilk büyük servet eşiğini geç.',difficulty:'Zor',reward:2500,progress:()=>netWorth(),goal:1000000,target:'#home'}
   ];
 
   function accountId(){
@@ -95,7 +95,7 @@
     if(!container)return;
     const c=claimed(),list=compact?MISSIONS.filter(m=>!c[m.id]).slice(0,3):MISSIONS;
     const taken=MISSIONS.filter(m=>c[m.id]).length;
-    container.innerHTML='<div class="eot-mission-head"><div><h3>🎯 Görevler</h3><p>Görevleri tamamla, ödülleri topla ve imparatorluğunu büyüt.</p></div><span class="eot-mission-total">'+taken+'/'+MISSIONS.length+' tamamlandı</span></div>'+list.map(m=>cardHtml(m,c)).join('');
+    container.innerHTML='<div class="eot-mission-head"><div><h3>🎯 Görevler</h3><p>Görevleri tamamla, küçük ödüller kazan ve imparatorluğunu kendi ticaretinle büyüt.</p></div><span class="eot-mission-total">'+taken+'/'+MISSIONS.length+' tamamlandı</span></div>'+list.map(m=>cardHtml(m,c)).join('');
   }
 
   function mountHome(){
