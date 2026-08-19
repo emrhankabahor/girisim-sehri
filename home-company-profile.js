@@ -1,64 +1,86 @@
-/* Empire of Trade • Ana sayfa şirket kimliği + CEO kimliği */
+/* Empire of Trade • Ana sayfa şirket kimliği + CEO kimliği - hafif sürüm */
 (function(){
   'use strict';
   if(window.__eotHomeCompanyProfileLoaded)return;
   window.__eotHomeCompanyProfileLoaded=true;
 
-  function enhanceStartupCover(){
+  function account(){try{return typeof currentAccount==='function'?currentAccount():null}catch(e){return null}}
+  function company(){
     try{
-      const cover=document.getElementById('eotStartupCover');
-      if(!cover||cover.dataset.eotEnhanced==='1')return false;
-      cover.dataset.eotEnhanced='1';
-      let style=document.getElementById('eot-startup-premium-style');
-      if(!style){
-        style=document.createElement('style');style.id='eot-startup-premium-style';style.textContent=`
-#eotStartupCover{overflow:hidden!important;background:radial-gradient(circle at 50% 38%,rgba(25,120,184,.22),transparent 28%),radial-gradient(circle at 50% 54%,rgba(24,203,196,.08),transparent 38%),linear-gradient(180deg,#061423 0%,#06101b 55%,#040b13 100%)!important}
-#eotStartupCover:before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle,rgba(65,186,240,.08) 0 1px,transparent 1.5px);background-size:34px 34px;opacity:.34;transform:rotate(-8deg);pointer-events:none}
-#eotStartupCover .eot-startup-inner{position:relative!important;z-index:2!important;gap:0!important;min-width:250px!important;text-align:center!important}
-#eotStartupCover .eot-startup-logo-wrap{position:relative;width:104px;height:104px;margin:0 auto 22px;display:grid;place-items:center}
-#eotStartupCover .eot-startup-logo-wrap:before,#eotStartupCover .eot-startup-logo-wrap:after{content:"";position:absolute;border-radius:31px;inset:3px;border:1px solid rgba(86,201,245,.25);box-shadow:0 0 36px rgba(38,166,235,.12)}
-#eotStartupCover .eot-startup-logo-wrap:after{inset:-7px;border-color:rgba(50,213,199,.1);animation:eotSplashHalo 2.2s ease-in-out infinite}
-#eotStartupCover .eot-startup-logo{width:88px!important;height:88px!important;border-radius:25px!important;position:relative;z-index:2;box-shadow:0 18px 48px rgba(0,0,0,.5),0 0 30px rgba(41,167,236,.18),0 0 0 1px rgba(255,255,255,.11) inset!important}
-#eotStartupCover .eot-startup-title{margin:0;font-size:22px!important;line-height:1.08;font-weight:900;letter-spacing:.09em!important;color:#f7fbff;text-shadow:0 5px 22px rgba(0,0,0,.3)}
-#eotStartupCover .eot-startup-subtitle{display:block;margin-top:9px;font-size:8px!important;letter-spacing:.31em!important;color:#6edcf1!important;font-weight:900!important}
-#eotStartupCover .eot-startup-motto{margin-top:22px;color:#7f9ab0;font-size:9px;letter-spacing:.13em;font-weight:700}
-#eotStartupCover .eot-startup-loader{width:170px;height:3px;margin:18px auto 0;border-radius:99px;background:rgba(119,177,216,.11);overflow:hidden;box-shadow:0 0 0 1px rgba(104,180,232,.05)}
-#eotStartupCover .eot-startup-loader i{display:block;width:42%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#277ee7,#35c6d8,#43d4a0);animation:eotSplashLoad 1.05s ease-in-out infinite}
-#eotStartupCover .eot-startup-status{display:block;margin-top:10px;color:#59768d;font-size:7px;letter-spacing:.16em;font-weight:800}
-@keyframes eotSplashHalo{0%,100%{transform:scale(.96);opacity:.45}50%{transform:scale(1.04);opacity:1}}
-@keyframes eotSplashLoad{0%{transform:translateX(-120%)}100%{transform:translateX(340%)}}
-@media(prefers-reduced-motion:reduce){#eotStartupCover .eot-startup-logo-wrap:after,#eotStartupCover .eot-startup-loader i{animation:none!important}}
-`;
-        document.head.appendChild(style);
+      if(typeof sim!=='undefined'&&sim){
+        const p=sim.companyProfile&&typeof sim.companyProfile==='object'?sim.companyProfile:null;
+        if(p&&p.established&&String(p.name||'').trim())return p;
+        const list=Array.isArray(sim.companies)?sim.companies:[];
+        const hit=list.find(c=>c&&c.isMainCompany&&String(c.name||'').trim())||list.find(c=>c&&String(c.name||'').trim());if(hit)return hit;
       }
-      const inner=cover.querySelector('.eot-startup-inner');
-      if(inner)inner.innerHTML='<div class="eot-startup-logo-wrap"><div class="eot-startup-logo"></div></div><b class="eot-startup-title">EMPIRE OF TRADE</b><small class="eot-startup-subtitle">BUSINESS EMPIRE</small><div class="eot-startup-motto">EKONOMİ • TİCARET • İMPARATORLUK</div><div class="eot-startup-loader"><i></i></div><small class="eot-startup-status">KARİYERİN HAZIRLANIYOR</small>';
+      const u=account();
+      if(u&&u.id&&u.id!=='guest'){
+        const saved=JSON.parse(localStorage.getItem('gs_account_career_'+u.id)||'null');
+        if(saved&&saved.sim){const p=saved.sim.companyProfile;if(p&&p.established&&String(p.name||'').trim())return p;const list=Array.isArray(saved.sim.companies)?saved.sim.companies:[];return list.find(c=>c&&c.isMainCompany&&String(c.name||'').trim())||list.find(c=>c&&String(c.name||'').trim())||null}
+      }
+      return null;
+    }catch(e){return null}
+  }
+  function savedCeoName(){
+    try{
+      const u=account();if(u&&u.ceoName)return String(u.ceoName).trim();
+      if(u&&u.id){const saved=localStorage.getItem('eot_ceo_'+u.id);if(saved)return saved.trim();const users=JSON.parse(localStorage.getItem('gs_accounts')||'[]');const hit=Array.isArray(users)?users.find(x=>x&&x.id===u.id):null;if(hit&&hit.ceoName)return String(hit.ceoName).trim()}
+      const c=company();if(c&&c.ceoName)return String(c.ceoName).trim();
+      return String((u&&u.name)||'Oyuncu').trim()||'Oyuncu';
+    }catch(e){return'Oyuncu'}
+  }
+  function escapeHtml(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]))}
+
+  function ensureStyle(){if(document.getElementById('eot-home-company-profile-style'))return;const s=document.createElement('style');s.id='eot-home-company-profile-style';s.textContent=`
+.eot-profile{padding:18px!important;border-radius:25px!important;background:linear-gradient(145deg,#103354,#0a2239 70%,#091d31)!important;border:1px solid rgba(98,184,240,.24)!important;box-shadow:0 16px 38px rgba(0,0,0,.24)!important}.eot-profile-main{grid-template-columns:72px minmax(0,1fr) 66px!important;gap:14px!important}.eot-avatar{width:70px!important;height:70px!important;border-radius:22px!important;background:linear-gradient(145deg,#183e62,#0d2945)!important;border-color:rgba(117,197,247,.32)!important}.eot-identity small{font-size:7.5px!important;letter-spacing:.18em!important;color:#67def4!important}.eot-company-name-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 8px;margin:5px 0 3px}.eot-identity h2{font-size:17px!important;line-height:1.15!important;margin:0!important;white-space:normal!important}.eot-company-legal-inline{font-size:9px;font-weight:800;color:#83dff1;background:rgba(64,168,207,.09);border:1px solid rgba(104,201,231,.17);padding:3px 6px;border-radius:7px}.eot-identity p{font-size:9.5px!important;color:#a9bdcf!important;margin:0!important}.eot-ceo-name{font-weight:850;color:#f3f8fc}.eot-company-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.eot-company-pill{display:inline-flex;align-items:center;min-height:24px;padding:5px 8px;border-radius:999px;border:1px solid rgba(104,201,231,.18);background:rgba(64,168,207,.08);color:#b8dbea;font-size:7.5px;font-weight:800}.eot-tier{min-width:64px!important;padding:10px 8px!important;border-radius:18px!important;background:rgba(7,24,41,.78)!important;border-color:rgba(114,181,224,.18)!important}.eot-tier span{font-size:7px!important}.eot-tier b{font-size:22px!important}#accountCeoWrap small{display:block;margin-top:6px;color:#7f98b0;font-size:10px;line-height:1.35}@media(max-width:390px){.eot-profile-main{grid-template-columns:60px minmax(0,1fr) 58px!important;gap:10px!important}.eot-avatar{width:58px!important;height:58px!important;border-radius:18px!important}.eot-identity h2{font-size:14px!important}.eot-company-legal-inline{font-size:7.5px}.eot-company-pill{font-size:6.8px!important;padding:4px 7px!important}.eot-tier{min-width:56px!important}}`;
+    document.head.appendChild(s)}
+
+  function sync(){
+    const id=document.querySelector('#home .eot-identity');if(!id)return false;ensureStyle();
+    const c=company(),title=id.querySelector('h2'),sub=id.querySelector('p'),ceo=savedCeoName();
+    if(!c){if(title)title.textContent='Ekonomi İmparatorluğu';if(sub)sub.innerHTML='CEO • <span class="eot-ceo-name">'+escapeHtml(ceo)+'</span>';return true}
+    const legal=String(c.legalType||'Şirket'),city=String(c.city||(c.headquarters&&c.headquarters.city)||'Türkiye');
+    let row=id.querySelector('.eot-company-name-row');if(!row){row=document.createElement('div');row.className='eot-company-name-row';if(title)title.replaceWith(row);else id.appendChild(row)}
+    row.innerHTML='<h2>'+escapeHtml(String(c.name||'Şirketim'))+'</h2><span class="eot-company-legal-inline">'+escapeHtml(legal)+'</span>';
+    if(sub)sub.innerHTML='CEO • <span class="eot-ceo-name">'+escapeHtml(ceo)+'</span>';
+    let meta=id.querySelector('.eot-company-meta');if(!meta){meta=document.createElement('div');meta.className='eot-company-meta';id.appendChild(meta)}meta.innerHTML='<span class="eot-company-pill">📍 '+escapeHtml(city)+'</span>';return true;
+  }
+
+  function isRegisterMode(){const tab=document.querySelector('[data-account-tab="register"]');return!!(tab&&tab.classList.contains('active'))}
+  function mountCeoField(){ensureStyle();const nameWrap=document.getElementById('accountNameWrap');if(!nameWrap)return false;let wrap=document.getElementById('accountCeoWrap');if(!wrap){wrap=document.createElement('label');wrap.id='accountCeoWrap';wrap.className='hidden';wrap.innerHTML='Şirket CEO\'su<input id="accountCeoName" type="text" maxlength="40" autocomplete="name" placeholder="Örn. Emirhan Kabahor"><small>Şirket profilinde CEO olarak bu isim görünecek.</small>';nameWrap.insertAdjacentElement('afterend',wrap)}wrap.classList.toggle('hidden',!isRegisterMode());return true}
+
+  /* Yalnızca gerçek kullanıcı değişikliğinde kalıcı kayıt yap. */
+  function persistCeoForCurrent(raw){
+    try{
+      const value=String(raw||'').trim(),u=account();if(!u||!u.id||!value)return false;
+      const old=String(u.ceoName||localStorage.getItem('eot_ceo_'+u.id)||'').trim();
+      u.ceoName=value;localStorage.setItem('eot_ceo_'+u.id,value);localStorage.setItem('gs_current_account',JSON.stringify(u));
+      let users=JSON.parse(localStorage.getItem('gs_accounts')||'[]');const hit=Array.isArray(users)?users.find(x=>x&&x.id===u.id):null;if(hit&&hit.ceoName!==value){hit.ceoName=value;localStorage.setItem('gs_accounts',JSON.stringify(users))}
+      if(typeof sim!=='undefined'&&sim){sim.companyProfile=sim.companyProfile&&typeof sim.companyProfile==='object'?sim.companyProfile:{};sim.companyProfile.ceoName=value;const main=Array.isArray(sim.companies)?sim.companies.find(x=>x&&x.isMainCompany):null;if(main)main.ceoName=value}
+      if(old!==value){try{if(typeof saveAccountCareer==='function')saveAccountCareer(u.id);if(typeof simSave==='function')simSave()}catch(e){}}
+      return true;
+    }catch(e){console.warn('CEO adı kaydedilemedi:',e);return false}
+  }
+
+  /* Açılışta sadece belleği hydrate et; storage'a geri yazma yapma. */
+  function hydrateCeoInMemory(){
+    try{
+      const u=account();if(!u||!u.id)return false;const value=savedCeoName();if(!value)return false;
+      if(!u.ceoName)u.ceoName=value;
+      if(typeof sim!=='undefined'&&sim){if(sim.companyProfile&&typeof sim.companyProfile==='object'&&!sim.companyProfile.ceoName)sim.companyProfile.ceoName=value;const main=Array.isArray(sim.companies)?sim.companies.find(x=>x&&x.isMainCompany):null;if(main&&!main.ceoName)main.ceoName=value}
       return true;
     }catch(e){return false}
   }
-  let splashTry=0;const splashTimer=setInterval(()=>{splashTry++;if(enhanceStartupCover()||splashTry>40)clearInterval(splashTimer)},25);enhanceStartupCover();
 
-  function account(){try{return typeof currentAccount==='function'?currentAccount():null}catch(e){return null}}
-  function company(){try{if(typeof sim!=='undefined'&&sim){const p=sim.companyProfile&&typeof sim.companyProfile==='object'?sim.companyProfile:null;if(p&&p.established&&String(p.name||'').trim())return p;const list=Array.isArray(sim.companies)?sim.companies:[];const hit=list.find(c=>c&&c.isMainCompany&&String(c.name||'').trim())||list.find(c=>c&&String(c.name||'').trim());if(hit)return hit}const u=account();if(u&&u.id&&u.id!=='guest'){const saved=JSON.parse(localStorage.getItem('gs_account_career_'+u.id)||'null');if(saved&&saved.sim){const p=saved.sim.companyProfile;if(p&&p.established&&String(p.name||'').trim())return p;const list=Array.isArray(saved.sim.companies)?saved.sim.companies:[];return list.find(c=>c&&c.isMainCompany&&String(c.name||'').trim())||list.find(c=>c&&String(c.name||'').trim())||null}}return null}catch(e){return null}}
-  function ceoName(){try{const u=account();if(u&&u.ceoName)return String(u.ceoName).trim();if(u&&u.id){const saved=localStorage.getItem('eot_ceo_'+u.id);if(saved)return saved.trim()}const c=company();if(c&&c.ceoName)return String(c.ceoName).trim();return String((u&&u.name)||'Oyuncu').trim()||'Oyuncu'}catch(e){return'Oyuncu'}}
-  function escapeHtml(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  function patchAccountFlow(){
+    mountCeoField();
+    if(typeof window.setAccountMode==='function'&&!window.setAccountMode.__eotCeo){const original=window.setAccountMode;const wrapped=function(mode){const r=original.apply(this,arguments);requestAnimationFrame(mountCeoField);return r};wrapped.__eotCeo=true;window.setAccountMode=wrapped}
+    if(typeof window.submitEmailAccount==='function'&&!window.submitEmailAccount.__eotCeo){const original=window.submitEmailAccount;const wrapped=function(){const register=isRegisterMode(),input=document.getElementById('accountCeoName'),value=String(input&&input.value||'').trim();if(register&&value.length<2){if(typeof showAccountError==='function')showAccountError('Şirket CEO adı en az 2 karakter olmalı.');if(input)input.focus();return false}const r=original.apply(this,arguments);setTimeout(()=>{if(register&&value)persistCeoForCurrent(value);else hydrateCeoInMemory();sync()},20);return r};wrapped.__eotCeo=true;window.submitEmailAccount=wrapped}
+  }
 
-  function ensureStyle(){if(document.getElementById('eot-home-company-profile-style'))return;const s=document.createElement('style');s.id='eot-home-company-profile-style';s.textContent=`
-.eot-profile{padding:18px!important;border-radius:25px!important;background:linear-gradient(145deg,#103354,#0a2239 70%,#091d31)!important;border:1px solid rgba(98,184,240,.24)!important;box-shadow:0 16px 38px rgba(0,0,0,.24)!important}.eot-profile-main{grid-template-columns:72px minmax(0,1fr) 66px!important;gap:14px!important}.eot-avatar{width:70px!important;height:70px!important;border-radius:22px!important;background:linear-gradient(145deg,#183e62,#0d2945)!important;border-color:rgba(117,197,247,.32)!important}.eot-identity small{font-size:7.5px!important;letter-spacing:.18em!important;color:#67def4!important}.eot-company-name-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 8px;margin:5px 0 3px}.eot-identity h2{font-size:17px!important;line-height:1.15!important;margin:0!important;white-space:normal!important}.eot-company-legal-inline{font-size:9px;font-weight:800;color:#83dff1;background:rgba(64,168,207,.09);border:1px solid rgba(104,201,231,.17);padding:3px 6px;border-radius:7px}.eot-identity p{font-size:9.5px!important;color:#a9bdcf!important;margin:0!important}.eot-ceo-name{font-weight:850;color:#f3f8fc}.eot-company-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.eot-company-pill{display:inline-flex;align-items:center;min-height:24px;padding:5px 8px;border-radius:999px;border:1px solid rgba(104,201,231,.18);background:rgba(64,168,207,.08);color:#b8dbea;font-size:7.5px;font-weight:800}.eot-tier{min-width:64px!important;padding:10px 8px!important;border-radius:18px!important;background:rgba(7,24,41,.78)!important;border-color:rgba(114,181,224,.18)!important}.eot-tier span{font-size:7px!important}.eot-tier b{font-size:22px!important}#accountCeoWrap small{display:block;margin-top:6px;color:#7f98b0;font-size:10px;line-height:1.35}@media(max-width:390px){.eot-profile-main{grid-template-columns:60px minmax(0,1fr) 58px!important;gap:10px!important}.eot-avatar{width:58px!important;height:58px!important;border-radius:18px!important}.eot-identity h2{font-size:14px!important}.eot-company-legal-inline{font-size:7.5px}.eot-company-pill{font-size:6.8px!important;padding:4px 7px!important}.eot-tier{min-width:56px!important}}`;document.head.appendChild(s)}
-
-  function sync(){const box=document.querySelector('#home .eot-profile'),id=document.querySelector('#home .eot-identity');if(!box||!id)return;ensureStyle();const c=company(),title=id.querySelector('h2'),sub=id.querySelector('p');if(!c){if(title)title.textContent='Ekonomi İmparatorluğu';if(sub)sub.innerHTML='CEO • <span class="eot-ceo-name">'+escapeHtml(ceoName())+'</span>';return}const legal=String(c.legalType||'Şirket'),city=String(c.city||(c.headquarters&&c.headquarters.city)||'Türkiye');let row=id.querySelector('.eot-company-name-row');if(!row){row=document.createElement('div');row.className='eot-company-name-row';if(title)title.replaceWith(row);else id.appendChild(row)}row.innerHTML='<h2>'+escapeHtml(String(c.name||'Şirketim'))+'</h2><span class="eot-company-legal-inline">'+escapeHtml(legal)+'</span>';if(sub)sub.innerHTML='CEO • <span class="eot-ceo-name">'+escapeHtml(ceoName())+'</span>';let meta=id.querySelector('.eot-company-meta');if(!meta){meta=document.createElement('div');meta.className='eot-company-meta';id.appendChild(meta)}meta.innerHTML='<span class="eot-company-pill">📍 '+escapeHtml(city)+'</span>'}
-
-  function isRegisterMode(){const tab=document.querySelector('[data-account-tab="register"]');return !!(tab&&tab.classList.contains('active'))}
-  function mountCeoField(){ensureStyle();const nameWrap=document.getElementById('accountNameWrap');if(!nameWrap)return false;let wrap=document.getElementById('accountCeoWrap');if(!wrap){wrap=document.createElement('label');wrap.id='accountCeoWrap';wrap.className='hidden';wrap.innerHTML='Şirket CEO\'su<input id="accountCeoName" type="text" maxlength="40" autocomplete="name" placeholder="Örn. Emirhan Kabahor"><small>Şirket profilinde CEO olarak bu isim görünecek.</small>';nameWrap.insertAdjacentElement('afterend',wrap)}wrap.classList.toggle('hidden',!isRegisterMode());return true}
-
-  function persistCeoForCurrent(raw){try{const value=String(raw||'').trim();const u=account();if(!u||!u.id||!value)return;localStorage.setItem('eot_ceo_'+u.id,value);u.ceoName=value;localStorage.setItem('gs_current_account',JSON.stringify(u));let users=JSON.parse(localStorage.getItem('gs_accounts')||'[]');const hit=Array.isArray(users)?users.find(x=>x&&x.id===u.id):null;if(hit){hit.ceoName=value;localStorage.setItem('gs_accounts',JSON.stringify(users))}if(typeof sim!=='undefined'&&sim){sim.companyProfile=sim.companyProfile&&typeof sim.companyProfile==='object'?sim.companyProfile:{};sim.companyProfile.ceoName=value;const main=Array.isArray(sim.companies)?sim.companies.find(x=>x&&x.isMainCompany):null;if(main)main.ceoName=value;try{if(typeof saveAccountCareer==='function')saveAccountCareer(u.id);if(typeof simSave==='function')simSave()}catch(e){}}}catch(e){console.warn('CEO adı kaydedilemedi:',e)}}
-
-  function hydrateCeoFromAccount(){try{const u=account();if(!u||!u.id)return;let value=String(u.ceoName||'').trim();if(!value){const users=JSON.parse(localStorage.getItem('gs_accounts')||'[]');const hit=Array.isArray(users)?users.find(x=>x&&x.id===u.id):null;value=String(hit&&hit.ceoName||localStorage.getItem('eot_ceo_'+u.id)||'').trim()}if(value)persistCeoForCurrent(value)}catch(e){}}
-
-  function patchAccountFlow(){mountCeoField();if(typeof window.setAccountMode==='function'&&!window.setAccountMode.__eotCeo){const original=window.setAccountMode;const wrapped=function(mode){const r=original.apply(this,arguments);setTimeout(mountCeoField,0);return r};wrapped.__eotCeo=true;window.setAccountMode=wrapped}
-    if(typeof window.submitEmailAccount==='function'&&!window.submitEmailAccount.__eotCeo){const original=window.submitEmailAccount;const wrapped=function(){const register=isRegisterMode(),input=document.getElementById('accountCeoName'),value=String(input&&input.value||'').trim();if(register&&value.length<2){if(typeof showAccountError==='function')showAccountError('Şirket CEO adı en az 2 karakter olmalı.');if(input)input.focus();return false}const r=original.apply(this,arguments);setTimeout(()=>{if(register&&value)persistCeoForCurrent(value);else hydrateCeoFromAccount();sync()},20);return r};wrapped.__eotCeo=true;window.submitEmailAccount=wrapped}}
-
-  const timer=setInterval(()=>{patchAccountFlow();hydrateCeoFromAccount();if(document.getElementById('accountNameWrap')&&typeof window.submitEmailAccount==='function'&&window.submitEmailAccount.__eotCeo)clearInterval(timer)},200);setTimeout(()=>clearInterval(timer),12000);
-  let initialSyncTries=0;const initialSyncTimer=setInterval(()=>{initialSyncTries++;patchAccountFlow();hydrateCeoFromAccount();sync();if((company()&&document.querySelector('#home .eot-company-name-row'))||initialSyncTries>=40)clearInterval(initialSyncTimer)},50);sync();
-  window.addEventListener('hashchange',()=>{if((location.hash||'#home')==='#home')requestAnimationFrame(sync)});window.addEventListener('pageshow',()=>{requestAnimationFrame(()=>{patchAccountFlow();hydrateCeoFromAccount();sync()})});window.EOTSyncHomeCompanyProfile=sync;
+  let tries=0;function boot(){tries++;patchAccountFlow();hydrateCeoInMemory();sync();if((typeof window.submitEmailAccount==='function'&&document.getElementById('accountNameWrap'))||tries>=20)return;setTimeout(boot,120)}
+  setTimeout(boot,0);
+  window.addEventListener('hashchange',()=>{if((location.hash||'#home')==='#home')requestAnimationFrame(()=>{hydrateCeoInMemory();sync()})});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(()=>{patchAccountFlow();hydrateCeoInMemory();sync()}));
+  window.EOTSyncHomeCompanyProfile=sync;
 })();
