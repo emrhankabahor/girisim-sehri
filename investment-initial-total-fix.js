@@ -1,4 +1,4 @@
-/* Empire of Trade • Yatırım ekranı ilk toplam tutar senkronu */
+/* Empire of Trade • Yatırım ekranı route öncesi toplam tutar hazırlığı */
 (function(){
   'use strict';
   if(window.__eotInvestmentInitialTotalFix)return;
@@ -11,46 +11,85 @@
     var n=Number(String(input&&input.value||'0').trim().replace(',','.'));
     return Number.isFinite(n)&&n>=0?n:0;
   }
-  function syncAll(){
-    if(typeof ASSETS==='undefined')return 0;
+  function domBuyPrice(card){
+    try{
+      var first=card&&card.querySelector('.asset-mini>div:first-child b,.asset-mini>div:first-child strong');
+      var s=String(first&&first.textContent||'').trim().replace(/₺/g,'').replace(/\s/g,'');
+      if(!s)return 0;
+      if(s.indexOf(',')>-1)s=s.replace(/\./g,'').replace(',','.');
+      else{
+        var parts=s.split('.');
+        if(parts.length>2||(parts.length===2&&parts[1].length===3))s=parts.join('');
+      }
+      var n=Number(s.replace(/[^0-9.-]/g,''));
+      return Number.isFinite(n)?n:0;
+    }catch(e){return 0}
+  }
+  function buyPrice(sym,card){
+    try{
+      if(typeof ASSETS!=='undefined'&&ASSETS[sym]){
+        var n=Number(ASSETS[sym].buy);
+        if(Number.isFinite(n)&&n>0)return n;
+      }
+    }catch(e){}
+    return domBuyPrice(card);
+  }
+  function prepareRoot(root){
+    if(!root)return 0;
     var count=0;
     try{
-      document.querySelectorAll('.screen input[id^="tradeqty_"]').forEach(function(input){
-        var sym=String(input.id||'').replace('tradeqty_',''),a=ASSETS[sym];
-        if(!a)return;
-        var box=document.getElementById('eot_trade_total_'+sym);
-        if(!box)return;
-        var q=qty(input),buy=box.querySelector('[data-eot-buy-total]'),sell=box.querySelector('[data-eot-sell-total]');
-        if(buy)buy.textContent=money(q*Number(a.buy||0));
-        if(sell)sell.textContent=money(q*Number(a.sell||0));
-        count++;
-      });
-      document.querySelectorAll('.screen .asset-card input[id^="qty_"]').forEach(function(input){
-        var sym=String(input.id||'').replace('qty_',''),a=ASSETS[sym];
-        if(!a)return;
-        var card=input.closest('.asset-card'),out=card&&card.querySelector('[data-eot-card-total]');
-        if(!out)return;
-        out.textContent=money(qty(input)*Number(a.buy||0));
+      root.querySelectorAll('.asset-card input[id^="qty_"]').forEach(function(input){
+        var sym=String(input.id||'').replace('qty_','');
+        if(!sym)return;
+        var card=input.closest('.asset-card');
+        var mini=card&&card.querySelector('.asset-mini');
+        if(!mini)return;
+        var box=card.querySelector('.eot-card-total-box');
+        if(!box){
+          box=document.createElement('div');
+          box.className='eot-card-total-box';
+          box.innerHTML='<span>TOPLAM TUTAR</span><b data-eot-card-total>—</b>';
+          mini.appendChild(box);
+        }
+        mini.classList.add('eot-card-total-ready');
+        var out=box.querySelector('[data-eot-card-total]');
+        var price=buyPrice(sym,card);
+        if(out&&price>0)out.textContent=money(qty(input)*price);
         count++;
       });
     }catch(e){}
     return count;
   }
+  function prepareTarget(hash){
+    if(!/^#(?:stocks|crypto|gold)$/.test(hash||''))return 0;
+    var root=document.querySelector(hash);
+    return prepareRoot(root);
+  }
+  function targetFromEvent(e){
+    var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;
+    if(!a)return '';
+    var href=String(a.getAttribute('href')||'');
+    return /^#(?:stocks|crypto|gold)$/.test(href)?href:'';
+  }
+  function beforeNavigate(e){
+    var target=targetFromEvent(e);
+    if(target)prepareTarget(target);
+  }
 
-  /* Ana yatırım modülü kutuları gizli ekranlarda oluşturur. Hazır olur olmaz değerleri bir kez doldur ve dur. */
-  var tries=0;
-  var warmup=setInterval(function(){
-    tries++;
-    var ready=syncAll();
-    if(ready>0||tries>=30){
-      clearInterval(warmup);
-      warmup=0;
-      /* Kripto varsayılan miktarı gibi son anda normalize edilen inputlar için tek son senkron. */
-      setTimeout(syncAll,80);
-    }
-  },25);
+  /* Kullanıcı menüye dokunduğu anda, hash değişmeden önce hedef ekranı hazırla. */
+  document.addEventListener('pointerdown',beforeNavigate,true);
+  document.addEventListener('click',beforeNavigate,true);
 
-  /* Sonraki route girişlerinde yalnızca rakamları senkronla; ağır render yok. */
-  window.addEventListener('hashchange',syncAll,{passive:true});
-  document.addEventListener('visibilitychange',function(){if(!document.hidden)syncAll()},{passive:true});
+  /* DOM hazırsa üç ana yatırım ekranını arka planda bir kez önceden hazırla. */
+  function warm(){
+    prepareTarget('#stocks');
+    prepareTarget('#crypto');
+    prepareTarget('#gold');
+  }
+  warm();
+  setTimeout(warm,0);
+  setTimeout(warm,120);
+
+  /* Geri/ileri navigasyonunda da yalnızca görünür ekranın rakamını tazele. */
+  window.addEventListener('hashchange',function(){prepareTarget(location.hash||'')},{passive:true});
 })();
