@@ -26,6 +26,16 @@
   }
 })();
 
+/* Giriş ekranından Ana Sayfa'ya geçerken eski ekran flaşını engelle. */
+(function(){
+  if(document.querySelector('script[data-eot-home-entry-guard]'))return;
+  const s=document.createElement('script');
+  s.src='home-entry-guard.js?v=1';
+  s.dataset.eotHomeEntryGuard='1';
+  s.async=true;
+  document.body.appendChild(s);
+})();
+
 /* Araç pazarı birleşim modülü demo bakiye daha önce verilmiş olsa da her oturumda yüklenir. */
 (function(){
   if(document.querySelector('script[data-eot-vehicle-market-merge]'))return;
