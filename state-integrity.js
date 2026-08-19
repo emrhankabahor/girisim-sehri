@@ -84,12 +84,13 @@
   function refresh(){if(!normalizeStateInPlace())return;removeLegacyMonthArtifacts();repairCompaniesFromStorage();scheduleIdleSnapshot(700);try{if(typeof renderCompanyPortfolio==='function')renderCompanyPortfolio()}catch(e){}}
 
   wrapPersistence();setTimeout(refresh,150);setTimeout(refresh,900);
-  window.addEventListener('hashchange',()=>{normalizeStateInPlace();scheduleIdleSnapshot(1000)});
+
+  /* Route değişikliği veri değişikliği değildir. Önceden her hashchange tam state
+     normalize + snapshot planlıyordu; bu mobil menü geçişinde gereksiz JSON/localStorage
+     yükü oluşturuyordu. Kayıt artık gerçek state değişiklikleri ve yaşam döngüsü olaylarıyla yapılır. */
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistSnapshot()});
   window.addEventListener('pagehide',persistSnapshot);
 
-  // Tam durum anlık görüntüsü; JSON kopyalama + birkaç localStorage yazımı içerdiği için
-  // mobilde kısa takılma oluşturabilir. Oyun zaten menü değişimlerinde ve arka plana
-  // geçerken kaydediliyor; periyodik güvenlik kaydını 20 sn yerine 60 sn'de bir yap.
+  // Periyodik güvenlik kaydı yalnızca son çare olarak devam eder.
   setInterval(()=>{if(!document.hidden)scheduleIdleSnapshot(0)},60000);
 })();
