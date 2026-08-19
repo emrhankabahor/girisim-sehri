@@ -25,3 +25,13 @@
     console.warn('Demo bakiye yüklenemedi:',e);
   }
 })();
+
+/* Araç pazarı birleşim modülü demo bakiye daha önce verilmiş olsa da her oturumda yüklenir. */
+(function(){
+  if(document.querySelector('script[data-eot-vehicle-market-merge]'))return;
+  const s=document.createElement('script');
+  s.src='vehicle-market-merge.js?v=1';
+  s.dataset.eotVehicleMarketMerge='1';
+  s.async=true;
+  document.body.appendChild(s);
+})();
