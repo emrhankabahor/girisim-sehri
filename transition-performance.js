@@ -58,17 +58,13 @@
     return true;
   }
 
-  function install(){
-    /* Render fonksiyonları özellikle sarılmıyor. Yalnızca görünmeyen storage
-       işlemleri kısa navigasyon patlamalarında birleştiriliyor. */
-    ['save','simSave','saveOwned','saveDeposits','saveAccountCareer'].forEach(wrapPersistence);
-  }
+  function install(){['save','simSave','saveOwned','saveDeposits','saveAccountCareer'].forEach(wrapPersistence)}
 
-  /* Menü click olayını burada ikinci kez dinlemiyoruz.
-     bottom-nav-lock tek yönlendirme sahibi ve sadece intent olayı yayınlıyor. */
+  /* Alt menü geçişlerinde intent tek burst kaynağıdır. Hashchange sırasında tekrar
+     install/timer başlatmıyoruz. Geri/ileri gibi intentsiz hash değişimlerinde ise
+     yalnızca gerekiyorsa bir kez burst açılır. */
   window.addEventListener('eot:navigation-intent',markBurst,true);
-  window.addEventListener('hashchange',function(){markBurst();setTimeout(install,0)},true);
+  window.addEventListener('hashchange',function(){if(!inBurst())markBurst()},true);
   window.addEventListener('pageshow',install);
-
-  [0,200,600,1400].forEach(function(ms){setTimeout(install,ms)});
+  [0,250,800].forEach(function(ms){setTimeout(install,ms)});
 })();
