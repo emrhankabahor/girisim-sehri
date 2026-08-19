@@ -45,6 +45,7 @@
   function ensurePersistenceDedupe(){if(!window.__eotPersistenceDedupe)loadOnce('eot-persistence-dedupe-loader','persistence-dedupe.js?v=1')}
   function ensureHomeGameplay(){if(!window.__eotHomeGameplay)loadOnce('eot-home-gameplay-loader','home-gameplay.js?v=1')}
   function ensureMissionRewards(){if(!window.__eotMissionRewards)loadOnce('eot-mission-rewards-loader','mission-rewards.js?v=1')}
+  function ensureBusinessHierarchy(){if(!window.__eotBusinessHierarchy)loadOnce('eot-business-hierarchy-loader','business-hierarchy.js?v=1')}
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){const t=textOf(btn);if(t.includes('ana sayfa'))return'home';if(t.includes('pazar'))return'market';if(t.includes('işlet'))return'business';if(t.includes('finans'))return'finance';if(t.includes('profil'))return'profile';return'home'}
@@ -72,7 +73,7 @@
     nav.addEventListener('click',function(e){const btn=e.target.closest('.nav-btn');if(!btn||!nav.contains(btn))return;const target=targetFor(btn);e.preventDefault();e.stopImmediatePropagation();syncRouteClass(target);emitNavigationIntent(target);if((location.hash||'#home')!==target)location.hash=target;scheduleSync()},true);
   }
   function lock(){
-    ensureStyle();removeLegacyHasRule();syncRouteClass(location.hash||'#home');ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();
+    ensureStyle();removeLegacyHasRule();syncRouteClass(location.hash||'#home');ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();ensureBusinessHierarchy();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;if(nav.parentElement!==document.body)document.body.appendChild(nav);bindFastNavigation();scheduleSync();
   }
 
