@@ -26,58 +26,28 @@
     document.head.appendChild(s);
   }
 
-  /* styles.css içindeki ilişkisel :has() kuralı büyük DOM'da her hash değişiminde
-     Safari'ye pahalı bir stil taraması yaptırıyordu. Aynı görünümü body sınıfıyla koruyoruz. */
   function removeLegacyHasRule(){
     for(const sheet of Array.from(document.styleSheets||[])){
-      let rules;
-      try{rules=sheet.cssRules}catch(e){continue}
+      let rules;try{rules=sheet.cssRules}catch(e){continue}
       if(!rules)continue;
       for(let i=rules.length-1;i>=0;i--){
-        const rule=rules[i];
-        const selector=String(rule&&rule.selectorText||'');
-        if(selector.includes('body:has(.screen:target:not(#home))')){
-          try{sheet.deleteRule(i)}catch(e){}
-        }
+        const selector=String(rules[i]&&rules[i].selectorText||'');
+        if(selector.includes('body:has(.screen:target:not(#home))')){try{sheet.deleteRule(i)}catch(e){}}
       }
     }
   }
 
-  function ensureTransitionPerformance(){
-    if(window.__eotTransitionPerformance||document.getElementById('eot-transition-performance-loader'))return;
-    const sc=document.createElement('script');
-    sc.id='eot-transition-performance-loader';
-    sc.src='transition-performance.js?v=3&_='+Date.now();
-    sc.async=true;
-    document.head.appendChild(sc);
+  function loadOnce(id,src){
+    if(document.getElementById(id))return;
+    const sc=document.createElement('script');sc.id=id;sc.src=src+'&_='+Date.now();sc.async=true;document.head.appendChild(sc);
   }
-  function ensurePersistenceDedupe(){
-    if(window.__eotPersistenceDedupe||document.getElementById('eot-persistence-dedupe-loader'))return;
-    const sc=document.createElement('script');
-    sc.id='eot-persistence-dedupe-loader';
-    sc.src='persistence-dedupe.js?v=1&_='+Date.now();
-    sc.async=true;
-    document.head.appendChild(sc);
-  }
-  function ensureHomeGameplay(){
-    if(window.__eotHomeGameplay||document.getElementById('eot-home-gameplay-loader'))return;
-    const sc=document.createElement('script');
-    sc.id='eot-home-gameplay-loader';
-    sc.src='home-gameplay.js?v=1&_='+Date.now();
-    sc.async=true;
-    document.head.appendChild(sc);
-  }
+  function ensureTransitionPerformance(){if(!window.__eotTransitionPerformance)loadOnce('eot-transition-performance-loader','transition-performance.js?v=3')}
+  function ensurePersistenceDedupe(){if(!window.__eotPersistenceDedupe)loadOnce('eot-persistence-dedupe-loader','persistence-dedupe.js?v=1')}
+  function ensureHomeGameplay(){if(!window.__eotHomeGameplay)loadOnce('eot-home-gameplay-loader','home-gameplay.js?v=1')}
+  function ensureMissionRewards(){if(!window.__eotMissionRewards)loadOnce('eot-mission-rewards-loader','mission-rewards.js?v=1')}
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
-  function sectionOf(btn){
-    const t=textOf(btn);
-    if(t.includes('ana sayfa'))return'home';
-    if(t.includes('pazar'))return'market';
-    if(t.includes('işlet'))return'business';
-    if(t.includes('finans'))return'finance';
-    if(t.includes('profil'))return'profile';
-    return 'home';
-  }
+  function sectionOf(btn){const t=textOf(btn);if(t.includes('ana sayfa'))return'home';if(t.includes('pazar'))return'market';if(t.includes('işlet'))return'business';if(t.includes('finans'))return'finance';if(t.includes('profil'))return'profile';return'home'}
   function belongs(section,current){
     if(section==='home')return current===''||current==='home';
     if(section==='market')return['market','opportun','dynamic_market','land','estate','propert','vehicle','cars'].some(x=>current.includes(x));
@@ -86,71 +56,26 @@
     if(section==='profile')return['profile','account','career','garage','mission','wealth','transaction','myassets'].some(x=>current.includes(x));
     return false;
   }
-  function routeId(hash){
-    return String(hash||'#home').replace(/^#/,'').toLocaleLowerCase('tr-TR')||'home';
-  }
-  function syncRouteClass(hash){
-    document.body.classList.toggle('eot-nonhome',routeId(hash)!=='home');
-  }
+  function routeId(hash){return String(hash||'#home').replace(/^#/,'').toLocaleLowerCase('tr-TR')||'home'}
+  function syncRouteClass(hash){document.body.classList.toggle('eot-nonhome',routeId(hash)!=='home')}
   function syncActive(){
-    const current=routeId(location.hash);
-    syncRouteClass('#'+current);
-    const nav=document.querySelector('.bottom-nav');if(!nav)return;
-    let matched=false;
-    nav.querySelectorAll('.nav-btn').forEach(btn=>{
-      const active=!matched&&belongs(sectionOf(btn),current);
-      if(btn.classList.contains('active')!==active)btn.classList.toggle('active',active);
-      if(active)matched=true;
-    });
-    if(!matched&&current==='home'){
-      const home=[...nav.querySelectorAll('.nav-btn')].find(btn=>sectionOf(btn)==='home');
-      if(home)home.classList.add('active');
-    }
+    const current=routeId(location.hash);syncRouteClass('#'+current);
+    const nav=document.querySelector('.bottom-nav');if(!nav)return;let matched=false;
+    nav.querySelectorAll('.nav-btn').forEach(btn=>{const active=!matched&&belongs(sectionOf(btn),current);if(btn.classList.contains('active')!==active)btn.classList.toggle('active',active);if(active)matched=true});
+    if(!matched&&current==='home'){const home=[...nav.querySelectorAll('.nav-btn')].find(btn=>sectionOf(btn)==='home');if(home)home.classList.add('active')}
   }
-  function scheduleSync(){
-    if(syncFrame)return;
-    syncFrame=requestAnimationFrame(function(){syncFrame=0;syncActive()});
-  }
-  function targetFor(btn){
-    const href=String(btn&&btn.getAttribute('href')||'');
-    if(/^#[A-Za-z0-9_\-]+$/.test(href))return href;
-    return '#'+sectionOf(btn);
-  }
-  function emitNavigationIntent(target){
-    try{window.dispatchEvent(new CustomEvent('eot:navigation-intent',{detail:{target:target}}))}catch(e){}
-  }
+  function scheduleSync(){if(syncFrame)return;syncFrame=requestAnimationFrame(function(){syncFrame=0;syncActive()})}
+  function targetFor(btn){const href=String(btn&&btn.getAttribute('href')||'');if(/^#[A-Za-z0-9_\-]+$/.test(href))return href;return '#'+sectionOf(btn)}
+  function emitNavigationIntent(target){try{window.dispatchEvent(new CustomEvent('eot:navigation-intent',{detail:{target}}))}catch(e){}}
   function bindFastNavigation(){
-    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='4')return;
-    nav.dataset.eotFastNav='4';
-
-    nav.addEventListener('click',function(e){
-      const btn=e.target.closest('.nav-btn');
-      if(!btn||!nav.contains(btn))return;
-      const target=targetFor(btn);
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      /* Home'un bir kare boyunca hedef ekranın altında görünmesini engelle. */
-      syncRouteClass(target);
-      emitNavigationIntent(target);
-      if((location.hash||'#home')!==target)location.hash=target;
-      scheduleSync();
-    },true);
+    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='4')return;nav.dataset.eotFastNav='4';
+    nav.addEventListener('click',function(e){const btn=e.target.closest('.nav-btn');if(!btn||!nav.contains(btn))return;const target=targetFor(btn);e.preventDefault();e.stopImmediatePropagation();syncRouteClass(target);emitNavigationIntent(target);if((location.hash||'#home')!==target)location.hash=target;scheduleSync()},true);
   }
   function lock(){
-    ensureStyle();
-    removeLegacyHasRule();
-    syncRouteClass(location.hash||'#home');
-    ensureTransitionPerformance();
-    ensurePersistenceDedupe();
-    ensureHomeGameplay();
-    const nav=document.querySelector('.bottom-nav');if(!nav)return;
-    if(nav.parentElement!==document.body)document.body.appendChild(nav);
-    bindFastNavigation();
-    scheduleSync();
+    ensureStyle();removeLegacyHasRule();syncRouteClass(location.hash||'#home');ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();
+    const nav=document.querySelector('.bottom-nav');if(!nav)return;if(nav.parentElement!==document.body)document.body.appendChild(nav);bindFastNavigation();scheduleSync();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock,{once:true});else lock();
-  window.addEventListener('hashchange',scheduleSync,true);
-  window.addEventListener('popstate',scheduleSync,true);
-  window.addEventListener('pageshow',lock);
+  window.addEventListener('hashchange',scheduleSync,true);window.addEventListener('popstate',scheduleSync,true);window.addEventListener('pageshow',lock);
 })();
