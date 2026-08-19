@@ -47,6 +47,7 @@
   function ensureHomeCleanup(){if(!window.__eotHomeCleanup)loadOnce('eot-home-cleanup-loader','home-cleanup.js?v=1')}
   function ensureRouteScrollReset(){if(!window.__eotRouteScrollReset)loadOnce('eot-route-scroll-reset-loader','route-scroll-reset.js?v=1')}
   function ensureLegacyCompanyUiCleanup(){if(!window.__eotLegacyCompanyUiCleanup)loadOnce('eot-legacy-company-ui-cleanup-loader','legacy-company-ui-cleanup.js?v=1')}
+  function ensureDirectRouteDisplay(){if(!window.__eotDirectRouteDisplay)loadOnce('eot-direct-route-display-loader','direct-route-display.js?v=1')}
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){const t=textOf(btn);if(t.includes('ana sayfa'))return'home';if(t.includes('pazar'))return'market';if(t.includes('işlet'))return'business';if(t.includes('finans'))return'finance';if(t.includes('profil'))return'profile';return'home'}
@@ -77,21 +78,23 @@
   function navigate(target){
     const resolved=existingTarget(target);if(!resolved)return false;
     syncRouteClass(resolved);
+    /* Hedef ekranı hash/style turunu beklemeden yalnızca tek DOM elemanında göster. */
+    if(typeof window.EOTShowRoute==='function')try{window.EOTShowRoute(resolved)}catch(e){}
     emitNavigationIntent(resolved);
     if((location.hash||'#home')!==resolved)location.hash=resolved;else scheduleSync();
     return true;
   }
 
   function bindFastNavigation(){
-    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='7')return;
-    nav.dataset.eotFastNav='7';
+    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='8')return;
+    nav.dataset.eotFastNav='8';
     nav.addEventListener('click',function(e){const btn=e.target.closest('.nav-btn');if(!btn||!nav.contains(btn))return;e.preventDefault();e.stopImmediatePropagation();navigate(targetFor(btn))},true);
   }
 
   function onRouteChange(){syncRouteClass(location.hash||'#home');scheduleSync()}
   function lock(){
     ensureStyle();removeLegacyHasRule();syncRouteClass(location.hash||'#home');
-    ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();ensureBusinessHierarchy();ensureHomeCleanup();ensureRouteScrollReset();ensureLegacyCompanyUiCleanup();
+    ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();ensureBusinessHierarchy();ensureHomeCleanup();ensureRouteScrollReset();ensureLegacyCompanyUiCleanup();ensureDirectRouteDisplay();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
     bindFastNavigation();scheduleSync();
