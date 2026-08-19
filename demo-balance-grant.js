@@ -30,7 +30,7 @@
 (function(){
   if(document.querySelector('script[data-eot-vehicle-market-merge]'))return;
   const s=document.createElement('script');
-  s.src='vehicle-market-merge.js?v=2';
+  s.src='vehicle-market-merge.js?v=3';
   s.dataset.eotVehicleMarketMerge='1';
   s.async=true;
   document.body.appendChild(s);
