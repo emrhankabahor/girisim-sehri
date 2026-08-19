@@ -80,22 +80,35 @@
       list.innerHTML=rows.map(x=>'<div class="wealth-row"><span>'+fullLabel(x.day||dayKey(x.t))+'</span><b>'+(typeof money==='function'?money(x.value):'₺'+Number(x.value||0).toLocaleString('tr-TR'))+'</b></div>').join('');
     }
   }
+  function isWealthRoute(){return String(location.hash||'').toLowerCase().includes('wealth')}
+  function resetWealthScroll(){
+    if(!isWealthRoute())return;
+    const top=()=>{try{window.scrollTo({top:0,left:0,behavior:'auto'});document.documentElement.scrollTop=0;document.body.scrollTop=0}catch(e){window.scrollTo(0,0)}};
+    top();
+    requestAnimationFrame(()=>{top();requestAnimationFrame(top)});
+    setTimeout(top,40);
+    setTimeout(top,120);
+  }
   function patch(){
     migrate();
     window.recordWealth=recordDailyWealth;
     window.renderWealth=renderDailyWealth;
-    if((location.hash||'').includes('wealth'))setTimeout(renderDailyWealth,0);
+    if(isWealthRoute()){setTimeout(renderDailyWealth,0);resetWealthScroll()}
   }
   function midnightCheck(){
     const key=dayKey(Date.now());
-    if(lastDay&&key!==lastDay){recordDailyWealth();if((location.hash||'').includes('wealth'))renderDailyWealth()}
+    if(lastDay&&key!==lastDay){recordDailyWealth();if(isWealthRoute())renderDailyWealth()}
     else if(!lastDay)lastDay=key;
   }
 
+  document.addEventListener('click',function(e){
+    const a=e.target&&e.target.closest?e.target.closest('a[href*="wealth"]'):null;
+    if(a)setTimeout(resetWealthScroll,0);
+  },true);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(patch,50),{once:true});
   else setTimeout(patch,50);
   window.addEventListener('pageshow',()=>setTimeout(patch,60));
-  window.addEventListener('hashchange',()=>{if((location.hash||'').includes('wealth'))setTimeout(renderDailyWealth,30)},true);
+  window.addEventListener('hashchange',()=>{if(isWealthRoute()){resetWealthScroll();setTimeout(renderDailyWealth,30)}},true);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){patch();midnightCheck()}});
   setInterval(midnightCheck,30000);
 })();
