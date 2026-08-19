@@ -1,10 +1,11 @@
-const CACHE_NAME='empire-of-trade-v214';
+const CACHE_NAME='empire-of-trade-v215';
 const CORE=[
   './',
   './index.html',
   './styles.css?v=190',
   './bootstrap.js?v=190',
   './app.js?v=190',
+  './credit-score-sync.js?v=1',
   './v167.js?v=190',
   './v169.js?v=190',
   './loan-management.js?v=190',
