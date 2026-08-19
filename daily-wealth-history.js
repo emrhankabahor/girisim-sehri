@@ -6,6 +6,7 @@
 
   const MAX_DAYS=30;
   let lastDay='';
+  let midnightTimer=0;
 
   function dayKey(ts){
     const d=new Date(Number(ts)||Date.now());
@@ -38,7 +39,7 @@
     const src=ensureHistory();
     if(!src.length)return false;
     const grouped=new Map();
-    src.forEach((row,i)=>{
+    src.forEach(row=>{
       if(!row||typeof row!=='object')return;
       const ts=Number(row.t)||Date.now();
       const key=String(row.day||row.date||dayKey(ts));
@@ -48,25 +49,39 @@
     });
     const clean=[...grouped.values()].sort((a,b)=>b.dayStart-a.dayStart).slice(0,MAX_DAYS);
     const changed=clean.length!==src.length||src.some((x,i)=>!clean[i]||x.day!==clean[i].day||Number(x.value)!==Number(clean[i].value));
-    if(changed){sim.wealthHistory=clean;try{if(typeof simSave==='function')simSave()}catch(e){}}
+    if(changed){
+      sim.wealthHistory=clean;
+      try{if(typeof simSave==='function')simSave()}catch(e){}
+    }
     return changed;
   }
   function recordDailyWealth(){
-    if(typeof sim==='undefined'||!sim)return;
+    if(typeof sim==='undefined'||!sim)return false;
     migrate();
     const now=Date.now(),key=dayKey(now),value=wealthNow();
     let list=ensureHistory();
     const idx=list.findIndex(x=>x&&String(x.day||dayKey(x.t))===key);
+    let changed=false;
     if(idx>=0){
       const row=list[idx];
-      if(Number(row.value)!==value||Number(row.t)!==now){row.value=value;row.t=now;row.day=key;row.dayStart=dayStart(now)}
-      if(idx!==0){list.splice(idx,1);list.unshift(row)}
+      if(Number(row.value)!==value){
+        row.value=value;
+        row.t=now;
+        row.day=key;
+        row.dayStart=dayStart(now);
+        changed=true;
+      }
+      if(idx!==0){list.splice(idx,1);list.unshift(row);changed=true}
     }else{
       list.unshift({day:key,value,t:now,dayStart:dayStart(now)});
+      changed=true;
     }
-    sim.wealthHistory=list.slice(0,MAX_DAYS);
+    if(changed){
+      sim.wealthHistory=list.slice(0,MAX_DAYS);
+      try{if(typeof simSave==='function')simSave()}catch(e){}
+    }
     lastDay=key;
-    try{if(typeof simSave==='function')simSave()}catch(e){}
+    return changed;
   }
   function renderDailyWealth(){
     recordDailyWealth();
@@ -83,32 +98,38 @@
   function isWealthRoute(){return String(location.hash||'').toLowerCase().includes('wealth')}
   function resetWealthScroll(){
     if(!isWealthRoute())return;
-    const top=()=>{try{window.scrollTo({top:0,left:0,behavior:'auto'});document.documentElement.scrollTop=0;document.body.scrollTop=0}catch(e){window.scrollTo(0,0)}};
-    top();
-    requestAnimationFrame(()=>{top();requestAnimationFrame(top)});
-    setTimeout(top,40);
-    setTimeout(top,120);
+    requestAnimationFrame(()=>{try{const scroller=document.scrollingElement||document.documentElement;if(scroller)scroller.scrollTop=0;else window.scrollTo(0,0)}catch(e){try{window.scrollTo(0,0)}catch(_){}}});
+  }
+  function scheduleMidnight(){
+    clearTimeout(midnightTimer);
+    const now=new Date();
+    const next=new Date(now);
+    next.setHours(24,0,1,0);
+    midnightTimer=setTimeout(function(){
+      midnightCheck();
+      scheduleMidnight();
+    },Math.max(1000,next.getTime()-now.getTime()));
   }
   function patch(){
     migrate();
     window.recordWealth=recordDailyWealth;
     window.renderWealth=renderDailyWealth;
-    if(isWealthRoute()){setTimeout(renderDailyWealth,0);resetWealthScroll()}
+    if(isWealthRoute()){renderDailyWealth();resetWealthScroll()}
+    scheduleMidnight();
   }
   function midnightCheck(){
     const key=dayKey(Date.now());
-    if(lastDay&&key!==lastDay){recordDailyWealth();if(isWealthRoute())renderDailyWealth()}
-    else if(!lastDay)lastDay=key;
+    if(!lastDay)lastDay=key;
+    if(key!==lastDay){recordDailyWealth();if(isWealthRoute())renderDailyWealth()}
   }
 
   document.addEventListener('click',function(e){
     const a=e.target&&e.target.closest?e.target.closest('a[href*="wealth"]'):null;
-    if(a)setTimeout(resetWealthScroll,0);
+    if(a)requestAnimationFrame(resetWealthScroll);
   },true);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(patch,50),{once:true});
   else setTimeout(patch,50);
   window.addEventListener('pageshow',()=>setTimeout(patch,60));
   window.addEventListener('hashchange',()=>{if(isWealthRoute()){resetWealthScroll();setTimeout(renderDailyWealth,30)}},true);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){patch();midnightCheck()}});
-  setInterval(midnightCheck,30000);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){midnightCheck();scheduleMidnight();if(isWealthRoute())renderDailyWealth()}});
 })();
