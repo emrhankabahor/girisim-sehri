@@ -37,11 +37,41 @@
       const original=window.movePrices;
       const wrapped=function(){
         const r=original.apply(this,arguments);
-        /* Fiyat ve toplam aynı piyasa tick'inde güncellenir; frame beklenmez. */
         if(onRelevantScreen()&&!document.hidden)syncVisibleTotals();
         return r;
       };
       wrapped.__eotTotalSync=true;wrapped.__eotOriginal=original;window.movePrices=wrapped;
+    }catch(e){}
+  }
+  function premountInvestmentTotals(){
+    try{
+      document.querySelectorAll('.screen input[id^="tradeqty_"]').forEach(input=>{
+        const sym=String(input.id||'').replace('tradeqty_','');
+        if(!sym||input.dataset.eotTotalReady==='1')return;
+        let box=document.getElementById('eot_trade_total_'+sym);
+        if(!box){
+          box=document.createElement('div');
+          box.id='eot_trade_total_'+sym;
+          box.className='eot-trade-total-safe';
+          box.innerHTML='<div><span>ALIM TOPLAMI</span><b data-eot-buy-total>₺0</b></div><div><span>SATIŞ TOPLAMI</span><b data-eot-sell-total>₺0</b></div>';
+          input.insertAdjacentElement('afterend',box);
+        }
+        input.dataset.eotTotalReady='1';
+        input.addEventListener('input',scheduleTotalSync);
+        input.addEventListener('change',scheduleTotalSync);
+      });
+      document.querySelectorAll('.screen .asset-card input[id^="qty_"]').forEach(input=>{
+        const sym=String(input.id||'').replace('qty_','');if(!sym)return;
+        if(['BTC','ETH','SOL','XRP'].includes(sym)){input.min='1';if(!input.value||Number(input.value)<1)input.value='1'}
+        if(input.dataset.eotCardTotalReady==='1')return;
+        const card=input.closest('.asset-card'),mini=card&&card.querySelector('.asset-mini');if(!mini)return;
+        let box=card.querySelector('.eot-card-total-box');
+        if(!box){box=document.createElement('div');box.className='eot-card-total-box';box.innerHTML='<span>TOPLAM TUTAR</span><b data-eot-card-total>₺0</b>';mini.appendChild(box)}
+        mini.classList.add('eot-card-total-ready');
+        input.dataset.eotCardTotalReady='1';
+        input.addEventListener('input',scheduleTotalSync);
+        input.addEventListener('change',scheduleTotalSync);
+      });
     }catch(e){}
   }
   function refreshInvestmentInputs(){try{document.querySelectorAll('input[id^="tradeqty_"],input[id^="qty_"]').forEach(el=>{const id=String(el.id||''),sym=id.replace(/^tradeqty_/,'').replace(/^qty_/,'');if(!sym)return;if(['BTC','ETH','SOL','XRP'].includes(sym)){el.setAttribute('inputmode','decimal');el.setAttribute('step',sym==='BTC'?'0.000001':sym==='ETH'?'0.00001':sym==='SOL'?'0.001':'0.01')}else{el.setAttribute('inputmode','numeric');el.setAttribute('step','1')}el.setAttribute('min','0')});if(typeof pf!=='undefined'&&typeof qtyWithUnit==='function'){Object.keys(pf||{}).forEach(sym=>{const h=document.getElementById('held_'+sym);if(h)h.textContent=qtyWithUnit((pf[sym]||{qty:0}).qty,sym)})}}catch(e){}}
@@ -51,12 +81,16 @@
   function ensureCeoIdentity(){if(document.querySelector('script[data-eot-ceo-identity]')||window.__eotCeoIdentityLoaded)return;const s=document.createElement('script');s.src='ceo-identity.js?v=2';s.dataset.eotCeoIdentity='1';document.body.appendChild(s)}
   function ensureCompanyOnboarding(){if(document.querySelector('script[data-eot-company-onboarding]')||window.__eotCompanyOnboardingLoaded){ensureCeoIdentity();return}const s=document.createElement('script');s.src='company-onboarding.js?v=2';s.dataset.eotCompanyOnboarding='1';s.onload=()=>{ensureCeoIdentity();ensureCompanyLoginEntry()};document.body.appendChild(s)}
   function ensureCompanyLoginEntry(){if(document.querySelector('script[data-eot-company-login-entry]')||window.__eotCompanyLoginEntryLoaded)return;const s=document.createElement('script');s.src='company-login-entry.js?v=1';s.dataset.eotCompanyLoginEntry='1';document.body.appendChild(s)}
-  function refresh(){patchTrade();patchScreenTrade();patchPriceSync();normalizePortfolio();refreshInvestmentInputs();syncVisibleTotals();ensureFinanceLayer();ensureHomeCounts();ensureHomeCompanyProfile();ensureCompanyOnboarding();ensureCeoIdentity();ensureCompanyLoginEntry()}
+  function refresh(){patchTrade();patchScreenTrade();patchPriceSync();normalizePortfolio();premountInvestmentTotals();refreshInvestmentInputs();syncVisibleTotals();ensureFinanceLayer();ensureHomeCounts();ensureHomeCompanyProfile();ensureCompanyOnboarding();ensureCeoIdentity();ensureCompanyLoginEntry()}
   function onRelevantScreen(){const h=(location.hash||'').toLowerCase();return /finance|invest|stock|crypto|gold|borsa|kripto|altin/.test(h)}
   function scheduleRefresh(delay=180){if(refreshTimer)clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>{refreshTimer=0;if(!onRelevantScreen()||document.hidden)return;if('requestIdleCallback' in window)requestIdleCallback(()=>refresh(),{timeout:450});else setTimeout(refresh,0)},delay)}
   window.addEventListener('pagehide',persistCareer);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)persistCareer();else if(onRelevantScreen())scheduleRefresh(180)});
   window.addEventListener('hashchange',()=>{if(onRelevantScreen())scheduleRefresh(180)});
   document.addEventListener('input',e=>{if(onRelevantScreen()&&e.target&&/^(tradeqty_|qty_)/.test(String(e.target.id||'')))scheduleTotalSync()},true);
-  setTimeout(()=>{patchTrade();patchScreenTrade();patchPriceSync();ensureFinanceLayer();ensureHomeCounts();ensureHomeCompanyProfile();ensureCompanyOnboarding();ensureCeoIdentity();ensureCompanyLoginEntry();if(onRelevantScreen())scheduleRefresh(100)},500);
+
+  /* İlk route ziyaretinden önce kutuları gizli ekranlarda bir kez hazırla. */
+  premountInvestmentTotals();
+  patchPriceSync();
+  setTimeout(()=>{premountInvestmentTotals();patchTrade();patchScreenTrade();patchPriceSync();ensureFinanceLayer();ensureHomeCounts();ensureHomeCompanyProfile();ensureCompanyOnboarding();ensureCeoIdentity();ensureCompanyLoginEntry();if(onRelevantScreen())scheduleRefresh(100)},120);
 })();
