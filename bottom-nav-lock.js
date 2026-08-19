@@ -59,6 +59,14 @@
     sc.async=true;
     document.head.appendChild(sc);
   }
+  function ensureHomeGameplay(){
+    if(window.__eotHomeGameplay||document.getElementById('eot-home-gameplay-loader'))return;
+    const sc=document.createElement('script');
+    sc.id='eot-home-gameplay-loader';
+    sc.src='home-gameplay.js?v=1&_='+Date.now();
+    sc.async=true;
+    document.head.appendChild(sc);
+  }
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){
@@ -134,6 +142,7 @@
     syncRouteClass(location.hash||'#home');
     ensureTransitionPerformance();
     ensurePersistenceDedupe();
+    ensureHomeGameplay();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
     bindFastNavigation();
