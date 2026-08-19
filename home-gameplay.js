@@ -80,10 +80,34 @@
     box.innerHTML='<span class="eot-next-icon">'+move.icon+'</span><span class="eot-next-copy"><small>SIRADAKİ HAMLE</small><b>'+move.title+'</b><span>'+move.desc+'</span></span><strong class="eot-next-go">'+move.action+'</strong>';
   }
 
+  function forcePageTop(){
+    const go=()=>{try{window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0}catch(e){}};
+    go();
+    requestAnimationFrame(()=>{go();requestAnimationFrame(go)});
+    setTimeout(go,60);
+  }
+
   function patchQuickLinks(){
     const home=document.getElementById('home');if(!home)return;
-    const tender=[...home.querySelectorAll('.eot-quick')].find(a=>String(a.textContent||'').toLocaleLowerCase('tr-TR').includes('devlet ihal'));
+    const quick=[...home.querySelectorAll('.eot-quick')];
+    const tender=quick.find(a=>String(a.textContent||'').toLocaleLowerCase('tr-TR').includes('devlet ihal'));
     if(tender&&document.getElementById('tenders'))tender.href='#tenders';
+
+    const bank=quick.find(a=>{
+      const t=String(a.textContent||'').toLocaleLowerCase('tr-TR');
+      return t.includes('banka')&&t.includes('kredi');
+    });
+    if(bank&&document.getElementById('finance')){
+      bank.href='#finance';
+      if(bank.dataset.eotFinanceTop!=='1'){
+        bank.dataset.eotFinanceTop='1';
+        bank.addEventListener('click',function(e){
+          e.preventDefault();
+          if(location.hash!=='#finance')location.hash='#finance';
+          forcePageTop();
+        },true);
+      }
+    }
   }
 
   function gameQuote(sym){
