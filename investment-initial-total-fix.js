@@ -1,4 +1,4 @@
-/* Empire of Trade • Yatırım ekranı route öncesi toplam tutar hazırlığı */
+/* Empire of Trade • Finans girişinde yatırım ekranlarını önceden hazırla */
 (function(){
   'use strict';
   if(window.__eotInvestmentInitialTotalFix)return;
@@ -62,34 +62,34 @@
   }
   function prepareTarget(hash){
     if(!/^#(?:stocks|crypto|gold)$/.test(hash||''))return 0;
-    var root=document.querySelector(hash);
-    return prepareRoot(root);
+    return prepareRoot(document.querySelector(hash));
   }
-  function targetFromEvent(e){
-    var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;
-    if(!a)return '';
-    var href=String(a.getAttribute('href')||'');
-    return /^#(?:stocks|crypto|gold)$/.test(href)?href:'';
-  }
-  function beforeNavigate(e){
-    var target=targetFromEvent(e);
-    if(target)prepareTarget(target);
-  }
-
-  /* Kullanıcı menüye dokunduğu anda, hash değişmeden önce hedef ekranı hazırla. */
-  document.addEventListener('pointerdown',beforeNavigate,true);
-  document.addEventListener('click',beforeNavigate,true);
-
-  /* DOM hazırsa üç ana yatırım ekranını arka planda bir kez önceden hazırla. */
-  function warm(){
+  function prepareInvestments(){
     prepareTarget('#stocks');
     prepareTarget('#crypto');
     prepareTarget('#gold');
   }
-  warm();
-  setTimeout(warm,0);
-  setTimeout(warm,120);
+  function hrefFromEvent(e){
+    var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;
+    return a?String(a.getAttribute('href')||''):'';
+  }
+  function beforeNavigate(e){
+    var href=hrefFromEvent(e);
+    if(href==='#finance'){
+      /* Finans'a dokunulduğu anda üç yatırım ekranını görünmeden önce hazırla. */
+      prepareInvestments();
+      return;
+    }
+    if(/^#(?:stocks|crypto|gold)$/.test(href))prepareTarget(href);
+  }
 
-  /* Geri/ileri navigasyonunda da yalnızca görünür ekranın rakamını tazele. */
-  window.addEventListener('hashchange',function(){prepareTarget(location.hash||'')},{passive:true});
+  document.addEventListener('pointerdown',beforeNavigate,true);
+  document.addEventListener('click',beforeNavigate,true);
+
+  /* Finans sayfasına geri/ileri ile gelinirse aynı hazırlığı yap. */
+  window.addEventListener('hashchange',function(){
+    var h=location.hash||'';
+    if(h==='#finance')prepareInvestments();
+    else prepareTarget(h);
+  },{passive:true});
 })();
