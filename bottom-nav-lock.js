@@ -13,8 +13,9 @@
     s.textContent=`
       html,body{scroll-behavior:auto!important}
       .screen{animation:none!important;transition:none!important}
+      body.eot-nonhome #home{display:none!important}
       #home,#profile,#finance{scroll-margin-top:220px!important}
-      body>.bottom-nav{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:0!important;transform:translate3d(-50%,0,0)!important;width:min(calc(100% - 22px),540px)!important;height:76px!important;min-height:76px!important;padding:7px 8px max(7px,env(safe-area-inset-bottom))!important;margin:0!important;z-index:2147483000!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;align-items:stretch!important;gap:5px!important;border:1px solid rgba(126,167,204,.18)!important;border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;border-top-left-radius:24px!important;border-top-right-radius:24px!important;background:#081625!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:0 -4px 12px rgba(0,0,0,.16)!important;contain:layout paint style!important}
+      body>.bottom-nav{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:0!important;transform:translate3d(-50%,0,0)!important;-webkit-transform:translate3d(-50%,0,0)!important;width:min(calc(100% - 22px),540px)!important;height:76px!important;min-height:76px!important;padding:7px 8px max(7px,env(safe-area-inset-bottom))!important;margin:0!important;z-index:2147483000!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;align-items:stretch!important;gap:5px!important;border:1px solid rgba(126,167,204,.18)!important;border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;border-top-left-radius:24px!important;border-top-right-radius:24px!important;background:#081625!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:0 -4px 12px rgba(0,0,0,.16)!important;contain:layout paint style!important;isolation:isolate!important;backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;will-change:transform!important}
       body>.bottom-nav .nav-btn{position:relative!important;width:100%!important;height:100%!important;min-width:0!important;margin:0!important;padding:7px 3px 6px!important;border:0!important;border-radius:17px!important;background:transparent!important;color:#8fa6bd!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;font-size:9px!important;line-height:1!important;font-weight:800!important;text-align:center!important;white-space:nowrap!important;box-shadow:none!important;transition:none!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}
       body>.bottom-nav .nav-btn .nav-ico{width:28px!important;height:28px!important;display:grid!important;place-items:center!important;margin:0!important;font-size:22px!important;line-height:1!important;color:#9eb6cd!important}
       body>.bottom-nav .nav-btn.active{background:rgba(35,75,116,.52)!important;color:#f5fbff!important}
@@ -23,6 +24,23 @@
       @media(max-width:390px){body>.bottom-nav{width:calc(100% - 16px)!important;height:72px!important;min-height:72px!important;gap:3px!important;padding-left:6px!important;padding-right:6px!important}body>.bottom-nav .nav-btn{font-size:8px!important;gap:4px!important;padding:6px 2px 5px!important}body>.bottom-nav .nav-btn .nav-ico{width:25px!important;height:25px!important;font-size:20px!important}}
     `;
     document.head.appendChild(s);
+  }
+
+  /* styles.css içindeki ilişkisel :has() kuralı büyük DOM'da her hash değişiminde
+     Safari'ye pahalı bir stil taraması yaptırıyordu. Aynı görünümü body sınıfıyla koruyoruz. */
+  function removeLegacyHasRule(){
+    for(const sheet of Array.from(document.styleSheets||[])){
+      let rules;
+      try{rules=sheet.cssRules}catch(e){continue}
+      if(!rules)continue;
+      for(let i=rules.length-1;i>=0;i--){
+        const rule=rules[i];
+        const selector=String(rule&&rule.selectorText||'');
+        if(selector.includes('body:has(.screen:target:not(#home))')){
+          try{sheet.deleteRule(i)}catch(e){}
+        }
+      }
+    }
   }
 
   function ensureTransitionPerformance(){
@@ -60,8 +78,15 @@
     if(section==='profile')return['profile','account','career','garage','mission','wealth','transaction','myassets'].some(x=>current.includes(x));
     return false;
   }
+  function routeId(hash){
+    return String(hash||'#home').replace(/^#/,'').toLocaleLowerCase('tr-TR')||'home';
+  }
+  function syncRouteClass(hash){
+    document.body.classList.toggle('eot-nonhome',routeId(hash)!=='home');
+  }
   function syncActive(){
-    const current=(location.hash||'#home').slice(1).toLocaleLowerCase('tr-TR');
+    const current=routeId(location.hash);
+    syncRouteClass('#'+current);
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     let matched=false;
     nav.querySelectorAll('.nav-btn').forEach(btn=>{
@@ -87,17 +112,17 @@
     try{window.dispatchEvent(new CustomEvent('eot:navigation-intent',{detail:{target:target}}))}catch(e){}
   }
   function bindFastNavigation(){
-    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='3')return;
-    nav.dataset.eotFastNav='3';
+    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='4')return;
+    nav.dataset.eotFastNav='4';
 
-    /* Alt menünün yönlendirmesini yalnızca bu handler yapar.
-       Aktif sekme hash'ten türetilir; pointerdown sırasında sahte ekran durumu oluşturulmaz. */
     nav.addEventListener('click',function(e){
       const btn=e.target.closest('.nav-btn');
       if(!btn||!nav.contains(btn))return;
       const target=targetFor(btn);
       e.preventDefault();
       e.stopImmediatePropagation();
+      /* Home'un bir kare boyunca hedef ekranın altında görünmesini engelle. */
+      syncRouteClass(target);
       emitNavigationIntent(target);
       if((location.hash||'#home')!==target)location.hash=target;
       scheduleSync();
@@ -105,6 +130,8 @@
   }
   function lock(){
     ensureStyle();
+    removeLegacyHasRule();
+    syncRouteClass(location.hash||'#home');
     ensureTransitionPerformance();
     ensurePersistenceDedupe();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
