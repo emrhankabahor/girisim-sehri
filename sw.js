@@ -1,4 +1,4 @@
-const CACHE_NAME='empire-of-trade-v215';
+const CACHE_NAME='empire-of-trade-v216';
 const CORE=[
   './',
   './index.html',
@@ -6,13 +6,14 @@ const CORE=[
   './bootstrap.js?v=190',
   './app.js?v=190',
   './credit-score-sync.js?v=1',
+  './home-entry-guard.js?v=1',
   './v167.js?v=190',
   './v169.js?v=190',
   './loan-management.js?v=190',
   './realtime-finance.js?v=190',
   './state-integrity.js?v=190',
   './company-list-fix.js?v=190',
-  './demo-balance-grant.js?v=198',
+  './demo-balance-grant.js?v=199',
   './vehicle-market-merge.js?v=4',
   './investment-initial-total-fix.js?v=4',
   './investment-visibility.js?v=201',
