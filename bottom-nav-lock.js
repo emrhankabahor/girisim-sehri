@@ -58,7 +58,38 @@
     return false;
   }
   function routeId(hash){return String(hash||'#home').replace(/^#/,'').toLocaleLowerCase('tr-TR')||'home'}
-  function syncRouteClass(hash){document.body.classList.toggle('eot-nonhome',routeId(hash)!=='home')}
+
+  function syncRouteClass(hash){
+    const nonHome=routeId(hash)!=='home';
+    document.body.classList.toggle('eot-nonhome',nonHome);
+    const home=document.getElementById('home');
+    if(home){
+      if(nonHome)home.style.setProperty('display','none','important');
+      else home.style.removeProperty('display');
+    }
+  }
+
+  function existingTarget(target){
+    if(!target||!/^#[A-Za-z0-9_\-]+$/.test(target))return null;
+    try{return document.querySelector(target)?target:null}catch(e){return null}
+  }
+  function fallbackTarget(section){
+    const map={
+      home:['#home'],
+      market:['#market','#dynamic_market','#opportunities'],
+      business:['#business','#companies','#company','#company_portfolio'],
+      finance:['#finance','#bank'],
+      profile:['#profile','#account']
+    };
+    const list=map[section]||['#home'];
+    for(const target of list){if(existingTarget(target))return target}
+    return existingTarget('#home')||'#home';
+  }
+  function targetFor(btn){
+    const href=String(btn&&btn.getAttribute('href')||'');
+    return existingTarget(href)||fallbackTarget(sectionOf(btn));
+  }
+
   function syncActive(){
     const current=routeId(location.hash);syncRouteClass('#'+current);
     const nav=document.querySelector('.bottom-nav');if(!nav)return;let matched=false;
@@ -66,17 +97,35 @@
     if(!matched&&current==='home'){const home=[...nav.querySelectorAll('.nav-btn')].find(btn=>sectionOf(btn)==='home');if(home)home.classList.add('active')}
   }
   function scheduleSync(){if(syncFrame)return;syncFrame=requestAnimationFrame(function(){syncFrame=0;syncActive()})}
-  function targetFor(btn){const href=String(btn&&btn.getAttribute('href')||'');if(/^#[A-Za-z0-9_\-]+$/.test(href))return href;return '#'+sectionOf(btn)}
   function emitNavigationIntent(target){try{window.dispatchEvent(new CustomEvent('eot:navigation-intent',{detail:{target}}))}catch(e){}}
-  function bindFastNavigation(){
-    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='4')return;nav.dataset.eotFastNav='4';
-    nav.addEventListener('click',function(e){const btn=e.target.closest('.nav-btn');if(!btn||!nav.contains(btn))return;const target=targetFor(btn);e.preventDefault();e.stopImmediatePropagation();syncRouteClass(target);emitNavigationIntent(target);if((location.hash||'#home')!==target)location.hash=target;scheduleSync()},true);
+
+  function navigate(target){
+    const resolved=existingTarget(target);
+    if(!resolved)return false;
+    syncRouteClass(resolved);
+    emitNavigationIntent(resolved);
+    if((location.hash||'#home')!==resolved)location.hash=resolved;
+    else scheduleSync();
+    return true;
   }
+
+  function bindFastNavigation(){
+    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='5')return;nav.dataset.eotFastNav='5';
+    nav.addEventListener('click',function(e){
+      const btn=e.target.closest('.nav-btn');if(!btn||!nav.contains(btn))return;
+      e.preventDefault();e.stopImmediatePropagation();
+      navigate(targetFor(btn));
+    },true);
+  }
+
+  function onRouteChange(){syncRouteClass(location.hash||'#home');scheduleSync()}
+
   function lock(){
-    ensureStyle();removeLegacyHasRule();syncRouteClass(location.hash||'#home');ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();ensureBusinessHierarchy();
+    ensureStyle();removeLegacyHasRule();syncRouteClass(location.hash||'#home');
+    ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();ensureBusinessHierarchy();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;if(nav.parentElement!==document.body)document.body.appendChild(nav);bindFastNavigation();scheduleSync();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock,{once:true});else lock();
-  window.addEventListener('hashchange',scheduleSync,true);window.addEventListener('popstate',scheduleSync,true);window.addEventListener('pageshow',lock);
+  window.addEventListener('hashchange',onRouteChange,true);window.addEventListener('popstate',onRouteChange,true);window.addEventListener('pageshow',lock);
 })();
