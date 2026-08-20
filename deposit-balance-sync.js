@@ -20,12 +20,18 @@
     return {balance,expected,earned,active,next};
   }
   function fmtDate(ts){return ts?new Date(ts).toLocaleString('tr-TR',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—'}
+  function hideTopSummary(){
+    const screen=document.getElementById('deposits');if(!screen)return;
+    ['depositCount','depositTotal','depositReturn'].forEach(id=>{
+      const el=document.getElementById(id);if(!el)return;
+      const card=el.closest('.stat,.stat-card,.summary-card,.metric-card,.mini-card,.kpi-card,[class*="stat"],[class*="summary"],[class*="metric"],[class*="kpi"]');
+      if(card)card.style.setProperty('display','none','important');
+      else if(el.parentElement)el.parentElement.style.setProperty('display','none','important');
+    });
+  }
   function sync(){
     const d=data();
-    const count=document.getElementById('depositCount'),total=document.getElementById('depositTotal'),ret=document.getElementById('depositReturn');
-    if(count)count.textContent=d.active;
-    if(total)total.textContent=money(d.balance);
-    if(ret)ret.textContent=money(d.expected);
+    hideTopSummary();
     const panel=document.querySelector('#deposits .eot-deposit-panel');
     if(panel){
       const bal=panel.querySelector('[data-dep-balance]'),earn=panel.querySelector('[data-dep-earn]'),mat=panel.querySelector('[data-dep-maturity]'),note=panel.querySelector('.eot-deposit-note');
