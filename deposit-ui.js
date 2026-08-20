@@ -33,12 +33,12 @@
       #deposits .eot-deposit-badges{display:flex;align-items:center;gap:7px}
       #deposits .eot-deposit-term{padding:7px 9px;border-radius:11px;border:1px solid rgba(91,200,220,.18);background:rgba(34,150,170,.10);color:#90e4ef;font-size:7px;font-weight:900;letter-spacing:.05em;white-space:nowrap}
       #deposits .eot-deposit-info{width:34px;height:34px;flex:0 0 34px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#eaf7ff;font-weight:900;font-size:16px}
-      #deposits .eot-deposit-summary{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:9px;margin:0 0 16px}
-      #deposits .eot-deposit-stat{min-width:0;padding:12px;border:1px solid rgba(255,255,255,.065);border-radius:15px;background:rgba(5,18,31,.32)}
-      #deposits .eot-deposit-stat-main{grid-row:span 2;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg,rgba(26,68,104,.58),rgba(10,35,57,.52))}
-      #deposits .eot-deposit-stat span{display:block;color:#8ea6bb;font-size:7px;font-weight:900;letter-spacing:.09em}
-      #deposits .eot-deposit-stat b{display:block;margin-top:6px;color:#fff;font-size:12px;line-height:1.2;overflow-wrap:anywhere}
-      #deposits .eot-deposit-stat-main b{font-size:18px;letter-spacing:-.025em}
+      #deposits .eot-deposit-summary{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 16px}
+      #deposits .eot-deposit-stat{min-width:0;min-height:78px;padding:11px 10px;border:1px solid rgba(255,255,255,.065);border-radius:15px;background:rgba(5,18,31,.32);display:flex;flex-direction:column;justify-content:center}
+      #deposits .eot-deposit-stat-main{background:linear-gradient(145deg,rgba(26,68,104,.58),rgba(10,35,57,.52))}
+      #deposits .eot-deposit-stat span{display:block;color:#8ea6bb;font-size:6.5px;font-weight:900;letter-spacing:.08em;line-height:1.2}
+      #deposits .eot-deposit-stat b{display:block;margin-top:7px;color:#fff;font-size:10.5px;line-height:1.2;overflow-wrap:anywhere}
+      #deposits .eot-deposit-stat-main b{font-size:11.5px;letter-spacing:-.02em}
       #deposits .eot-deposit-stat-earn b{color:#6fe0b7}
       #deposits .eot-deposit-form{position:relative;z-index:1;padding:13px;border:1px solid rgba(255,255,255,.07);border-radius:17px;background:rgba(4,16,28,.26)}
       #deposits .eot-deposit-field{margin:0}
@@ -51,7 +51,7 @@
       #deposits .eot-deposit-actions button{min-height:54px;border:0;border-radius:15px;color:#fff;font-size:14px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.16)}
       #deposits .eot-deposit-put{background:linear-gradient(135deg,#29b950,#65d66d)}
       #deposits .eot-deposit-take{background:linear-gradient(135deg,#2374ca,#438fe9)}
-      @media(max-width:430px){#deposits .eot-deposit-panel{padding:15px}#deposits .eot-deposit-heading h2{font-size:20px}#deposits .eot-deposit-summary{grid-template-columns:1.08fr .92fr;gap:7px}#deposits .eot-deposit-stat{padding:10px}#deposits .eot-deposit-stat-main b{font-size:16px}#deposits .eot-deposit-stat b{font-size:10px}#deposits .eot-deposit-form{padding:11px}#deposits .eot-deposit-actions{gap:8px}}
+      @media(max-width:430px){#deposits .eot-deposit-panel{padding:15px}#deposits .eot-deposit-heading h2{font-size:20px}#deposits .eot-deposit-summary{gap:6px}#deposits .eot-deposit-stat{min-height:72px;padding:9px 8px}#deposits .eot-deposit-stat span{font-size:5.8px}#deposits .eot-deposit-stat b,#deposits .eot-deposit-stat-main b{font-size:9px}#deposits .eot-deposit-form{padding:11px}#deposits .eot-deposit-actions{gap:8px}}
     `;
     document.head.appendChild(s);
   }
