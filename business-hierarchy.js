@@ -55,9 +55,9 @@
   window.eotCreateSelectedBusiness=function(){const input=document.getElementById('eotBusinessName');return createBusiness(selectedType,input?input.value:'')};
 
   function renderHierarchy(){
-    ensureStyle();const screen=document.getElementById('business');if(!screen)return;
+    ensureStyle();const screen=document.getElementById('business');if(!screen)return false;
     let wrap=document.getElementById('eotBusinessHierarchy');if(!wrap){wrap=document.createElement('section');wrap.id='eotBusinessHierarchy';wrap.className='eot-bh-wrap';const head=screen.querySelector('.panel-head');if(head)head.insertAdjacentElement('afterend',wrap);else screen.prepend(wrap)}
-    const company=mainCompany(),list=businesses();if(!company){wrap.innerHTML='<div class="eot-bh-company"><h3>Önce ana şirketini kur</h3><p>İşletmeler ana şirketin altında faaliyet gösterir.</p></div>';return}
+    const company=mainCompany(),list=businesses();if(!company){wrap.innerHTML='<div class="eot-bh-company"><h3>Önce ana şirketini kur</h3><p>İşletmeler ana şirketin altında faaliyet gösterir.</p></div>';return true}
     const branchCount=list.reduce((n,b)=>n+(Array.isArray(b.branches)?b.branches.length:0),0),type=TYPES.find(x=>x.id===selectedType)||TYPES[0],remaining=Math.max(0,cashNow()-type.cost),canAfford=cashNow()>=type.cost,defaultName=(company.name||'Şirketim')+' '+type.name;
     wrap.innerHTML=`
       <div class="eot-bh-company"><small>ANA ŞİRKET</small><h3>${company.name||'Şirketim'}</h3><p>${company.legalType||'Şirket'} • ${company.city||company.headquarters?.city||'Türkiye'}</p><div class="eot-bh-stats"><div><span>İŞLETME</span><b>${list.length}</b></div><div><span>ŞUBE</span><b>${branchCount}</b></div><div><span>NAKİT</span><b>${money(cashNow())}</b></div></div></div>
@@ -73,7 +73,17 @@
         </div>
       </div>
       <div class="eot-bh-list"><h3>İşletmelerim</h3>${list.length?list.map(b=>`<div class="eot-bh-card"><div class="eot-bh-icon">${b.icon||'🏢'}</div><div><b>${b.name}</b><span>${b.typeName||'İşletme'} • ${b.city||'Türkiye'} • ${(b.branches||[]).length} şube</span></div><strong class="eot-bh-badge">AKTİF</strong></div>`).join(''):'<div class="eot-bh-empty">Henüz işletmen yok. İlk işletmeni ana şirketinin altında kur.</div>'}</div>`;
+    return true;
   }
-  function schedule(){if((location.hash||'')==='#business'||document.getElementById('business')?.classList.contains('active'))setTimeout(renderHierarchy,20)}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();window.addEventListener('hashchange',schedule,true);window.addEventListener('pageshow',schedule);
+  window.eotRenderBusinessHierarchy=renderHierarchy;
+
+  function routeRefresh(){if((location.hash||'')==='#business')renderHierarchy()}
+  function prewarm(){
+    const run=()=>{try{renderHierarchy()}catch(e){}};
+    if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:500});
+    else setTimeout(run,60);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',prewarm,{once:true});else prewarm();
+  window.addEventListener('hashchange',routeRefresh,true);
+  window.addEventListener('pageshow',function(){if(location.hash==='#business')renderHierarchy();else prewarm()});
 })();
