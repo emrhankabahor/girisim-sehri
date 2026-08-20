@@ -89,10 +89,19 @@
       deposits=deposits.filter(d=>d&&Number.isFinite(Number(d.amount))&&Number(d.amount)>0).map(d=>{
         d.amount=Math.max(0,Number(d.amount||0));
         d.t=Number(d.t||Date.now());
-        d.rate=DEPOSIT_RATE;
-        d.ret=Math.round(d.amount*(DEPOSIT_RATE/100)*100)/100;
-        d.maturity=d.t+DEPOSIT_MS;
-        d.periodHours=24;
+        if(d.available===true){
+          d.ret=0;
+          d.rate=0;
+          d.maturity=0;
+          d.periodHours=0;
+          d.earned=Math.max(0,Number(d.earned||0));
+        }else{
+          d.rate=DEPOSIT_RATE;
+          d.ret=Math.round(d.amount*(DEPOSIT_RATE/100)*100)/100;
+          d.maturity=d.t+DEPOSIT_MS;
+          d.periodHours=24;
+          d.earned=Math.max(0,Number(d.earned||0));
+        }
         if(d.months!==undefined){delete d.months;changed=true}
         return d;
       });
@@ -105,21 +114,21 @@
       normalizeDeposits();
       if(typeof deposits==='undefined'||!Array.isArray(deposits)||!deposits.length)return false;
       const now=Date.now();let payout=0,interest=0,changed=false;
-      const keep=[];
-      deposits.forEach(d=>{
+      deposits=deposits.map(d=>{
+        if(d.available===true)return d;
         if(now>=Number(d.maturity||0)){
-          const principal=Number(d.amount||0),ret=Number(d.ret||0);
-          payout+=principal+ret;interest+=ret;changed=true;
-          if(Array.isArray(tx))tx.unshift({t:now,kind:'deposit',type:'deposit_auto_payout',sym:'24 Saat Vadeli',total:principal+ret,interest:ret});
-        }else keep.push(d);
+          const principal=Number(d.amount||0),ret=Number(d.ret||0),total=principal+ret;
+          payout+=total;interest+=ret;changed=true;
+          if(Array.isArray(tx))tx.unshift({t:now,kind:'deposit',type:'deposit_matured',sym:'24 Saat Vadeli',total,interest:ret});
+          return {amount:total,t:now,maturity:0,rate:0,ret:0,earned:ret,periodHours:0,available:true,maturedAt:now};
+        }
+        return d;
       });
       if(!changed)return false;
-      deposits=keep;
-      cash=runtimeCash()+payout;
       persistCareer();
       try{render();renderFinanceExtras&&renderFinanceExtras();renderDeposits&&renderDeposits()}catch(e){}
       window.dispatchEvent(new CustomEvent('eot:deposit-updated'));
-      if(showToast&&typeof toast==='function')toast('24 saatlik vade tamamlandı • '+fmt(payout)+' hesabına aktarıldı');
+      if(showToast&&typeof toast==='function')toast('24 saatlik vade tamamlandı • '+fmt(payout)+' vadeli hesap bakiyene aktarıldı');
       return true;
     }catch(e){console.warn('Vadeli hesap aktarımı tamamlanamadı:',e);return false}
   }
@@ -136,13 +145,13 @@
       const now=Date.now();
       const ret=Math.round(amount*(DEPOSIT_RATE/100)*100)/100;
       cash=runtimeCash()-amount;
-      deposits.push({amount,t:now,maturity:now+DEPOSIT_MS,rate:DEPOSIT_RATE,ret,periodHours:24});
+      deposits.push({amount,t:now,maturity:now+DEPOSIT_MS,rate:DEPOSIT_RATE,ret,earned:0,periodHours:24,available:false});
       if(Array.isArray(tx))tx.unshift({t:now,kind:'deposit',type:'deposit_open',sym:'24 Saat Vadeli',total:-amount});
       if(el)el.value='';
       persistCareer();
       try{render();renderFinanceExtras&&renderFinanceExtras();renderDeposits&&renderDeposits()}catch(e){}
       window.dispatchEvent(new CustomEvent('eot:deposit-updated'));
-      if(typeof toast==='function')toast('Para yatırıldı • 24 saat sonra %0,99 faizle otomatik aktarılacak');
+      if(typeof toast==='function')toast('Para yatırıldı • 24 saat sonra %0,99 faiz vadeli hesap bakiyene eklenecek');
       return true;
     }catch(e){console.warn('Vadeli hesap açılamadı:',e);return false}
   }
@@ -151,15 +160,16 @@
     try{
       processMaturedDeposits(false);
       normalizeDeposits();
-      if(typeof deposits==='undefined'||!Array.isArray(deposits)||!deposits.length){if(typeof toast==='function')toast('Aktif vadeli hesabın bulunmuyor');return false}
-      const principal=deposits.reduce((s,d)=>s+Number(d.amount||0),0);
+      if(typeof deposits==='undefined'||!Array.isArray(deposits)||!deposits.length){if(typeof toast==='function')toast('Vadeli hesap bakiyen bulunmuyor');return false}
+      const amount=deposits.reduce((s,d)=>s+Number(d.amount||0),0);
+      const activeCount=deposits.filter(d=>d.available!==true).length;
       deposits=[];
-      cash=runtimeCash()+principal;
-      if(Array.isArray(tx))tx.unshift({t:Date.now(),kind:'deposit',type:'deposit_early_withdraw',sym:'Vadeli Hesap Erken Çekim',total:principal});
+      cash=runtimeCash()+amount;
+      if(Array.isArray(tx))tx.unshift({t:Date.now(),kind:'deposit',type:'deposit_withdraw',sym:activeCount?'Vadeli Hesap Çekim':'Vadeli Hesap Bakiye Çekim',total:amount});
       persistCareer();
       try{render();renderFinanceExtras&&renderFinanceExtras();renderDeposits&&renderDeposits()}catch(e){}
       window.dispatchEvent(new CustomEvent('eot:deposit-updated'));
-      if(typeof toast==='function')toast('Para çekildi • Erken çekimde faiz uygulanmadı');
+      if(typeof toast==='function')toast(activeCount?'Para çekildi • Aktif vadelerde faiz uygulanmadı':'Vadeli hesap bakiyesi nakde aktarıldı');
       return true;
     }catch(e){return false}
   }
