@@ -5,6 +5,7 @@
   window.__eotBottomNavLock=true;
 
   let syncFrame=0;
+  let extrasQueued=false;
 
   function ensureStyle(){
     if(document.getElementById('eot-bottom-nav-lock-style'))return;
@@ -37,17 +38,24 @@
     }
   }
 
-  function loadOnce(id,src){if(document.getElementById(id))return;const sc=document.createElement('script');sc.id=id;sc.src=src;sc.async=true;document.head.appendChild(sc)}
-  function ensureTransitionPerformance(){if(!window.__eotTransitionPerformance)loadOnce('eot-transition-performance-loader','transition-performance.js?v=5')}
+  function loadOnce(id,src,priority){if(document.getElementById(id))return;const sc=document.createElement('script');sc.id=id;sc.src=src;sc.async=true;if(priority)try{sc.fetchPriority=priority}catch(e){}document.head.appendChild(sc)}
+  function ensureTransitionPerformance(){if(!window.__eotTransitionPerformance)loadOnce('eot-transition-performance-loader','transition-performance.js?v=5','high')}
   function ensurePersistenceDedupe(){if(!window.__eotPersistenceDedupe)loadOnce('eot-persistence-dedupe-loader','persistence-dedupe.js?v=2')}
   function ensureHomeGameplay(){if(!window.__eotHomeGameplay)loadOnce('eot-home-gameplay-loader','home-gameplay.js?v=1')}
   function ensureMissionRewards(){if(!window.__eotMissionRewards)loadOnce('eot-mission-rewards-loader','mission-rewards.js?v=1')}
-  function ensureBusinessHierarchy(){if(!window.__eotBusinessHierarchy)loadOnce('eot-business-hierarchy-loader','business-hierarchy.js?v=2')}
+  function ensureBusinessHierarchy(){if(!window.__eotBusinessHierarchy)loadOnce('eot-business-hierarchy-loader','business-hierarchy.js?v=3','high')}
   function ensureHomeCleanup(){if(!window.__eotHomeCleanup)loadOnce('eot-home-cleanup-loader','home-cleanup.js?v=1')}
-  function ensureRouteScrollReset(){if(!window.__eotRouteScrollReset)loadOnce('eot-route-scroll-reset-loader','route-scroll-reset.js?v=1')}
+  function ensureRouteScrollReset(){if(!window.__eotRouteScrollReset)loadOnce('eot-route-scroll-reset-loader','route-scroll-reset.js?v=1','high')}
   function ensureLegacyCompanyUiCleanup(){if(!window.__eotLegacyCompanyUiCleanup)loadOnce('eot-legacy-company-ui-cleanup-loader','legacy-company-ui-cleanup.js?v=1')}
-  function ensureDirectRouteDisplay(){if(!window.__eotDirectRouteDisplay)loadOnce('eot-direct-route-display-loader','direct-route-display.js?v=1')}
+  function ensureDirectRouteDisplay(){if(!window.__eotDirectRouteDisplay)loadOnce('eot-direct-route-display-loader','direct-route-display.js?v=1','high')}
   function ensureVisibleRouteGuard(){if(!window.__eotVisibleRouteGuard)loadOnce('eot-visible-route-guard-loader','visible-route-guard.js?v=3')}
+
+  function queueNonCritical(){
+    if(extrasQueued)return;extrasQueued=true;
+    const run=function(){ensureHomeGameplay();ensureMissionRewards();ensureHomeCleanup();ensureLegacyCompanyUiCleanup()};
+    if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:1500});
+    else setTimeout(run,700);
+  }
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){const t=textOf(btn);if(t.includes('ana sayfa'))return'home';if(t.includes('pazar'))return'market';if(t.includes('işlet'))return'business';if(t.includes('finans'))return'finance';if(t.includes('profil'))return'profile';return'home'}
@@ -85,15 +93,17 @@
   }
 
   function bindFastNavigation(){
-    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='9')return;
-    nav.dataset.eotFastNav='9';
+    const nav=document.querySelector('.bottom-nav');if(!nav||nav.dataset.eotFastNav==='10')return;
+    nav.dataset.eotFastNav='10';
     nav.addEventListener('click',function(e){const btn=e.target.closest('.nav-btn');if(!btn||!nav.contains(btn))return;e.preventDefault();e.stopImmediatePropagation();navigate(targetFor(btn))},true);
   }
 
   function onRouteChange(){syncRouteClass(location.hash||'#home');scheduleSync()}
   function lock(){
     ensureStyle();removeLegacyHasRule();syncRouteClass(location.hash||'#home');
-    ensureTransitionPerformance();ensurePersistenceDedupe();ensureHomeGameplay();ensureMissionRewards();ensureBusinessHierarchy();ensureHomeCleanup();ensureRouteScrollReset();ensureLegacyCompanyUiCleanup();ensureDirectRouteDisplay();ensureVisibleRouteGuard();
+    /* İlk dokunuştan önce yalnızca geçiş için gerekli katmanları hazırla. */
+    ensureDirectRouteDisplay();ensureRouteScrollReset();ensureBusinessHierarchy();ensureTransitionPerformance();ensurePersistenceDedupe();ensureVisibleRouteGuard();
+    queueNonCritical();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
     bindFastNavigation();scheduleSync();
