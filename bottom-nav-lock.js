@@ -38,16 +38,16 @@
   }
 
   function loadOnce(id,src){if(document.getElementById(id))return;const sc=document.createElement('script');sc.id=id;sc.src=src;sc.async=true;document.head.appendChild(sc)}
-  function ensureTransitionPerformance(){if(!window.__eotTransitionPerformance)loadOnce('eot-transition-performance-loader','transition-performance.js?v=3')}
-  function ensurePersistenceDedupe(){if(!window.__eotPersistenceDedupe)loadOnce('eot-persistence-dedupe-loader','persistence-dedupe.js?v=1')}
+  function ensureTransitionPerformance(){if(!window.__eotTransitionPerformance)loadOnce('eot-transition-performance-loader','transition-performance.js?v=5')}
+  function ensurePersistenceDedupe(){if(!window.__eotPersistenceDedupe)loadOnce('eot-persistence-dedupe-loader','persistence-dedupe.js?v=2')}
   function ensureHomeGameplay(){if(!window.__eotHomeGameplay)loadOnce('eot-home-gameplay-loader','home-gameplay.js?v=1')}
   function ensureMissionRewards(){if(!window.__eotMissionRewards)loadOnce('eot-mission-rewards-loader','mission-rewards.js?v=1')}
-  function ensureBusinessHierarchy(){if(!window.__eotBusinessHierarchy)loadOnce('eot-business-hierarchy-loader','business-hierarchy.js?v=1')}
+  function ensureBusinessHierarchy(){if(!window.__eotBusinessHierarchy)loadOnce('eot-business-hierarchy-loader','business-hierarchy.js?v=2')}
   function ensureHomeCleanup(){if(!window.__eotHomeCleanup)loadOnce('eot-home-cleanup-loader','home-cleanup.js?v=1')}
   function ensureRouteScrollReset(){if(!window.__eotRouteScrollReset)loadOnce('eot-route-scroll-reset-loader','route-scroll-reset.js?v=1')}
   function ensureLegacyCompanyUiCleanup(){if(!window.__eotLegacyCompanyUiCleanup)loadOnce('eot-legacy-company-ui-cleanup-loader','legacy-company-ui-cleanup.js?v=1')}
   function ensureDirectRouteDisplay(){if(!window.__eotDirectRouteDisplay)loadOnce('eot-direct-route-display-loader','direct-route-display.js?v=1')}
-  function ensureVisibleRouteGuard(){if(!window.__eotVisibleRouteGuard)loadOnce('eot-visible-route-guard-loader','visible-route-guard.js?v=1')}
+  function ensureVisibleRouteGuard(){if(!window.__eotVisibleRouteGuard)loadOnce('eot-visible-route-guard-loader','visible-route-guard.js?v=3')}
 
   function textOf(btn){return String(btn&&btn.textContent||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('tr-TR')}
   function sectionOf(btn){const t=textOf(btn);if(t.includes('ana sayfa'))return'home';if(t.includes('pazar'))return'market';if(t.includes('işlet'))return'business';if(t.includes('finans'))return'finance';if(t.includes('profil'))return'profile';return'home'}
