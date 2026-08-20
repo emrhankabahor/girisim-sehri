@@ -8,6 +8,9 @@
   const lastAt={};
   let force=false;
 
+  function navigationBusy(){
+    try{return typeof window.EOTNavigationBusy==='function'?window.EOTNavigationBusy():window.__eotNavigationBusy===true}catch(e){return false}
+  }
   function json(v){try{return JSON.stringify(v)}catch(e){return String(Date.now())}}
   function sigSave(){try{return json([cash,pf,tx,realized,loans,creditScore,trusts,lateCount])}catch(e){return ''}}
   function sigOwned(){try{return json([ownedAssets,factoryOp,constructionOp,selectedLandId,factoryLevel,reputation,economyState,sim])}catch(e){return ''}}
@@ -20,6 +23,9 @@
       const fn=window[name];
       if(typeof fn!=='function'||fn.__eotPersistenceDedupe)return false;
       const w=function(){
+        /* Route değişirken büyük state'i JSON.stringify etmek dokunma gecikmesi yaratıyordu.
+           Bu anda imza üretmeden alt performans katmanına bırak; kayıt zaten burst sonunda birleşir. */
+        if(!force&&navigationBusy())return fn.apply(this,arguments);
         const s=signature.apply(this,arguments);
         const now=performance.now();
         if(!force&&s&&lastSig[name]===s&&(now-(lastAt[name]||0))<minGap)return;
