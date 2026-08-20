@@ -36,21 +36,14 @@
   document.body.appendChild(s);
 })();
 
-/* Ana şirket -> işletmeler arayüzü. */
-(function(){
-  if(document.querySelector('script[data-eot-business-hierarchy]')||window.__eotBusinessHierarchy)return;
-  const s=document.createElement('script');
-  s.src='business-hierarchy.js?v=2';
-  s.dataset.eotBusinessHierarchy='1';
-  s.async=true;
-  document.body.appendChild(s);
-})();
+/* business-hierarchy.js tek sahipli olarak bottom-nav-lock.js tarafından yüklenir.
+   Buradan ikinci kez async yüklemek ilk İşletmeler girişinde yarış ve parse yükü oluşturuyordu. */
 
 /* Vadeli hesapta vade sonu tutarını hesap içinde tut ve özetleri senkronla. */
 (function(){
   if(document.querySelector('script[data-eot-deposit-balance-sync]'))return;
   const s=document.createElement('script');
-  s.src='deposit-balance-sync.js?v=1';
+  s.src='deposit-balance-sync.js?v=2';
   s.dataset.eotDepositBalanceSync='1';
   s.async=true;
   document.body.appendChild(s);
