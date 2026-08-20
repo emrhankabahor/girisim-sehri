@@ -1,10 +1,16 @@
-/* Empire of Trade • Eski şirket portföyü arayüzünü kaldır - hafif sürüm */
+/* Empire of Trade • Eski şirket portföyü + gereksiz ticari kredi bilgilendirmelerini kaldır */
 (function(){
   'use strict';
   if(window.__eotLegacyCompanyUiCleanup)return;
   window.__eotLegacyCompanyUiCleanup=true;
 
-  function relevant(){const h=String(location.hash||'').toLocaleLowerCase('tr-TR');return h.includes('business')||h.includes('compan')}
+  function relevant(){const h=String(location.hash||'').toLocaleLowerCase('tr-TR');return h.includes('business')||h.includes('compan')||h.includes('credit')||h.includes('ticari')}
+  function removeCommercialAssessment(){
+    document.querySelectorAll('.info-card').forEach(card=>{
+      const t=String(card.textContent||'').replace(/\s+/g,' ').trim();
+      if(t.startsWith('Değerlendirme')&&t.includes('Şirket sermayesi')&&t.includes('kredi puanı')&&t.includes('itibar'))card.remove();
+    });
+  }
   function removeLegacy(){
     const screens=[document.getElementById('business'),document.getElementById('companies')].filter(Boolean);
     screens.forEach(screen=>{
@@ -12,10 +18,12 @@
       const list=screen.querySelector('#companyPortfolioList');
       if(list){const title=list.previousElementSibling;if(title&&title.classList.contains('company-section-title'))title.remove();list.remove()}
     });
+    removeCommercialAssessment();
   }
   function disableLegacyRenderer(){try{window.renderCompanyPortfolio=function(){if(relevant())removeLegacy()}}catch(e){}}
   let frame=0;function run(force){disableLegacyRenderer();if(!force&&!relevant())return;if(frame)return;frame=requestAnimationFrame(()=>{frame=0;removeLegacy()})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>run(true),{once:true});else run(true);
   window.addEventListener('hashchange',()=>run(false),true);
   window.addEventListener('pageshow',()=>run(false));
+  document.addEventListener('eot:route-rendered',()=>run(false));
 })();
