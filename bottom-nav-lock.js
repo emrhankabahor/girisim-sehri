@@ -46,7 +46,7 @@
   function ensureBusinessHierarchy(){if(!window.__eotBusinessHierarchy)loadOnce('eot-business-hierarchy-loader','business-hierarchy.js?v=3','high')}
   function ensureHomeCleanup(){if(!window.__eotHomeCleanup)loadOnce('eot-home-cleanup-loader','home-cleanup.js?v=1')}
   function ensureRouteScrollReset(){if(!window.__eotRouteScrollReset)loadOnce('eot-route-scroll-reset-loader','route-scroll-reset.js?v=1','high')}
-  function ensureLegacyCompanyUiCleanup(){if(!window.__eotLegacyCompanyUiCleanup)loadOnce('eot-legacy-company-ui-cleanup-loader','legacy-company-ui-cleanup.js?v=4')}
+  function ensureLegacyCompanyUiCleanup(){if(!window.__eotLegacyCompanyUiCleanup)loadOnce('eot-legacy-company-ui-cleanup-loader','legacy-company-ui-cleanup.js?v=5')}
   function ensureDirectRouteDisplay(){if(!window.__eotDirectRouteDisplay)loadOnce('eot-direct-route-display-loader','direct-route-display.js?v=1','high')}
   function ensureVisibleRouteGuard(){if(!window.__eotVisibleRouteGuard)loadOnce('eot-visible-route-guard-loader','visible-route-guard.js?v=3')}
 
