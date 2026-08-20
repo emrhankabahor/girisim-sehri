@@ -46,6 +46,16 @@
   document.body.appendChild(s);
 })();
 
+/* Vadeli hesapta vade sonu tutarını hesap içinde tut ve özetleri senkronla. */
+(function(){
+  if(document.querySelector('script[data-eot-deposit-balance-sync]'))return;
+  const s=document.createElement('script');
+  s.src='deposit-balance-sync.js?v=1';
+  s.dataset.eotDepositBalanceSync='1';
+  s.async=true;
+  document.body.appendChild(s);
+})();
+
 /* Araç pazarı birleşim modülü demo bakiye daha önce verilmiş olsa da her oturumda yüklenir. */
 (function(){
   if(document.querySelector('script[data-eot-vehicle-market-merge]'))return;
