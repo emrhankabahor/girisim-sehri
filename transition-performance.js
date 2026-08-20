@@ -11,6 +11,8 @@
 
   function now(){return performance.now()}
   function inBurst(){return now()<burstUntil}
+  function setBusy(v){window.__eotNavigationBusy=!!v}
+  window.EOTNavigationBusy=function(){return inBurst()||window.__eotNavigationBusy===true};
 
   function flushPending(){
     state.forEach(function(s){
@@ -22,6 +24,8 @@
       s.lastThis=null;
       try{s.lastResult=s.original.apply(ctx,args)}catch(e){console.warn('Geçiş sonrası kayıt:',s.name,e)}
     });
+    setBusy(false);
+    try{window.dispatchEvent(new CustomEvent('eot:navigation-settled'))}catch(e){}
   }
 
   function finishBurst(){
@@ -36,6 +40,7 @@
 
   function markBurst(){
     burstUntil=now()+140;
+    setBusy(true);
     clearTimeout(burstTimer);
     burstTimer=setTimeout(finishBurst,160);
   }
@@ -60,9 +65,6 @@
 
   function install(){['save','simSave','saveOwned','saveDeposits','saveAccountCareer'].forEach(wrapPersistence)}
 
-  /* Alt menü geçişlerinde intent tek burst kaynağıdır. Hashchange sırasında tekrar
-     install/timer başlatmıyoruz. Geri/ileri gibi intentsiz hash değişimlerinde ise
-     yalnızca gerekiyorsa bir kez burst açılır. */
   window.addEventListener('eot:navigation-intent',markBurst,true);
   window.addEventListener('hashchange',function(){if(!inBurst())markBurst()},true);
   window.addEventListener('pageshow',install);
