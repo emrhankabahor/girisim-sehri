@@ -5,9 +5,10 @@
   window.__eotVisibleRouteGuard=true;
 
   function route(){return String(location.hash||'#home').toLocaleLowerCase('tr-TR')}
-  function matches(words){const h=route();return words.some(x=>h.includes(x))}
-  function businessVisible(){return matches(['business','compan','factory','construction','employee','tender','inventory','project','asset'])}
-  function economyVisible(){return businessVisible()||matches(['economy','simulation'])}
+  function has(words){const h=route();return words.some(x=>h.includes(x))}
+  function opsVisible(){return has(['business','compan','factory','construction'])}
+  function simulationVisible(){return has(['business','compan','employee','tender','inventory','simulation'])}
+  function economyVisible(){return has(['economy','simulation'])}
 
   function wrap(name,allowed){
     try{
@@ -25,9 +26,9 @@
   }
 
   function install(){
-    wrap('updateOps',businessVisible);
+    wrap('updateOps',opsVisible);
     wrap('renderEconomy',economyVisible);
-    wrap('renderSimulation',economyVisible);
+    wrap('renderSimulation',simulationVisible);
   }
 
   let tries=0;
@@ -39,20 +40,26 @@
   install();
 
   let refreshToken=0;
+  let idleId=0;
+  function cancelPending(){
+    refreshToken++;
+    if(idleId&&'cancelIdleCallback' in window){try{cancelIdleCallback(idleId)}catch(e){}idleId=0}
+  }
   function refreshAfterPaint(){
-    if(document.hidden||!businessVisible())return;
-    const token=++refreshToken;
+    cancelPending();
+    if(document.hidden)return;
+    const token=refreshToken;
     const run=function(){
-      if(token!==refreshToken||document.hidden||!businessVisible())return;
-      try{if(typeof window.updateOps==='function')window.updateOps()}catch(e){}
-      try{if(typeof window.renderEconomy==='function')window.renderEconomy()}catch(e){}
-      try{if(typeof window.renderSimulation==='function')window.renderSimulation()}catch(e){}
+      idleId=0;
+      if(token!==refreshToken||document.hidden)return;
+      try{if(opsVisible()&&typeof window.updateOps==='function')window.updateOps()}catch(e){}
+      try{if(simulationVisible()&&typeof window.renderSimulation==='function')window.renderSimulation()}catch(e){}
+      try{if(economyVisible()&&typeof window.renderEconomy==='function')window.renderEconomy()}catch(e){}
     };
     requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:350});
-        else setTimeout(run,90);
-      });
+      if(token!==refreshToken)return;
+      if('requestIdleCallback' in window)idleId=requestIdleCallback(run,{timeout:300});
+      else setTimeout(run,60);
     });
   }
 
