@@ -35,6 +35,9 @@ function meta(x){
   if(kind==='asset')return ['VARLIK İŞLEMİ',type==='asset_sell'];
   return ['FİNANSAL İŞLEM',Number(x&&x.total||0)>0];
 }
+function row(label,title,date,amount,income,extra){
+  return '<div class="transaction-item"><div><strong>'+label+' • '+title+'</strong><small>'+(extra||'')+date+'</small></div><div class="tx-amount '+(income?'profit':'loss2')+'">'+(income?'+':'-')+fmtMoney(Math.abs(Number(amount||0)))+'</div></div>';
+}
 function fixedRenderTx(){
   const e=document.getElementById('transactionList');if(!e)return;
   const all=typeof tx!=='undefined'&&Array.isArray(tx)?tx:[];
@@ -45,11 +48,18 @@ function fixedRenderTx(){
   if(rp){const val=typeof realized!=='undefined'?realized:0;rp.textContent=fmtMoney(val);rp.className=val>=0?'profit':'loss2'}
   if(!list.length){e.innerHTML='<div style="color:var(--muted);font-size:11px;text-align:center;padding:12px">Bu filtrede işlem bulunmuyor.</div>';return}
   e.innerHTML=list.slice(0,40).map(x=>{
-    const [label,income]=meta(x);
-    const amount=Math.abs(Number(x&&x.total||0));
+    const type=String(x&&x.type||'');
     const title=String(x&&x.sym||'İşlem');
     const date=new Date(Number(x&&x.t||Date.now())).toLocaleString('tr-TR');
-    return '<div class="transaction-item"><div><strong>'+label+' • '+title+'</strong><small>'+qtyLabel(x)+date+'</small></div><div class="tx-amount '+(income?'profit':'loss2')+'">'+(income?'+':'-')+fmtMoney(amount)+'</div></div>';
+    if(type==='deposit_auto_payout'){
+      const total=Math.abs(Number(x&&x.total||0));
+      const interest=Math.max(0,Math.abs(Number(x&&x.interest||0)));
+      const principal=Math.max(0,total-interest);
+      return row('ANA PARA İADESİ',title,date,principal,true,'Vade tamamlandı • ')+row('FAİZ GELİRİ',title,date,interest,true,'%0,99 getiri • ');
+    }
+    const [label,income]=meta(x);
+    const amount=Math.abs(Number(x&&x.total||0));
+    return row(label,title,date,amount,income,qtyLabel(x));
   }).join('');
 }
 window.renderTx=fixedRenderTx;
