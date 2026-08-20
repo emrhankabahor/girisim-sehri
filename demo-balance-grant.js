@@ -36,6 +36,16 @@
   document.body.appendChild(s);
 })();
 
+/* Ana şirket -> işletmeler arayüzü. */
+(function(){
+  if(document.querySelector('script[data-eot-business-hierarchy]')||window.__eotBusinessHierarchy)return;
+  const s=document.createElement('script');
+  s.src='business-hierarchy.js?v=2';
+  s.dataset.eotBusinessHierarchy='1';
+  s.async=true;
+  document.body.appendChild(s);
+})();
+
 /* Araç pazarı birleşim modülü demo bakiye daha önce verilmiş olsa da her oturumda yüklenir. */
 (function(){
   if(document.querySelector('script[data-eot-vehicle-market-merge]'))return;
