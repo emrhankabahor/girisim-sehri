@@ -44,6 +44,7 @@
   function ensureHomeGameplay(){if(!window.__eotHomeGameplay)loadOnce('eot-home-gameplay-loader','home-gameplay.js?v=1')}
   function ensureMissionRewards(){if(!window.__eotMissionRewards)loadOnce('eot-mission-rewards-loader','mission-rewards.js?v=1')}
   function ensureBusinessHierarchy(){if(!window.__eotBusinessHierarchy)loadOnce('eot-business-hierarchy-loader','business-hierarchy.js?v=3','high')}
+  function ensureBusinessCreditLimitFix(){if(!window.__eotBusinessCreditLimitFix)loadOnce('eot-business-credit-limit-fix-loader','business-credit-limit-fix.js?v=1','high')}
   function ensureHomeCleanup(){if(!window.__eotHomeCleanup)loadOnce('eot-home-cleanup-loader','home-cleanup.js?v=1')}
   function ensureRouteScrollReset(){if(!window.__eotRouteScrollReset)loadOnce('eot-route-scroll-reset-loader','route-scroll-reset.js?v=1','high')}
   function ensureLegacyCompanyUiCleanup(){if(!window.__eotLegacyCompanyUiCleanup)loadOnce('eot-legacy-company-ui-cleanup-loader','legacy-company-ui-cleanup.js?v=5')}
@@ -101,7 +102,7 @@
   function onRouteChange(){syncRouteClass(location.hash||'#home');scheduleSync()}
   function lock(){
     ensureStyle();removeLegacyHasRule();syncRouteClass(location.hash||'#home');
-    ensureDirectRouteDisplay();ensureRouteScrollReset();ensureBusinessHierarchy();ensureTransitionPerformance();ensurePersistenceDedupe();ensureVisibleRouteGuard();
+    ensureDirectRouteDisplay();ensureRouteScrollReset();ensureBusinessHierarchy();ensureBusinessCreditLimitFix();ensureTransitionPerformance();ensurePersistenceDedupe();ensureVisibleRouteGuard();
     queueNonCritical();
     const nav=document.querySelector('.bottom-nav');if(!nav)return;
     if(nav.parentElement!==document.body)document.body.appendChild(nav);
