@@ -1,14 +1,16 @@
-/* Empire of Trade • Eski şirket portföyü + gereksiz ticari kredi bilgilendirmelerini kaldır */
+/* Empire of Trade • Eski şirket portföyü + gereksiz kredi bilgilendirmelerini kaldır */
 (function(){
   'use strict';
   if(window.__eotLegacyCompanyUiCleanup)return;
   window.__eotLegacyCompanyUiCleanup=true;
 
-  function relevant(){const h=String(location.hash||'').toLocaleLowerCase('tr-TR');return h.includes('business')||h.includes('compan')||h.includes('credit')||h.includes('ticari')}
-  function removeCommercialAssessment(){
+  function relevant(){const h=String(location.hash||'').toLocaleLowerCase('tr-TR');return h.includes('business')||h.includes('compan')||h.includes('credit')||h.includes('ticari')||h.includes('loan')||h.includes('teminat')}
+  function removeCreditInfoCards(){
     document.querySelectorAll('.info-card').forEach(card=>{
       const t=String(card.textContent||'').replace(/\s+/g,' ').trim();
-      if(t.startsWith('Değerlendirme')&&t.includes('Şirket sermayesi')&&t.includes('kredi puanı')&&t.includes('itibar'))card.remove();
+      const commercial=t.startsWith('Değerlendirme')&&t.includes('Şirket sermayesi')&&t.includes('kredi puanı')&&t.includes('itibar');
+      const secured=t.startsWith('Nasıl çalışır?')&&t.includes('Teminat verdiğin varlığın')&&t.includes('%50')&&t.includes('kredi kapanana kadar')&&t.includes('satılamaz');
+      if(commercial||secured)card.remove();
     });
   }
   function removeLegacy(){
@@ -18,7 +20,7 @@
       const list=screen.querySelector('#companyPortfolioList');
       if(list){const title=list.previousElementSibling;if(title&&title.classList.contains('company-section-title'))title.remove();list.remove()}
     });
-    removeCommercialAssessment();
+    removeCreditInfoCards();
   }
   function disableLegacyRenderer(){try{window.renderCompanyPortfolio=function(){if(relevant())removeLegacy()}}catch(e){}}
   let frame=0;function run(force){disableLegacyRenderer();if(!force&&!relevant())return;if(frame)return;frame=requestAnimationFrame(()=>{frame=0;removeLegacy()})}
