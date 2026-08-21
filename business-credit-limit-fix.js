@@ -20,12 +20,25 @@
     if(document.getElementById('eot-business-credit-limit-style'))return;
     var s=document.createElement('style');
     s.id='eot-business-credit-limit-style';
-    s.textContent='#business_credit [onclick*="takeBusinessCredit"].eot-credit-limit-disabled,#business_credit button.eot-credit-limit-disabled{opacity:.48!important;filter:saturate(.45)!important;cursor:not-allowed!important;pointer-events:none!important;box-shadow:none!important;transform:none!important}';
+    s.textContent='#business_credit [onclick*="takeBusinessCredit"].eot-credit-limit-disabled,#business_credit button.eot-credit-limit-disabled{opacity:.48!important;filter:saturate(.45)!important;cursor:not-allowed!important;box-shadow:none!important;transform:none!important}';
     document.head.appendChild(s);
   }
 
   function creditButton(){
     return document.querySelector('#business_credit [onclick*="takeBusinessCredit"],#business_credit button[onclick*="takeBusinessCredit"],[onclick*="takeBusinessCredit"]');
+  }
+
+  function showLimitWarning(){
+    var message='Aynı anda en fazla 2 ticari kredi kullanılabilir.';
+    if(typeof toast==='function'){toast(message);return;}
+    var old=document.getElementById('eot-business-credit-limit-toast');
+    if(old)old.remove();
+    var box=document.createElement('div');
+    box.id='eot-business-credit-limit-toast';
+    box.textContent=message;
+    box.style.cssText='position:fixed;left:50%;bottom:105px;transform:translateX(-50%);z-index:2147483646;max-width:calc(100% - 40px);padding:13px 18px;border:1px solid rgba(126,167,204,.24);border-radius:15px;background:#132a43;color:#f4f8fc;font-weight:700;font-size:14px;line-height:1.35;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.28)';
+    document.body.appendChild(box);
+    setTimeout(function(){if(box&&box.parentNode)box.remove()},2400);
   }
 
   function refreshButton(){
@@ -34,7 +47,8 @@
     if(!btn)return;
     var limited=activeLoanCount()>=2;
     btn.classList.toggle('eot-credit-limit-disabled',limited);
-    if('disabled' in btn)btn.disabled=limited;
+    /* Native disabled kullanmıyoruz: pasif görünürken dokunma olayını yakalayıp uyarı göstereceğiz. */
+    if('disabled' in btn)btn.disabled=false;
     btn.setAttribute('aria-disabled',limited?'true':'false');
     if(limited)btn.setAttribute('tabindex','-1');else btn.removeAttribute('tabindex');
   }
@@ -45,7 +59,7 @@
     var wrapped=function(){
       if(activeLoanCount()>=2){
         refreshButton();
-        if(typeof toast==='function')toast('Aynı anda en fazla 2 aktif kredi kullanabilirsin.');
+        showLimitWarning();
         return false;
       }
       var result=original.apply(this,arguments);
@@ -58,6 +72,14 @@
     refreshButton();
     return true;
   }
+
+  document.addEventListener('click',function(e){
+    var btn=e.target&&e.target.closest?e.target.closest('#business_credit .eot-credit-limit-disabled'):null;
+    if(!btn)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    showLimitWarning();
+  },true);
 
   if(!install()){
     var tries=0,timer=setInterval(function(){
