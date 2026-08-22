@@ -36,6 +36,16 @@
   document.body.appendChild(s);
 })();
 
+/* Ana Sayfa üst Nakit / Net Servet / Aylık Akış kartlarını anlık senkronla. */
+(function(){
+  if(document.querySelector('script[data-eot-home-wallet-live-sync]'))return;
+  const s=document.createElement('script');
+  s.src='home-wallet-live-sync.js?v=1';
+  s.dataset.eotHomeWalletLiveSync='1';
+  s.async=true;
+  document.body.appendChild(s);
+})();
+
 /* business-hierarchy.js tek sahipli olarak bottom-nav-lock.js tarafından yüklenir. */
 
 /* Vadeli hesap: ilk yatırma saatine bağlı günlük döngü + maksimum 4 gün offline faiz. */
