@@ -9,10 +9,14 @@
     const s=document.createElement('style');
     s.id='eot-property-rent-countdown-style';
     s.textContent=`
-      button.eot-rent-waiting{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;line-height:1.05!important;min-height:58px!important}
-      button.eot-rent-waiting .eot-rent-label{font:inherit!important;font-weight:800!important}
-      button.eot-rent-waiting .eot-rent-countdown{font-size:11px!important;font-weight:800!important;letter-spacing:.12em!important;color:#8fb6d7!important;opacity:.96!important}
+      .eot-rent-action-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px!important;align-items:stretch!important;width:100%!important}
+      .eot-rent-action-row>button{width:100%!important;min-width:0!important;min-height:72px!important;height:72px!important;margin:0!important;border-radius:16px!important;padding:10px 12px!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important}
+      .eot-rent-action-row>button.eot-rent-waiting{flex-direction:column!important;gap:6px!important;line-height:1.05!important}
+      .eot-rent-action-row>button.eot-rent-sale{font-weight:800!important;line-height:1.15!important}
+      button.eot-rent-waiting .eot-rent-label{font:inherit!important;font-weight:800!important;font-size:13px!important;white-space:nowrap!important}
+      button.eot-rent-waiting .eot-rent-countdown{font-size:12px!important;font-weight:900!important;letter-spacing:.14em!important;color:#9fc6e8!important;opacity:1!important;font-variant-numeric:tabular-nums!important}
       button.eot-rent-ready .eot-rent-countdown{color:#53ddb0!important}
+      @media(max-width:390px){.eot-rent-action-row{gap:8px!important}.eot-rent-action-row>button{min-height:68px!important;height:68px!important;padding:9px 8px!important}button.eot-rent-waiting .eot-rent-label{font-size:12px!important}button.eot-rent-waiting .eot-rent-countdown{font-size:11px!important}}
     `;
     document.head.appendChild(s);
   }
@@ -37,9 +41,20 @@
     }catch(e){return null}
   }
 
+  function normalizeActionRow(btn){
+    const parent=btn.parentElement;
+    if(!parent)return;
+    parent.classList.add('eot-rent-action-row');
+    [...parent.children].forEach(function(el){
+      if(el===btn)return;
+      if(el.tagName==='BUTTON')el.classList.add('eot-rent-sale');
+    });
+  }
+
   function paint(btn,asset,now){
     const readyAt=Number(asset.rentReady||0);
     if(!readyAt)return;
+    normalizeActionRow(btn);
     const remaining=readyAt-now;
     const ready=remaining<=0;
     btn.classList.add('eot-rent-waiting');
