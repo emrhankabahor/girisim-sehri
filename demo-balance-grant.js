@@ -36,11 +36,11 @@
   document.body.appendChild(s);
 })();
 
-/* Ana Sayfa üst Nakit / Net Servet / Aylık Akış kartlarını anlık senkronla. */
+/* Ana Sayfa üst Nakit / Net Servet / Aylık Akış kartlarını doğrudan state'ten anlık senkronla. */
 (function(){
   if(document.querySelector('script[data-eot-home-wallet-live-sync]'))return;
   const s=document.createElement('script');
-  s.src='home-wallet-live-sync.js?v=1';
+  s.src='home-wallet-live-sync.js?v=2';
   s.dataset.eotHomeWalletLiveSync='1';
   s.async=true;
   document.body.appendChild(s);
