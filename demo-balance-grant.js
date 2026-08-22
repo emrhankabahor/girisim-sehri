@@ -50,7 +50,7 @@
 (function(){
   if(document.querySelector('script[data-eot-property-rent-countdown]'))return;
   const s=document.createElement('script');
-  s.src='property-rent-countdown.js?v=2';
+  s.src='property-rent-countdown.js?v=3';
   s.dataset.eotPropertyRentCountdown='1';
   s.async=true;
   document.body.appendChild(s);
