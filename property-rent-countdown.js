@@ -9,14 +9,14 @@
     const s=document.createElement('style');
     s.id='eot-property-rent-countdown-style';
     s.textContent=`
-      .eot-rent-action-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px!important;align-items:stretch!important;width:100%!important}
-      .eot-rent-action-row>button{width:100%!important;min-width:0!important;min-height:72px!important;height:72px!important;margin:0!important;border-radius:16px!important;padding:10px 12px!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important}
-      .eot-rent-action-row>button.eot-rent-waiting{flex-direction:column!important;gap:6px!important;line-height:1.05!important}
-      .eot-rent-action-row>button.eot-rent-sale{font-weight:800!important;line-height:1.15!important}
-      button.eot-rent-waiting .eot-rent-label{font:inherit!important;font-weight:800!important;font-size:13px!important;white-space:nowrap!important}
-      button.eot-rent-waiting .eot-rent-countdown{font-size:12px!important;font-weight:900!important;letter-spacing:.14em!important;color:#9fc6e8!important;opacity:1!important;font-variant-numeric:tabular-nums!important}
+      .eot-rent-action-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;align-items:stretch!important;width:min(100%,270px)!important;max-width:270px!important}
+      .eot-rent-action-row>button{width:100%!important;min-width:0!important;min-height:54px!important;height:54px!important;margin:0!important;border-radius:14px!important;padding:7px 9px!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important}
+      .eot-rent-action-row>button.eot-rent-waiting{flex-direction:column!important;gap:3px!important;line-height:1!important}
+      .eot-rent-action-row>button.eot-rent-sale{font-weight:800!important;line-height:1.1!important}
+      button.eot-rent-waiting .eot-rent-label{font:inherit!important;font-weight:800!important;font-size:10.5px!important;white-space:nowrap!important}
+      button.eot-rent-waiting .eot-rent-countdown{font-size:10.5px!important;font-weight:900!important;letter-spacing:.1em!important;color:#9fc6e8!important;opacity:1!important;font-variant-numeric:tabular-nums!important;white-space:nowrap!important}
       button.eot-rent-ready .eot-rent-countdown{color:#53ddb0!important}
-      @media(max-width:390px){.eot-rent-action-row{gap:8px!important}.eot-rent-action-row>button{min-height:68px!important;height:68px!important;padding:9px 8px!important}button.eot-rent-waiting .eot-rent-label{font-size:12px!important}button.eot-rent-waiting .eot-rent-countdown{font-size:11px!important}}
+      @media(max-width:390px){.eot-rent-action-row{width:min(100%,250px)!important;max-width:250px!important;gap:7px!important}.eot-rent-action-row>button{min-height:52px!important;height:52px!important;padding:6px 7px!important}button.eot-rent-waiting .eot-rent-label{font-size:10px!important}button.eot-rent-waiting .eot-rent-countdown{font-size:10px!important}}
     `;
     document.head.appendChild(s);
   }
@@ -70,7 +70,7 @@
       btn.append(label,timer);
     }
     label.textContent=ready?'Kira Hazır':'Kira Bekleniyor';
-    timer.textContent=ready?'TAHSİL EDİLEBİLİR':format(remaining);
+    timer.textContent=ready?'HAZIR':format(remaining);
   }
 
   function tick(){
