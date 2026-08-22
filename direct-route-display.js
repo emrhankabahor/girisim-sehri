@@ -1,6 +1,6 @@
 /* Empire of Trade • Hafif doğrudan ekran görünürlüğü yöneticisi
-   DOM'u sökmez, route virtualization yapmaz. İlk kurulumda ekranları tek kez
-   normalize eder; sonraki geçişlerde yalnızca eski/yeni ekranı değiştirir. */
+   DOM'u sökmez, route virtualization yapmaz. Yalnızca mevcut hash hedefinin
+   görünürlüğünü doğrudan değiştirerek Safari :target/:has style yükünü azaltır. */
 (function(){
   'use strict';
   if(window.__eotDirectRouteDisplay)return;
@@ -8,7 +8,6 @@
 
   let activeScreen=null;
   let frame=0;
-  let normalized=false;
 
   function validTarget(hash){
     const id=String(hash||'#home').replace(/^#/,'');
@@ -31,49 +30,25 @@
     }
   }
 
-  function normalizeScreens(next){
-    if(normalized)return;
-    normalized=true;
-    document.querySelectorAll('.screen').forEach(function(screen){
-      if(screen===next){
-        screen.style.setProperty('display','block','important');
-        screen.setAttribute('data-eot-route-visible','1');
-      }else{
-        screen.style.setProperty('display','none','important');
-        screen.removeAttribute('data-eot-route-visible');
-      }
-    });
-  }
-
   function show(hash){
     const next=validTarget(hash)||validTarget('#home');
-    if(!next)return false;
-    normalizeScreens(next);
-    if(activeScreen===next){
-      if(next.style.display!=='block')next.style.setProperty('display','block','important');
-      return true;
-    }
-    if(activeScreen){
+    if(!next)return;
+    if(activeScreen&&activeScreen!==next){
       activeScreen.style.setProperty('display','none','important');
       activeScreen.removeAttribute('data-eot-route-visible');
     }
     next.style.setProperty('display','block','important');
     next.setAttribute('data-eot-route-visible','1');
     activeScreen=next;
-    return true;
   }
 
   function schedule(hash){
-    const target=hash||location.hash||'#home';
-    const next=validTarget(target)||validTarget('#home');
-    if(next&&next===activeScreen)return;
     if(frame)cancelAnimationFrame(frame);
+    const target=hash||location.hash||'#home';
     frame=requestAnimationFrame(function(){frame=0;show(target)});
   }
 
   function install(){
-    const first=validTarget(location.hash||'#home')||validTarget('#home');
-    if(first)normalizeScreens(first);
     disableHeavyCssRouting();
     show(location.hash||'#home');
   }
@@ -85,5 +60,5 @@
   window.addEventListener('popstate',function(){schedule(location.hash||'#home')},true);
   window.addEventListener('pageshow',function(){disableHeavyCssRouting();schedule(location.hash||'#home')});
 
-  window.EOTShowRoute=function(hash){return show(hash)};
+  window.EOTShowRoute=function(hash){show(hash);return true};
 })();
