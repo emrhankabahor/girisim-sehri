@@ -26,6 +26,16 @@
   }
 })();
 
+/* Kayıtlı oturumun kendi kendine Şirketini Kur ekranına düşmesini engelleyen güncel akış. */
+(function(){
+  if(window.__eotCompanyOnboardingLoaded||document.querySelector('script[data-eot-company-onboarding]'))return;
+  const s=document.createElement('script');
+  s.src='company-onboarding.js?v=2';
+  s.dataset.eotCompanyOnboarding='1';
+  s.async=false;
+  document.body.appendChild(s);
+})();
+
 /* Giriş ekranından Ana Sayfa'ya geçerken eski ekran flaşını engelle. */
 (function(){
   if(document.querySelector('script[data-eot-home-entry-guard]'))return;
