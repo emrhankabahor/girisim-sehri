@@ -36,14 +36,13 @@
   document.body.appendChild(s);
 })();
 
-/* business-hierarchy.js tek sahipli olarak bottom-nav-lock.js tarafından yüklenir.
-   Buradan ikinci kez async yüklemek ilk İşletmeler girişinde yarış ve parse yükü oluşturuyordu. */
+/* business-hierarchy.js tek sahipli olarak bottom-nav-lock.js tarafından yüklenir. */
 
 /* Vadeli hesap: ilk yatırma saatine bağlı günlük döngü + maksimum 4 gün offline faiz. */
 (function(){
   if(document.querySelector('script[data-eot-deposit-cycle-engine]'))return;
   const s=document.createElement('script');
-  s.src='deposit-cycle-engine.js?v=1';
+  s.src='deposit-cycle-engine.js?v=2';
   s.dataset.eotDepositCycleEngine='1';
   s.async=true;
   document.body.appendChild(s);
