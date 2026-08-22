@@ -5,9 +5,10 @@
   window.__eotDepositCycleEngine=true;
 
   var DAY=24*60*60*1000;
-  var RATE=0.0099; // günlük %0,99
+  var RATE=0.0099;
   var MAX_OFFLINE_CYCLES=4;
   var TYPE='eot_daily_deposit';
+  var processing=false;
 
   function list(){
     try{if(typeof deposits!=='undefined'&&Array.isArray(deposits))return deposits}catch(e){}
@@ -24,7 +25,6 @@
   }
   function notify(){
     try{window.dispatchEvent(new CustomEvent('eot:deposit-updated'))}catch(e){}
-    try{if(typeof window.eotSyncDepositBalance==='function')window.eotSyncDepositBalance()}catch(e){}
   }
   function txAdd(type,total,sym){
     try{if(typeof tx!=='undefined'&&Array.isArray(tx))tx.unshift({t:Date.now(),kind:'deposit',type:type,sym:sym||'Vadeli Hesap',total:Number(total||0)})}catch(e){}
@@ -41,7 +41,7 @@
     var anchors=valid.map(function(d){var t=Number(d.t||0);if(t)return t;var m=Number(d.maturity||0);return m?m-DAY:0}).filter(Boolean);
     var anchor=anchors.length?Math.min.apply(Math,anchors):Date.now();
     var next=anchor+DAY;
-    while(next<=Date.now()-DAY*30)next+=DAY; // aşırı eski kayıtta yalnızca takvimi makul konuma getir
+    while(next<=Date.now()-DAY*30)next+=DAY;
     arr.splice(0,arr.length,{
       type:TYPE,amount:balance,rate:0.99,ret:earned,earnedTotal:earned,
       anchorAt:anchor,nextAt:next,maturity:next,t:anchor,lastProcessedAt:Date.now(),cycles:0
@@ -50,36 +50,36 @@
   }
 
   function process(now,quiet){
-    now=Number(now||Date.now());
-    var a=account();if(!a||Number(a.amount||0)<=0)return 0;
-    var next=Number(a.nextAt||a.maturity||0);
-    if(!next){next=Number(a.anchorAt||a.t||now)+DAY;a.nextAt=next;a.maturity=next}
-    if(now<next)return 0;
+    if(processing)return 0;
+    processing=true;
+    try{
+      now=Number(now||Date.now());
+      var a=account();if(!a||Number(a.amount||0)<=0)return 0;
+      var next=Number(a.nextAt||a.maturity||0);
+      if(!next){next=Number(a.anchorAt||a.t||now)+DAY;a.nextAt=next;a.maturity=next}
+      if(now<next)return 0;
 
-    var elapsedCycles=Math.floor((now-next)/DAY)+1;
-    var credited=Math.min(MAX_OFFLINE_CYCLES,Math.max(0,elapsedCycles));
-    var totalInterest=0;
-    for(var i=0;i<credited;i++){
-      var interest=Number(a.amount||0)*RATE;
-      a.amount=Number(a.amount||0)+interest;
-      totalInterest+=interest;
-      a.cycles=Number(a.cycles||0)+1;
-    }
+      var elapsedCycles=Math.floor((now-next)/DAY)+1;
+      var credited=Math.min(MAX_OFFLINE_CYCLES,Math.max(0,elapsedCycles));
+      var totalInterest=0;
+      for(var i=0;i<credited;i++){
+        var interest=Number(a.amount||0)*RATE;
+        a.amount=Number(a.amount||0)+interest;
+        totalInterest+=interest;
+        a.cycles=Number(a.cycles||0)+1;
+      }
 
-    /* Fazladan offline günler para üretmez. Takvim yine ilk yatırma saatine bağlı kalır. */
-    a.nextAt=next+(elapsedCycles*DAY);
-    a.maturity=a.nextAt;
-    a.earnedTotal=Number(a.earnedTotal||0)+totalInterest;
-    a.ret=a.earnedTotal;
-    a.lastProcessedAt=now;
-    persist();
-    if(totalInterest>0){
-      txAdd('deposit_interest',totalInterest,credited+' Gün Vadeli Faiz');
+      a.nextAt=next+(elapsedCycles*DAY);
+      a.maturity=a.nextAt;
+      a.earnedTotal=Number(a.earnedTotal||0)+totalInterest;
+      a.ret=a.earnedTotal;
+      a.lastProcessedAt=now;
+      if(totalInterest>0)txAdd('deposit_interest',totalInterest,credited+' Gün Vadeli Faiz');
       persist();
-      if(!quiet&&typeof toast==='function')toast('Vadeli hesap faizi +₺'+totalInterest.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}));
-    }
-    notify();
-    return credited;
+      if(totalInterest>0&&!quiet&&typeof toast==='function')toast('Vadeli hesap faizi +₺'+totalInterest.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      notify();
+      return credited;
+    }finally{processing=false}
   }
 
   function open24HourDeposit(inputId){
@@ -94,7 +94,6 @@
       arr.push(a);
     }
     a.amount=Number(a.amount||0)+amount;
-    /* Sonraki yatırımlar anchorAt / nextAt değerini kesinlikle değiştirmez. */
     txAdd('deposit_open',amount,'24 Saatlik Vadeli');
     persist();notify();
     if(el)el.value='';
