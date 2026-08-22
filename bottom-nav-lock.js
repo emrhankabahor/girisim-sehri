@@ -66,8 +66,7 @@
   function syncRouteClass(hash){
     const nonHome=routeId(hash)!=='home';
     document.body.classList.toggle('eot-nonhome',nonHome);
-    const home=document.getElementById('home');
-    if(home){if(nonHome)home.style.setProperty('display','none','important');else home.style.removeProperty('display')}
+    /* Ekran display durumuna burada dokunmuyoruz. Tek sahibi direct-route-display.js. */
   }
 
   function existingTarget(target){if(!target||!/^#[A-Za-z0-9_\-]+$/.test(target))return null;try{return document.querySelector(target)?target:null}catch(e){return null}}
