@@ -1,60 +1,87 @@
-/* Empire of Trade • Ana Sayfa üst cüzdan kartlarını anlık senkronla */
+/* Empire of Trade • Ana Sayfa üst cüzdan kartlarını doğrudan oyun state'inden anlık senkronla */
 (function(){
   'use strict';
   if(window.__eotHomeWalletLiveSync)return;
   window.__eotHomeWalletLiveSync=true;
 
-  let observer=null;
   let frame=0;
-  let sources=[];
 
   function homeVisible(){
     return !document.hidden && String(location.hash||'#home')==='#home';
   }
 
-  function findSources(){
-    sources=[...document.querySelectorAll('#home .home-money-grid b')].slice(0,3);
-    return sources.length>0;
+  function fmt(v){
+    try{if(typeof money==='function')return money(Number(v||0))}catch(e){}
+    return '₺'+Number(v||0).toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
   }
 
-  function sync(){
+  function stateValues(){
+    let cashVal=0,worthVal=0,flowVal=0;
+    try{cashVal=Number(cash||0)}catch(e){}
+    try{
+      const inv=Number(stats('stock').value||0)+Number(stats('crypto').value||0)+Number(stats('gold').value||0);
+      const assets=Number(ownedValue()||0);
+      const depositsVal=Number(depositStats().total||0);
+      const debtVal=Number(debt()||0);
+      worthVal=cashVal+inv+assets+depositsVal-debtVal;
+    }catch(e){
+      const legacy=document.getElementById('homeNetWorth');
+      if(legacy){const n=Number(String(legacy.textContent||'').replace(/[^0-9,-]/g,'').replace(/\./g,'').replace(',','.'));if(Number.isFinite(n))worthVal=n}
+    }
+    try{flowVal=Number(operatingStats().net||0)}catch(e){
+      const legacy=document.getElementById('homeCashflow');
+      if(legacy){const n=Number(String(legacy.textContent||'').replace(/[^0-9,-]/g,'').replace(/\./g,'').replace(',','.'));if(Number.isFinite(n))flowVal=n}
+    }
+    return [cashVal,worthVal,flowVal];
+  }
+
+  function syncNow(force){
     frame=0;
-    if(!homeVisible())return;
-    if(sources.length<3&&!findSources())return;
+    if(!force&&!homeVisible())return;
+    const values=stateValues();
     const targets=[document.getElementById('eotCash'),document.getElementById('eotWorth'),document.getElementById('eotFlow')];
-    for(let i=0;i<3;i++){
-      const src=sources[i],dst=targets[i];
-      if(src&&dst&&dst.textContent!==src.textContent)dst.textContent=src.textContent;
+    for(let i=0;i<targets.length;i++){
+      const el=targets[i];if(!el)continue;
+      const text=fmt(values[i]);
+      if(el.textContent!==text)el.textContent=text;
     }
   }
 
-  function schedule(){
+  function schedule(force){
     if(frame)return;
-    frame=requestAnimationFrame(sync);
+    frame=requestAnimationFrame(function(){syncNow(!!force)});
   }
 
-  function bind(){
-    if(observer)observer.disconnect();
-    if(!findSources())return false;
-    observer=new MutationObserver(schedule);
-    sources.forEach(function(src){observer.observe(src,{childList:true,characterData:true,subtree:true})});
-    schedule();
-    return true;
+  function wrapRender(){
+    try{
+      const fn=window.render;
+      if(typeof fn!=='function'||fn.__eotHomeWalletWrapped)return false;
+      const wrapped=function(){
+        const out=fn.apply(this,arguments);
+        if(homeVisible())syncNow(false);
+        return out;
+      };
+      wrapped.__eotHomeWalletWrapped=true;
+      wrapped.__eotOriginal=fn;
+      window.render=wrapped;
+      return true;
+    }catch(e){return false}
   }
 
   function install(){
-    if(bind())return;
+    wrapRender();
+    syncNow(true);
     let tries=0;
     const timer=setInterval(function(){
       tries++;
-      if(bind()||tries>=30)clearInterval(timer);
+      if(wrapRender()||tries>=20)clearInterval(timer);
     },100);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
-  window.addEventListener('hashchange',function(){if(String(location.hash||'#home')==='#home'){bind();schedule()}},true);
-  window.addEventListener('pageshow',function(){bind();schedule()});
-  document.addEventListener('visibilitychange',function(){if(!document.hidden)schedule()});
-  ['eot:deposit-updated','eot:navigation-settled','eot:route-rendered'].forEach(function(name){window.addEventListener(name,schedule)});
-  window.eotSyncHomeWallet=schedule;
+  window.addEventListener('hashchange',function(){if(String(location.hash||'#home')==='#home')schedule(true)},true);
+  window.addEventListener('pageshow',function(){wrapRender();schedule(true)});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)schedule(true)});
+  ['eot:deposit-updated','eot:navigation-settled','eot:route-rendered'].forEach(function(name){window.addEventListener(name,function(){schedule(false)})});
+  window.eotSyncHomeWallet=function(){syncNow(true)};
 })();
