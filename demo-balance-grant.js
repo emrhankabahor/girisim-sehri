@@ -46,6 +46,16 @@
   document.body.appendChild(s);
 })();
 
+/* Gayrimenkul kira bekleme kutularında bir sonraki kiraya canlı geri sayım. */
+(function(){
+  if(document.querySelector('script[data-eot-property-rent-countdown]'))return;
+  const s=document.createElement('script');
+  s.src='property-rent-countdown.js?v=1';
+  s.dataset.eotPropertyRentCountdown='1';
+  s.async=true;
+  document.body.appendChild(s);
+})();
+
 /* business-hierarchy.js tek sahipli olarak bottom-nav-lock.js tarafından yüklenir. */
 
 /* Vadeli hesap: ilk yatırma saatine bağlı günlük döngü + maksimum 4 gün offline faiz. */
