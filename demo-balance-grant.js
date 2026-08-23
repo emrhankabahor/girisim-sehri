@@ -36,6 +36,16 @@
   document.body.appendChild(s);
 })();
 
+/* Profil: Karakter ve Yeni Oyun alanlarını kaldır. */
+(function(){
+  if(window.__eotProfileUiCleanup||document.querySelector('script[data-eot-profile-ui-cleanup]'))return;
+  const s=document.createElement('script');
+  s.src='profile-ui-cleanup.js?v=2';
+  s.dataset.eotProfileUiCleanup='1';
+  s.async=true;
+  document.body.appendChild(s);
+})();
+
 /* Giriş ekranından Ana Sayfa'ya geçerken eski ekran flaşını engelle. */
 (function(){
   if(document.querySelector('script[data-eot-home-entry-guard]'))return;
