@@ -1,36 +1,55 @@
-/* Empire of Trade • Profil ekranı sadeleştirme: Karakter kartını kaldır */
+/* Empire of Trade • Profil ekranı sadeleştirme: Karakter + Yeni Oyun kaldır */
 (function(){
   'use strict';
   if(window.__eotProfileUiCleanup)return;
   window.__eotProfileUiCleanup=true;
 
+  function ensureStyle(){
+    if(document.getElementById('eot-profile-ui-cleanup-style'))return;
+    const s=document.createElement('style');
+    s.id='eot-profile-ui-cleanup-style';
+    s.textContent='#eotNewGameCard{display:none!important}';
+    document.head.appendChild(s);
+  }
+
   function removeCharacterCard(){
     const profile=document.getElementById('profile');
     if(!profile)return;
-    const nodes=[...profile.querySelectorAll('a,button,section,div')];
-    const title=nodes.find(el=>{
-      const t=String(el.textContent||'').replace(/\s+/g,' ').trim();
-      return t==='Karakter' || t.startsWith('Karakter Seviye, XP ve girişimci itibarı.');
-    });
+    const titles=[...profile.querySelectorAll('h1,h2,h3,h4,b,strong,span,div')];
+    const title=titles.find(el=>String(el.textContent||'').replace(/\s+/g,' ').trim()==='Karakter');
     if(!title)return;
-    let card=title;
-    while(card&&card.parentElement!==profile){
-      const cls=String(card.className||'');
-      if(card.tagName==='A'||card.tagName==='BUTTON'||/card|tile|menu/i.test(cls))break;
-      card=card.parentElement;
+
+    let card=title.closest('a,button,[onclick]');
+    if(!card){
+      let n=title;
+      for(let i=0;i<4&&n&&n.parentElement&&n.parentElement!==profile;i++){
+        n=n.parentElement;
+        const txt=String(n.textContent||'').replace(/\s+/g,' ').trim();
+        if(txt.includes('Karakter')&&txt.includes('Seviye')&&txt.length<180){card=n;break;}
+      }
     }
     if(card&&card!==profile)card.remove();
   }
 
   function cleanup(){
+    ensureStyle();
     removeCharacterCard();
     const newGame=document.getElementById('eotNewGameCard');
     if(newGame)newGame.remove();
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cleanup,{once:true});else cleanup();
-  window.addEventListener('hashchange',()=>{if(String(location.hash||'').includes('profile'))setTimeout(cleanup,0)},true);
-  window.addEventListener('pageshow',cleanup);
-  document.addEventListener('eot:route-rendered',cleanup);
-  window.EOTProfileUiCleanup=cleanup;
+  let observer=null;
+  function watchProfile(){
+    const profile=document.getElementById('profile');
+    if(!profile||observer)return;
+    observer=new MutationObserver(()=>cleanup());
+    observer.observe(profile,{childList:true,subtree:true});
+  }
+
+  function run(){cleanup();watchProfile();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
+  window.addEventListener('hashchange',()=>{if(String(location.hash||'').includes('profile'))setTimeout(run,0)},true);
+  window.addEventListener('pageshow',run);
+  document.addEventListener('eot:route-rendered',run);
+  window.EOTProfileUiCleanup=run;
 })();
