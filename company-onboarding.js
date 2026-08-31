@@ -35,9 +35,9 @@ function startup(){
   hideSetup();
   mountNewGameButton();
   installNewAccountHook();
-  /* Kayıtlı oturumlarda şirket ekranı ASLA kendiliğinden açılmaz.
-     Sadece açıkça yeni hesap için bırakılmış pending işareti varsa göster. */
-  if(localStorage.getItem(pendingKey())==='1'&&!hasCompany())showSetup(false);
+  /* Kayıtlı oyun açılışında Şirketini Kur ekranı otomatik açılmaz.
+     Yeni hesap akışı yalnızca enterGameAfterAccount(true) üzerinden tetiklenir. */
+  try{if(hasCompany())localStorage.removeItem(pendingKey())}catch(e){}
 }
 window.EOTCompanyOnboarding={show:()=>{localStorage.setItem(pendingKey(),'1');return showSetup(true)},startNewGame};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startup,{once:true});else setTimeout(startup,0);
