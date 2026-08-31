@@ -1,6 +1,8 @@
 /* Empire of Trade • Tek seferlik ₺500.000.000 demo test bakiyesi */
 (function(){
   try{
+    /* Yeni kariyer: demo bakiye hibesi kapali. */
+    return;
     const u=(typeof currentAccount==='function')?currentAccount():null;
     const id=u&&u.id?String(u.id):'guest';
     const key='gs_demo_balance_500m_v1_'+id;
