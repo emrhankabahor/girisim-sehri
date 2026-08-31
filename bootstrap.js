@@ -1,6 +1,6 @@
 (async function(){
   const root=document.getElementById('app-root');
-  const APP_VERSION='191';
+  const APP_VERSION='192';
   let versionCheckRunning=false;
 
   async function forceFreshVersion(remoteVersion){
@@ -228,7 +228,21 @@
     buildDemoUI();
     const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v='+APP_VERSION+'&_='+Date.now();s.onload=()=>{applyBranding();buildDemoUI();syncDemo();restoreOriginalBottomNav();next&&next()};document.body.appendChild(s)};
     load('loan-management.js');
-    load('app.js',()=>load('credit-score-sync.js',()=>load('transaction-history-fix.js',()=>load('deposit-ui.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('construction-fixes.js',()=>load('investment-fixes.js'))))))))))));
+    load('app.js',()=>load('company-onboarding.js',()=>{
+      try{
+        const companyExists=!!(window.sim&&(
+          (sim.companyProfile&&sim.companyProfile.established&&String(sim.companyProfile.name||'').trim())||
+          String(sim.companyName||'').trim()||
+          (Array.isArray(sim.companies)&&sim.companies.some(x=>x&&x.isMainCompany&&String(x.name||'').trim()))
+        ));
+        if(!companyExists&&window.EOTCompanyOnboarding&&typeof window.EOTCompanyOnboarding.show==='function'){
+          window.EOTCompanyOnboarding.show();
+        }
+      }catch(e){
+        if(window.EOTCompanyOnboarding&&typeof window.EOTCompanyOnboarding.show==='function')window.EOTCompanyOnboarding.show();
+      }
+      load('credit-score-sync.js',()=>load('transaction-history-fix.js',()=>load('deposit-ui.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('construction-fixes.js',()=>load('investment-fixes.js')))))))))));
+    }));
   }catch(err){
     console.error(err);
     root.innerHTML='<main style="padding:24px;color:white;font-family:Arial"><h2>Empire of Trade yüklenemedi</h2><p>Bağlantını kontrol edip sayfayı yenile.</p></main>';
