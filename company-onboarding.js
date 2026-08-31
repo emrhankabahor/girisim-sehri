@@ -110,9 +110,18 @@ function startup(){
   hideSetup();
   mountNewGameButton();
   installNewAccountHook();
-  /* Kayıtlı oyun açılışında Şirketini Kur ekranı otomatik açılmaz.
-     Yeni hesap akışı yalnızca enterGameAfterAccount(true) üzerinden tetiklenir. */
-  try{if(hasCompany())localStorage.removeItem(pendingKey())}catch(e){}
+  /* Yeni kariyerde ilk ekran şirket kuruluşudur.
+     Kayıtlı hesap/şirket varsa otomatik açılmaz. */
+  try{
+    const u=typeof currentAccount==='function'?currentAccount():null;
+    const first=sessionStorage.getItem('eot_company_setup_first')==='1';
+    if(first&&!u&&!hasCompany()){
+      sessionStorage.removeItem('eot_company_setup_first');
+      showSetup(true);
+    }else if(hasCompany()){
+      localStorage.removeItem(pendingKey());
+    }
+  }catch(e){}
 }
 window.EOTCompanyOnboarding={show:()=>{localStorage.setItem(pendingKey(),'1');return showSetup(true)},startNewGame};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startup,{once:true});else setTimeout(startup,0);
