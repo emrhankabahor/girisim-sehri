@@ -293,8 +293,14 @@ function renderAccountState(){
   render();renderFinanceExtras();renderGameExtras();
   return
  }
- showAccountOverlay();
- setAccountMode('login')
+ /* Yeni kariyerde ilk ekran şirket kuruluşudur.
+    Hesap ekranı yalnızca "Mevcut Hesaba Giriş Yap" ile açılır. */
+ hideAccountOverlay();
+ hideCareerOverlay();
+ try{sessionStorage.setItem('eot_company_setup_first','1')}catch(e){}
+ if(window.EOTCompanyOnboarding&&typeof window.EOTCompanyOnboarding.show==='function'){
+   window.EOTCompanyOnboarding.show();
+ }
 }
 
 
