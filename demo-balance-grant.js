@@ -32,7 +32,7 @@
 (function(){
   if(window.__eotCompanyOnboardingLoaded||document.querySelector('script[data-eot-company-onboarding]'))return;
   const s=document.createElement('script');
-  s.src='company-onboarding.js?v=4';
+  s.src='company-onboarding.js?v=5';
   s.dataset.eotCompanyOnboarding='1';
   s.async=false;
   document.body.appendChild(s);
