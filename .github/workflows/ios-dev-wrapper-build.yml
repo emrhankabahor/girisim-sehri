@@ -9,6 +9,7 @@ on:
       - "package.json"
       - "capacitor.config.json"
       - "www/**"
+      - "native/**"
       - "ios/**"
       - ".github/workflows/ios-dev-wrapper-build.yml"
 
@@ -38,14 +39,116 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync ios
 
-      - name: Configure native launch screen
+      - name: Configure native launch screen and render curtain
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p=Path("ios/App/App/Base.lproj/LaunchScreen.storyboard")
-          s=p.read_text()
-          s=s.replace('systemBackgroundColor', 'darkTextColor')
-          p.write_text(s)
+
+          # Native launch screen: dark background matching Empire of Trade.
+          launch=Path("ios/App/App/Base.lproj/LaunchScreen.storyboard")
+          s=launch.read_text()
+          s=s.replace('systemBackgroundColor', 'blackColor')
+          launch.write_text(s)
+
+          # Make the generated Capacitor bridge controller our own subclass.
+          main=Path("ios/App/App/Base.lproj/Main.storyboard")
+          m=main.read_text()
+          m=m.replace(
+              'customClass="CAPBridgeViewController" customModule="Capacitor"',
+              'customClass="EOTBridgeViewController" customModule="App" customModuleProvider="target"'
+          )
+          main.write_text(m)
+
+          # Keep all custom Swift in AppDelegate.swift so it is automatically part of the App target.
+          app=Path("ios/App/App/AppDelegate.swift")
+          a=app.read_text()
+          if "final class EOTBridgeViewController" not in a:
+              a += r'''
+
+final class EOTBridgeViewController: CAPBridgeViewController {
+    private var renderCurtain: UIView?
+    private var readyPoll: Timer?
+    private var didReveal = false
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        installRenderCurtain()
+        startReadyPolling()
+    }
+
+    deinit {
+        readyPoll?.invalidate()
+    }
+
+    private func installRenderCurtain() {
+        let curtain = UIView(frame: view.bounds)
+        curtain.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        curtain.backgroundColor = UIColor(red: 2.0/255.0, green: 7.0/255.0, blue: 13.0/255.0, alpha: 1)
+
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 7
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        let title = UILabel()
+        title.text = "EMPIRE OF TRADE"
+        title.textColor = .white
+        title.font = .systemFont(ofSize: 22, weight: .bold)
+        title.textAlignment = .center
+
+        let sub = UILabel()
+        sub.text = "BUSINESS EMPIRE"
+        sub.textColor = UIColor(red: 91.0/255.0, green: 216.0/255.0, blue: 238.0/255.0, alpha: 1)
+        sub.font = .systemFont(ofSize: 8, weight: .bold)
+        sub.textAlignment = .center
+
+        stack.addArrangedSubview(title)
+        stack.addArrangedSubview(sub)
+        curtain.addSubview(stack)
+
+        NSLayoutConstraint.activate([
+            stack.centerXAnchor.constraint(equalTo: curtain.centerXAnchor),
+            stack.centerYAnchor.constraint(equalTo: curtain.centerYAnchor)
+        ])
+
+        view.addSubview(curtain)
+        renderCurtain = curtain
+    }
+
+    private func startReadyPolling() {
+        readyPoll?.invalidate()
+        readyPoll = Timer.scheduledTimer(withTimeInterval: 0.10, repeats: true) { [weak self] _ in
+            guard let self = self, !self.didReveal else { return }
+            self.webView?.evaluateJavaScript("Boolean(window.__EOT_NATIVE_READY__ === true)") { result, _ in
+                guard let ready = result as? Bool, ready else { return }
+                self.revealGame()
+            }
+        }
+
+        // Failsafe: never leave the player trapped behind the curtain forever.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15) { [weak self] in
+            self?.revealGame()
+        }
+    }
+
+    private func revealGame() {
+        guard !didReveal else { return }
+        didReveal = true
+        readyPoll?.invalidate()
+        readyPoll = nil
+
+        guard let curtain = renderCurtain else { return }
+        UIView.animate(withDuration: 0.28, animations: {
+            curtain.alpha = 0
+        }, completion: { _ in
+            curtain.removeFromSuperview()
+            self.renderCurtain = nil
+        })
+    }
+}
+'''
+          app.write_text(a)
           PY
 
       - name: Show Xcode version
