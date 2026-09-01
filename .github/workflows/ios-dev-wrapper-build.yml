@@ -38,6 +38,16 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync ios
 
+      - name: Configure native launch screen
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("ios/App/App/Base.lproj/LaunchScreen.storyboard")
+          s=p.read_text()
+          s=s.replace('systemBackgroundColor', 'darkTextColor')
+          p.write_text(s)
+          PY
+
       - name: Show Xcode version
         run: xcodebuild -version
 
