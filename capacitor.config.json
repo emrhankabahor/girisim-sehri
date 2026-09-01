@@ -3,8 +3,11 @@
   "appName": "Empire of Trade",
   "webDir": "www",
   "server": {
-    "url": "https://emrhankabahor.github.io/girisim-sehri/?app=201",
-    "cleartext": false
+    "url": "https://emrhankabahor.github.io/girisim-sehri/?app=201&native=1",
+    "cleartext": false,
+    "allowNavigation": [
+      "emrhankabahor.github.io"
+    ]
   },
   "ios": {
     "contentInset": "automatic",
