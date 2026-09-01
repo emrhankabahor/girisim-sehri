@@ -1,0 +1,20 @@
+{
+  "appId": "com.empireoftrade.dev",
+  "appName": "Empire of Trade",
+  "webDir": "www",
+  "server": {
+    "url": "https://emrhankabahor.github.io/girisim-sehri/?app=201",
+    "cleartext": false
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "scrollEnabled": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#02070d"
+    }
+  }
+}
