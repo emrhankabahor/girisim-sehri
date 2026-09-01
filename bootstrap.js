@@ -1,6 +1,6 @@
 (async function(){
   const root=document.getElementById('app-root');
-  const APP_VERSION='192';
+  const APP_VERSION='193';
   let versionCheckRunning=false;
 
   async function forceFreshVersion(remoteVersion){
@@ -146,6 +146,13 @@
     if(cash&&legacy[0]) cash.textContent=legacy[0].textContent;
     if(worth&&legacy[1]) worth.textContent=legacy[1].textContent;
     if(flow&&legacy[2]) flow.textContent=legacy[2].textContent;
+    const accountState=document.getElementById('eotAccountStateText');
+    if(accountState){
+      try{
+        const u=(typeof currentAccount==='function')?currentAccount():null;
+        accountState.textContent=u&&u.id&&u.id!=='guest'?'Hesabın aktif • Kariyerin bu cihazda güvende.':'Hesap bağlı değil • Kariyer yalnızca bu cihazda kayıtlı.';
+      }catch(e){accountState.textContent='Kariyer bu cihazda kayıtlı.'}
+    }
     const srcLevel=document.getElementById('homeLevel');
     const level=document.getElementById('eotLevel');
     if(level&&srcLevel) level.textContent=srcLevel.textContent||'1';
@@ -189,7 +196,7 @@
         <div class="eot-wallet-card"><span><i class="eot-dot"></i>NET SERVET</span><b id="eotWorth">₺0</b></div>
         <div class="eot-wallet-card"><span><i class="eot-dot"></i>AYLIK AKIŞ</span><b id="eotFlow">₺0</b></div>
       </section>
-      <div class="eot-account-alert"><span>Hesabın aktif • Kariyerin bu cihazda güvende.</span><a href="${targets.profile}">HESAP</a></div>
+      <div class="eot-account-alert"><span id="eotAccountStateText">Kariyer bu cihazda kayıtlı.</span><a href="${targets.profile}">HESAP</a></div>
       <section class="eot-profile">
         <div class="eot-profile-main"><div class="eot-avatar">👤</div><div class="eot-identity"><small>OYUNCU PROFİLİ</small><h2>Ekonomi İmparatorluğu</h2><p>CEO • Empire of Trade</p></div><div class="eot-tier"><span>SEVİYE</span><b id="eotLevel">0</b></div></div>
         <div class="eot-progress-label"><span>Kariyer ilerlemesi</span><span>18 / 100 XP</span></div><div class="eot-progress"><i></i></div>
@@ -228,21 +235,10 @@
     buildDemoUI();
     const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v='+APP_VERSION+'&_='+Date.now();s.onload=()=>{applyBranding();buildDemoUI();syncDemo();restoreOriginalBottomNav();next&&next()};document.body.appendChild(s)};
     load('loan-management.js');
-    load('app.js',()=>load('company-onboarding.js',()=>{
-      try{
-        const companyExists=!!(window.sim&&(
-          (sim.companyProfile&&sim.companyProfile.established&&String(sim.companyProfile.name||'').trim())||
-          String(sim.companyName||'').trim()||
-          (Array.isArray(sim.companies)&&sim.companies.some(x=>x&&x.isMainCompany&&String(x.name||'').trim()))
-        ));
-        if(!companyExists&&window.EOTCompanyOnboarding&&typeof window.EOTCompanyOnboarding.show==='function'){
-          window.EOTCompanyOnboarding.show();
-        }
-      }catch(e){
-        if(window.EOTCompanyOnboarding&&typeof window.EOTCompanyOnboarding.show==='function')window.EOTCompanyOnboarding.show();
-      }
+    load('app.js',()=>{
+      try{if(window.EOTCompanyOnboarding&&typeof window.EOTCompanyOnboarding.refresh==='function')window.EOTCompanyOnboarding.refresh()}catch(e){}
       load('credit-score-sync.js',()=>load('transaction-history-fix.js',()=>load('deposit-ui.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('construction-fixes.js',()=>load('investment-fixes.js')))))))))));
-    }));
+    });
   }catch(err){
     console.error(err);
     root.innerHTML='<main style="padding:24px;color:white;font-family:Arial"><h2>Empire of Trade yüklenemedi</h2><p>Bağlantını kontrol edip sayfayı yenile.</p></main>';
