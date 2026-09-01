@@ -5,7 +5,8 @@
   window.__eotStartupSplashLoaded=true;
 
   const started=performance.now();
-  let target=12, shown=0, ready=false, removed=false, timer=null;
+  let visibleStarted=0;
+  let target=8, shown=0, ready=false, removed=false, timer=null;
 
   const style=document.createElement('style');
   style.id='eot-startup-splash-style';
@@ -54,6 +55,7 @@
 
   function mount(){
     if(document.getElementById('eotStartupSplash'))return;
+    visibleStarted=performance.now();
     const el=document.createElement('div');
     el.id='eotStartupSplash';
     el.innerHTML=`<div class="eot-splash-inner">
@@ -81,8 +83,8 @@
 
   function finish(){
     if(removed)return;
-    const elapsed=performance.now()-started;
-    const wait=Math.max(0,1750-elapsed);
+    const elapsed=performance.now()-(visibleStarted||started);
+    const wait=Math.max(0,2400-elapsed);
     setTimeout(()=>{
       paint(100);
       setTimeout(()=>{
@@ -97,7 +99,7 @@
   function tick(){
     if(removed)return;
     if(!ready){
-      target=Math.min(91,target+(.7+Math.random()*1.7));
+      target=Math.min(94,target+(.35+Math.random()*.75));
     }else{
       target=100;
     }
@@ -113,8 +115,8 @@
     failOpen(){ready=true;target=100;finish()}
   };
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});
-  else mount();
+  if(document.body) mount();
+  else document.addEventListener('DOMContentLoaded',mount,{once:true});
   requestAnimationFrame(tick);
 
   // Herhangi bir beklenmeyen hata oyunu sonsuza kadar kapatmasın.
