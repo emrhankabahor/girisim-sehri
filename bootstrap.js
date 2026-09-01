@@ -1,6 +1,6 @@
 (async function(){
   const root=document.getElementById('app-root');
-  const APP_VERSION='199';
+  const APP_VERSION='200';
   let versionCheckRunning=false;
 
   async function forceFreshVersion(remoteVersion){
@@ -250,6 +250,7 @@
           if(typeof renderGameExtras==='function')renderGameExtras();
         }catch(e){}
         requestAnimationFrame(()=>requestAnimationFrame(()=>{
+          try{ if(window.EOTStartupSplash) window.EOTStartupSplash.ready(); }catch(e){}
         }));
       })))))))))));
     });
