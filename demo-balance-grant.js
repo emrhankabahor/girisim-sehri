@@ -28,16 +28,6 @@
   }
 })();
 
-/* Kayıtlı oturumun kendi kendine Şirketini Kur ekranına düşmesini engelleyen güncel akış. */
-(function(){
-  if(window.__eotCompanyOnboardingLoaded||document.querySelector('script[data-eot-company-onboarding]'))return;
-  const s=document.createElement('script');
-  s.src='company-onboarding.js?v=6';
-  s.dataset.eotCompanyOnboarding='1';
-  s.async=false;
-  document.body.appendChild(s);
-})();
-
 /* Profil: Karakter ve Yeni Oyun alanlarını kaldır. */
 (function(){
   if(window.__eotProfileUiCleanup||document.querySelector('script[data-eot-profile-ui-cleanup]'))return;
