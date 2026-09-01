@@ -1,6 +1,6 @@
 (async function(){
   const root=document.getElementById('app-root');
-  const APP_VERSION='195';
+  const APP_VERSION='196';
   let versionCheckRunning=false;
 
   async function forceFreshVersion(remoteVersion){
@@ -43,16 +43,9 @@
   setInterval(checkRemoteVersion,30000);
 
   if('serviceWorker' in navigator){
-    let refreshing=false;
-    navigator.serviceWorker.addEventListener('controllerchange',()=>{
-      if(refreshing) return;
-      refreshing=true;
-      const key='eot-sw-reload-'+APP_VERSION;
-      if(sessionStorage.getItem(key)!=='1'){
-        sessionStorage.setItem(key,'1');
-        location.reload();
-      }
-    });
+    /* Yeni Service Worker devreye girdiğinde sayfayı zorla tekrar yükleme.
+       Böylece eski splash -> yeni splash şeklinde çift açılış oluşmaz. */
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{});
     window.addEventListener('load',async()=>{
       try{
         const reg=await navigator.serviceWorker.register('./sw.js?v='+APP_VERSION,{scope:'./',updateViaCache:'none'});
