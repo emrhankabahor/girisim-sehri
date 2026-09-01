@@ -1,6 +1,6 @@
 (async function(){
   const root=document.getElementById('app-root');
-  const APP_VERSION='193';
+  const APP_VERSION='194';
   let versionCheckRunning=false;
 
   async function forceFreshVersion(remoteVersion){
@@ -229,18 +229,45 @@
   try{
     await checkRemoteVersion();
     const files=['content-1.html','content-2.html','content-3.html','content-4.html','content-5.html','content-6.html'];
+    if(window.EOTStartupSplash)window.EOTStartupSplash.progress(24);
     const parts=await Promise.all(files.map(f=>fetch(f+'?v='+APP_VERSION+'&_='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()})));
+    if(window.EOTStartupSplash)window.EOTStartupSplash.progress(46);
     root.innerHTML=parts.join('');
     applyBranding();
     buildDemoUI();
-    const load=(src,next)=>{const s=document.createElement('script');s.src=src+'?v='+APP_VERSION+'&_='+Date.now();s.onload=()=>{applyBranding();buildDemoUI();syncDemo();restoreOriginalBottomNav();next&&next()};document.body.appendChild(s)};
+    if(window.EOTStartupSplash)window.EOTStartupSplash.progress(56);
+    let loadedCritical=0;
+    const totalCritical=13;
+    const load=(src,next)=>{
+      const s=document.createElement('script');
+      s.src=src+'?v='+APP_VERSION+'&_='+Date.now();
+      s.onload=()=>{
+        loadedCritical++;
+        if(window.EOTStartupSplash)window.EOTStartupSplash.progress(56+(loadedCritical/totalCritical)*39);
+        applyBranding();buildDemoUI();syncDemo();restoreOriginalBottomNav();
+        next&&next();
+      };
+      s.onerror=()=>{console.warn(src+' yüklenemedi');loadedCritical++;next&&next()};
+      document.body.appendChild(s)
+    };
     load('loan-management.js');
     load('app.js',()=>{
       try{if(window.EOTCompanyOnboarding&&typeof window.EOTCompanyOnboarding.refresh==='function')window.EOTCompanyOnboarding.refresh()}catch(e){}
-      load('credit-score-sync.js',()=>load('transaction-history-fix.js',()=>load('deposit-ui.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('construction-fixes.js',()=>load('investment-fixes.js')))))))))));
+      load('credit-score-sync.js',()=>load('transaction-history-fix.js',()=>load('deposit-ui.js',()=>load('v167.js',()=>load('realtime-finance.js',()=>load('state-integrity.js',()=>load('company-list-fix.js',()=>load('demo-balance-grant.js',()=>load('v169.js',()=>load('construction-fixes.js',()=>load('investment-fixes.js',()=>{
+        try{
+          applyBranding();buildDemoUI();syncDemo();restoreOriginalBottomNav();
+          if(typeof render==='function')render();
+          if(typeof renderFinanceExtras==='function')renderFinanceExtras();
+          if(typeof renderGameExtras==='function')renderGameExtras();
+        }catch(e){}
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{
+          if(window.EOTStartupSplash)window.EOTStartupSplash.ready();
+        }));
+      })))))))))));
     });
   }catch(err){
     console.error(err);
+    if(window.EOTStartupSplash)window.EOTStartupSplash.failOpen();
     root.innerHTML='<main style="padding:24px;color:white;font-family:Arial"><h2>Empire of Trade yüklenemedi</h2><p>Bağlantını kontrol edip sayfayı yenile.</p></main>';
   }
 })();
