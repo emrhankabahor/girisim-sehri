@@ -3,12 +3,12 @@
   "short_name": "Empire of Trade",
   "description": "Empire of Trade — ekonomi, ticaret ve girişimcilik simülasyonu.",
   "lang": "tr",
-  "start_url": "./",
+  "start_url": "./?app=199",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#07111f",
-  "theme_color": "#07111f",
+  "background_color": "#02070d",
+  "theme_color": "#02070d",
   "icons": [
     {"src":"eot-icon.svg?v=182","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ]
