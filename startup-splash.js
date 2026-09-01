@@ -3,6 +3,12 @@
   'use strict';
   if(window.__eotStartupSplashLoaded)return;
   window.__eotStartupSplashLoaded=true;
+  const nativeMode=new URLSearchParams(location.search).get('native')==='1';
+  window.__EOT_NATIVE_WRAPPER__=nativeMode;
+  if(nativeMode){
+    window.EOTStartupSplash={progress(){},ready(){},failOpen(){}};
+    return;
+  }
 
   const started=performance.now();
   let visibleStarted=0;
