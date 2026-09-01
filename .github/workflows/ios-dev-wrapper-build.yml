@@ -9,101 +9,32 @@ on:
       - "package.json"
       - "capacitor.config.json"
       - "www/**"
-      - "native/**"
-      - "ios/**"
       - ".github/workflows/ios-dev-wrapper-build.yml"
 
 jobs:
   build-ios-simulator:
     runs-on: macos-latest
     timeout-minutes: 30
-
     steps:
-      - name: Checkout ios-dev-wrapper
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Install dependencies
+      - name: Install
         run: npm install
 
       - name: Create iOS project
-        run: |
-          if [ ! -d "ios" ]; then
-            npx cap add ios
-          fi
+        run: npx cap add ios
 
-      - name: Sync Capacitor
+      - name: Sync iOS
         run: npx cap sync ios
 
-      - name: Configure native launch screen and render curtain
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          launch = Path("ios/App/App/Base.lproj/LaunchScreen.storyboard")
-          s = launch.read_text()
-          s = s.replace("systemBackgroundColor", "blackColor")
-          launch.write_text(s)
-
-          main = Path("ios/App/App/Base.lproj/Main.storyboard")
-          m = main.read_text()
-          m = m.replace('customClass="CAPBridgeViewController" customModule="Capacitor"', 'customClass="EOTBridgeViewController" customModule="App" customModuleProvider="target"')
-          main.write_text(m)
-
-          app = Path("ios/App/App/AppDelegate.swift")
-          a = app.read_text()
-          if "final class EOTBridgeViewController" not in a:
-              a += """
-final class EOTBridgeViewController: CAPBridgeViewController {
-    private var curtain: UIView?
-    private var timer: Timer?
-    private var revealed = false
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        let v = UIView(frame: view.bounds)
-        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = UIColor(red: 2.0/255.0, green: 7.0/255.0, blue: 13.0/255.0, alpha: 1)
-        view.addSubview(v)
-        curtain = v
-        timer = Timer.scheduledTimer(withTimeInterval: 0.10, repeats: true) { [weak self] _ in
-            guard let self = self, !self.revealed else { return }
-            self.webView?.evaluateJavaScript("Boolean(window.__EOT_NATIVE_READY__ === true)") { result, _ in
-                if (result as? Bool) == true { self.reveal() }
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 15) { [weak self] in self?.reveal() }
-    }
-
-    private func reveal() {
-        guard !revealed else { return }
-        revealed = true
-        timer?.invalidate()
-        timer = nil
-        guard let v = curtain else { return }
-        UIView.animate(withDuration: 0.28, animations: { v.alpha = 0 }) { _ in
-            v.removeFromSuperview()
-            self.curtain = nil
-        }
-    }
-}
-"""
-          app.write_text(a)
-          PY
-
-      - name: Show Xcode version
+      - name: Xcode version
         run: xcodebuild -version
 
-      - name: Build for iOS Simulator
-        run: |
-          xcodebuild \
-            -workspace ios/App/App.xcworkspace \
-            -scheme App \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO \
-            build
+      - name: Build simulator
+        run: xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
