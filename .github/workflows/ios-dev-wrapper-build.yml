@@ -9,6 +9,7 @@ on:
       - "package.json"
       - "capacitor.config.json"
       - "www/**"
+      - "native/**"
       - ".github/workflows/ios-dev-wrapper-build.yml"
 
 jobs:
@@ -32,6 +33,9 @@ jobs:
 
       - name: Sync iOS
         run: npx cap sync ios
+
+      - name: Apply native source patch
+        run: python3 native/apply_ios_patch.py
 
       - name: Xcode version
         run: xcodebuild -version
