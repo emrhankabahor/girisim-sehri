@@ -15,7 +15,3 @@ story = story.replace(
     'customClass="EOTBridgeViewController" customModule="App" customModuleProvider="target"'
 )
 main.write_text(story)
-
-launch = Path("ios/App/App/Base.lproj/LaunchScreen.storyboard")
-launch_text = launch.read_text().replace("systemBackgroundColor", "blackColor")
-launch.write_text(launch_text)
