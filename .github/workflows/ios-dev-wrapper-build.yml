@@ -1,0 +1,53 @@
+name: iOS Dev Wrapper Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - ios-dev-wrapper
+    paths:
+      - "package.json"
+      - "capacitor.config.json"
+      - "www/**"
+      - "ios/**"
+      - ".github/workflows/ios-dev-wrapper-build.yml"
+
+jobs:
+  build-ios-simulator:
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout ios-dev-wrapper
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create iOS project
+        run: |
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
+
+      - name: Sync Capacitor
+        run: npx cap sync ios
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build for iOS Simulator
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
