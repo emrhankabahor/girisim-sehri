@@ -488,7 +488,7 @@ let selectedLandId=localStorage.getItem('gs121_selectedLand')||'';
 let factoryLevel=Number(localStorage.getItem('gs121_factoryLevel')||1);
 let reputation=Number(localStorage.getItem('gs126_reputation')||50);
 
-let sim=JSON.parse(localStorage.getItem('gs132_sim')||'{"companyName":"Girişim Şehri Holding","employees":[],"raw":0,"taxDue":0,"notifications":[],"lastCycle":0,"cycleDue":0,"lastExpense":0,"npcOffers":[],"npcRefresh":0}');
+let sim=JSON.parse(localStorage.getItem('gs132_sim')||'{"companyName":"","employees":[],"raw":0,"taxDue":0,"notifications":[],"lastCycle":0,"cycleDue":0,"lastExpense":0,"npcOffers":[],"npcRefresh":0}');
 if(!sim.cycleDue)sim.cycleDue=Date.now()+300000;
 if(!Array.isArray(sim.dynamicListings))sim.dynamicListings=[];
 if(!sim.dynamicRefresh)sim.dynamicRefresh=0;
@@ -508,7 +508,7 @@ if(!Array.isArray(sim.ipos))sim.ipos=[];
 if(!Array.isArray(sim.ipoHoldings))sim.ipoHoldings=[];
 if(!Array.isArray(sim.wealthHistory))sim.wealthHistory=[];
 if(sim.lifestyle==null)sim.lifestyle=0;
-if(!sim.companyProfile)sim.companyProfile={name:sim.companyName||'Girişim Şehri Holding',sector:'İnşaat',city:'İstanbul',capital:5000000,brand:1000000};
+if(!sim.companyProfile)sim.companyProfile={established:false,name:'',sector:'Genel Ticaret',city:'İstanbul',capital:0,companyCash:0,brand:0};
 if(sim.companyProfile.established==null)sim.companyProfile.established=!!ownedAssets.some(a=>a.type==='İşletme');
 if(sim.companyProfile.companyCash==null)sim.companyProfile.companyCash=sim.companyProfile.established?Number(sim.companyProfile.capital||0):0;
 if(!sim.companyProfile.legalType)sim.companyProfile.legalType='Limited Şirket';
