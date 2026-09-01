@@ -3,7 +3,7 @@
   "short_name": "Empire of Trade",
   "description": "Empire of Trade — ekonomi, ticaret ve girişimcilik simülasyonu.",
   "lang": "tr",
-  "start_url": "./?app=199",
+  "start_url": "./?app=201",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
