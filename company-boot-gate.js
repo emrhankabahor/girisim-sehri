@@ -21,9 +21,8 @@
           const s=d&&d.sim?d.sim:d;
           if(!s)return false;
           return !!(
-            (s.companyProfile&&s.companyProfile.established&&String(s.companyProfile.name||'').trim()) ||
-            String(s.companyName||'').trim() ||
-            (Array.isArray(s.companies)&&s.companies.some(c=>c&&c.isMainCompany&&String(c.name||'').trim()))
+            (s.companyProfile&&s.companyProfile.established===true&&String(s.companyProfile.name||'').trim()) ||
+            (Array.isArray(s.companies)&&s.companies.some(c=>c&&c.isMainCompany&&c.established!==false&&String(c.name||'').trim()))
           );
         }catch(e){return false}
       });
