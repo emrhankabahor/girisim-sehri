@@ -73,6 +73,19 @@
     document.body.appendChild(el);
   }
 
+  function ensureSnapshotCover(){
+    if(document.getElementById('eotStartupSnapshotCover'))return;
+    const el=document.createElement('div');
+    el.id='eotStartupSnapshotCover';
+    el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#02070d;display:flex;align-items:center;justify-content:center;color:#fff;font-family:inherit';
+    el.innerHTML='<div style="text-align:center"><div style="width:86px;height:86px;margin:0 auto 16px;border-radius:22px;background:url(./apple-touch-icon.png?v=190) center/cover no-repeat;box-shadow:0 0 36px rgba(40,137,255,.24)"></div><div style="font-size:21px;font-weight:900;letter-spacing:.075em">EMPIRE OF TRADE</div><div style="margin-top:6px;color:#5bd8ee;font-size:8px;font-weight:900;letter-spacing:.30em">BUSINESS EMPIRE</div></div>';
+    document.body.appendChild(el);
+  }
+  function removeSnapshotCover(){
+    const el=document.getElementById('eotStartupSnapshotCover');
+    if(el)el.remove();
+  }
+
   function paint(v){
     const display=Math.max(0,Math.min(100,Math.round(Number(v)||0)));
     shown=Math.max(Math.round(shown),display);
@@ -120,6 +133,14 @@
   if(document.body) mount();
   else document.addEventListener('DOMContentLoaded',mount,{once:true});
   requestAnimationFrame(tick);
+
+  /* iOS, uygulama arka plana giderken son kareyi açılış snapshot'ı olarak kullanabilir.
+     Eski ekranın bir sonraki açılışta görünmemesi için snapshot karesini yeni marka ekranıyla değiştir. */
+  window.addEventListener('pagehide',ensureSnapshotCover);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden')ensureSnapshotCover();
+    else if(!removed)removeSnapshotCover();
+  });
 
   // Herhangi bir beklenmeyen hata oyunu sonsuza kadar kapatmasın.
   setTimeout(()=>{if(!ready)window.EOTStartupSplash.ready()},9000);
