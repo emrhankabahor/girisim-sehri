@@ -1,6 +1,6 @@
 (async function(){
   const root=document.getElementById('app-root');
-  const APP_VERSION='200';
+  const APP_VERSION='201';
   let versionCheckRunning=false;
 
   async function forceFreshVersion(remoteVersion){
