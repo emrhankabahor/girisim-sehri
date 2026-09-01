@@ -74,11 +74,13 @@
   }
 
   function paint(v){
-    shown=Math.max(shown,Math.min(100,Math.round(v)));
+    const display=Math.max(0,Math.min(100,Math.round(Number(v)||0)));
+    shown=Math.max(Math.round(shown),display);
+    const visible=Math.max(0,Math.min(100,Math.round(shown)));
     const fill=document.getElementById('eotSplashFill');
     const pct=document.getElementById('eotSplashPercent');
-    if(fill)fill.style.width=shown+'%';
-    if(pct)pct.textContent=shown>=100?'Hazır • %100':'Yükleniyor • %'+shown;
+    if(fill)fill.style.width=visible+'%';
+    if(pct)pct.textContent=visible>=100?'Hazır • %100':'Yükleniyor • %'+visible;
   }
 
   function finish(){
@@ -110,7 +112,7 @@
   }
 
   window.EOTStartupSplash={
-    progress(v){target=Math.max(target,Math.min(96,Number(v)||0))},
+    progress(v){target=Math.max(target,Math.min(96,Math.round(Number(v)||0)))},
     ready(){if(ready)return;ready=true;target=100},
     failOpen(){ready=true;target=100;finish()}
   };
