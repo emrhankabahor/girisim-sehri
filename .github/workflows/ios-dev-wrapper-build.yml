@@ -63,7 +63,7 @@ jobs:
           app=Path("ios/App/App/AppDelegate.swift")
           a=app.read_text()
           if "final class EOTBridgeViewController" not in a:
-              a += r'''
+              a += r\"\"\"
 
 final class EOTBridgeViewController: CAPBridgeViewController {
     private var renderCurtain: UIView?
@@ -147,7 +147,7 @@ final class EOTBridgeViewController: CAPBridgeViewController {
         })
     }
 }
-'''
+\"\"\"
           app.write_text(a)
           PY
 
