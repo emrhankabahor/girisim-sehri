@@ -52,6 +52,7 @@
     }`;
   document.head.appendChild(style);
   document.documentElement.classList.add('eot-booting');
+  const firstPaintGuard=document.getElementById('eot-first-paint-guard');
 
   function mount(){
     if(document.getElementById('eotStartupSplash'))return;
@@ -71,6 +72,7 @@
       </div>
     </div>`;
     document.body.appendChild(el);
+    requestAnimationFrame(()=>{ if(firstPaintGuard) firstPaintGuard.remove(); });
   }
 
   function ensureSnapshotCover(){
@@ -99,7 +101,7 @@
   function finish(){
     if(removed)return;
     const elapsed=performance.now()-(visibleStarted||started);
-    const wait=Math.max(0,2400-elapsed);
+    const wait=Math.max(0,2600-elapsed);
     setTimeout(()=>{
       paint(100);
       setTimeout(()=>{
