@@ -1,0 +1,57 @@
+
+
+final class EOTBridgeViewController: CAPBridgeViewController {
+    private var eotCurtain: UIView?
+    private var eotTimer: Timer?
+    private var eotRevealed = false
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let curtain = UIView(frame: view.bounds)
+        curtain.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        curtain.backgroundColor = UIColor(red: 2.0/255.0, green: 7.0/255.0, blue: 13.0/255.0, alpha: 1)
+
+        let title = UILabel()
+        title.text = "EMPIRE OF TRADE"
+        title.textColor = .white
+        title.font = .systemFont(ofSize: 22, weight: .bold)
+        title.translatesAutoresizingMaskIntoConstraints = false
+        curtain.addSubview(title)
+        NSLayoutConstraint.activate([
+            title.centerXAnchor.constraint(equalTo: curtain.centerXAnchor),
+            title.centerYAnchor.constraint(equalTo: curtain.centerYAnchor)
+        ])
+
+        view.addSubview(curtain)
+        eotCurtain = curtain
+
+        eotTimer = Timer.scheduledTimer(withTimeInterval: 0.10, repeats: true) { [weak self] _ in
+            guard let self = self, !self.eotRevealed else { return }
+            self.webView?.evaluateJavaScript("Boolean(window.__EOT_NATIVE_READY__ === true)") { result, _ in
+                if (result as? Bool) == true {
+                    DispatchQueue.main.async { self.eotReveal() }
+                }
+            }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15) { [weak self] in
+            self?.eotReveal()
+        }
+    }
+
+    private func eotReveal() {
+        guard !eotRevealed else { return }
+        eotRevealed = true
+        eotTimer?.invalidate()
+        eotTimer = nil
+
+        guard let curtain = eotCurtain else { return }
+        UIView.animate(withDuration: 0.28, animations: {
+            curtain.alpha = 0
+        }, completion: { _ in
+            curtain.removeFromSuperview()
+            self.eotCurtain = nil
+        })
+    }
+}
