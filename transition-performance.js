@@ -34,8 +34,21 @@
       burstTimer=setTimeout(finishBurst,Math.max(10,burstUntil-now()+10));
       return;
     }
-    if('requestIdleCallback' in window)requestIdleCallback(flushPending,{timeout:350});
-    else setTimeout(flushPending,30);
+    const flushWhenSettled=function(){
+      if(inBurst()){finishBurst();return;}
+      flushPending();
+    };
+    if('requestIdleCallback' in window)requestIdleCallback(flushWhenSettled,{timeout:350});
+    else setTimeout(flushWhenSettled,30);
+  }
+
+  // Mobile browsers may suspend timers as soon as the app leaves the foreground.
+  // End the burst first so other lifecycle save handlers also write immediately.
+  function flushBeforeLeave(){
+    clearTimeout(burstTimer);
+    burstTimer=0;
+    burstUntil=0;
+    flushPending();
   }
 
   function markBurst(){
@@ -51,7 +64,13 @@
     const s={name:name,original:fn,pending:false,lastArgs:null,lastThis:null,lastResult:undefined};
     state.set(name,s);
     const wrapped=function(){
-      if(!inBurst())return s.original.apply(this,arguments);
+      if(document.hidden||!inBurst()){
+        s.pending=false;
+        s.lastArgs=null;
+        s.lastThis=null;
+        s.lastResult=s.original.apply(this,arguments);
+        return s.lastResult;
+      }
       s.lastArgs=Array.prototype.slice.call(arguments);
       s.lastThis=this;
       s.pending=true;
@@ -67,6 +86,8 @@
 
   window.addEventListener('eot:navigation-intent',markBurst,true);
   window.addEventListener('hashchange',function(){if(!inBurst())markBurst()},true);
+  window.addEventListener('pagehide',flushBeforeLeave,true);
+  document.addEventListener('visibilitychange',function(){if(document.hidden)flushBeforeLeave()},true);
   window.addEventListener('pageshow',install);
   [0,250,800].forEach(function(ms){setTimeout(install,ms)});
 })();

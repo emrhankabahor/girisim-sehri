@@ -39,7 +39,7 @@
   }
 
   function loadOnce(id,src,priority){if(document.getElementById(id))return;const sc=document.createElement('script');sc.id=id;sc.src=src;sc.async=true;if(priority)try{sc.fetchPriority=priority}catch(e){}document.head.appendChild(sc)}
-  function ensureTransitionPerformance(){if(!window.__eotTransitionPerformance)loadOnce('eot-transition-performance-loader','transition-performance.js?v=5','high')}
+  function ensureTransitionPerformance(){if(!window.__eotTransitionPerformance)loadOnce('eot-transition-performance-loader','transition-performance.js?v=6','high')}
   function ensurePersistenceDedupe(){if(!window.__eotPersistenceDedupe)loadOnce('eot-persistence-dedupe-loader','persistence-dedupe.js?v=2')}
   function ensureHomeGameplay(){if(!window.__eotHomeGameplay)loadOnce('eot-home-gameplay-loader','home-gameplay.js?v=1')}
   function ensureMissionRewards(){if(!window.__eotMissionRewards)loadOnce('eot-mission-rewards-loader','mission-rewards.js?v=1')}
