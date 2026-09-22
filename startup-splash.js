@@ -12,20 +12,21 @@
 
   const started=performance.now();
   let visibleStarted=0;
-  let target=8, shown=0, ready=false, removed=false, timer=null;
+  let target=8, shown=0, ready=false, removed=false, finishing=false, timer=null;
 
   const style=document.createElement('style');
   style.id='eot-startup-splash-style';
   style.textContent=`
+    html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;z-index:2147483646;background:
+    #eotStartupSplash{position:fixed;inset:0;bottom:calc(-1 * env(safe-area-inset-bottom,0px));min-height:100vh;min-height:100dvh;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px);isolation:isolate;z-index:2147483646;background:
       radial-gradient(circle at 50% 45%,rgba(19,72,125,.20),transparent 28%),
       linear-gradient(180deg,#02070d,#030912 58%,#02060b);
       color:#fff;display:flex;align-items:center;justify-content:center;
       font-family:inherit;opacity:1;transition:opacity .42s ease}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     .eot-splash-inner{width:min(82vw,420px);display:flex;flex-direction:column;align-items:center}
-    .eot-splash-stage{position:relative;width:250px;height:250px;display:grid;place-items:center;margin-top:-5vh}
+    .eot-splash-stage{position:relative;width:250px;height:250px;display:grid;place-items:center;margin-top:-40px}
     .eot-splash-orbit{position:absolute;border-radius:50%;border:1px solid rgba(55,139,222,.14);
       box-shadow:0 0 35px rgba(21,100,190,.08) inset}
     .eot-splash-orbit.o1{width:210px;height:210px;animation:eotPulse 2.6s ease-in-out infinite}
@@ -97,16 +98,20 @@
   }
 
   function finish(){
-    if(removed)return;
+    if(removed||finishing)return;
+    finishing=true;
     const elapsed=performance.now()-(visibleStarted||started);
     const wait=Math.max(0,2600-elapsed);
     setTimeout(()=>{
       paint(100);
       setTimeout(()=>{
         const el=document.getElementById('eotStartupSplash');
-        if(el)el.classList.add('eot-splash-out');
+        // Restore page layout while the cover is still opaque; fade only after paint.
         document.documentElement.classList.remove('eot-booting');
-        setTimeout(()=>{el&&el.remove();style.remove();removed=true},460);
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{
+          if(el)el.classList.add('eot-splash-out');
+          setTimeout(()=>{el&&el.remove();style.remove();removed=true},460);
+        }));
       },230);
     },wait);
   }
