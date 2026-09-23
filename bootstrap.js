@@ -1,7 +1,7 @@
 (async function(){
   window.__EOT_NATIVE_READY__=false;
   const root=document.getElementById('app-root');
-  const APP_VERSION='209';
+  const APP_VERSION='210';
   let versionCheckRunning=false;
 
   async function forceFreshVersion(remoteVersion){
