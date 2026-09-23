@@ -19,9 +19,9 @@
   style.textContent=`
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;bottom:calc(-1 * env(safe-area-inset-bottom,0px));min-height:100vh;min-height:100dvh;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px);isolation:isolate;z-index:2147483646;background:
+    #eotStartupSplash{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px);isolation:isolate;z-index:2147483646;background:
       radial-gradient(circle at 50% 45%,rgba(19,72,125,.20),transparent 28%),
-      linear-gradient(180deg,#02070d,#030912 58%,#02060b);
+      linear-gradient(180deg,#02070d,#030912 58%,#02070d);
       color:#fff;display:flex;align-items:center;justify-content:center;
       font-family:inherit;opacity:1;transition:opacity .42s ease}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
@@ -66,6 +66,13 @@
     visibleStarted=performance.now();
     const el=document.createElement('div');
     el.id='eotStartupSplash';
+    // iOS standalone initially reports a shorter viewport during its launch animation.
+    // Use the full screen height from the first frame so the centered content stays put.
+    const standalone=(typeof navigator!=='undefined'&&navigator.standalone===true)||
+      (typeof window.matchMedia==='function'&&window.matchMedia('(display-mode: standalone)').matches);
+    if(standalone&&typeof screen!=='undefined'&&Number.isFinite(screen.height)&&screen.height>0){
+      el.style.height=screen.height+'px';
+    }
     el.innerHTML=`<div class="eot-splash-inner">
       <div class="eot-splash-stage">
         <span class="eot-splash-orbit o1"></span><span class="eot-splash-orbit o2"></span><span class="eot-splash-orbit o3"></span>
