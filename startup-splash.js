@@ -82,7 +82,7 @@
       <div class="eot-splash-progress-wrap">
         <div class="eot-splash-percent" id="eotSplashPercent">Yükleniyor • %0</div>
         <div class="eot-splash-track"><div class="eot-splash-fill" id="eotSplashFill"></div></div>
-        <div class="eot-splash-caption">Kariyer ve piyasa verileri hazırlanıyor</div>
+        <div class="eot-splash-caption">Kariyer ve piyasa verileri hazırlanıyor · Sürüm 208</div>
       </div>
     </div>`;
     document.body.appendChild(el);
