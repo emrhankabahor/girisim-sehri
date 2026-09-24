@@ -22,7 +22,7 @@
     #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;background:#061322;color:#fff8e8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
-    .eot-cinema-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 52%}
+    .eot-cinema-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 55%;background:#061322}
     .eot-cinema-shade{position:absolute;inset:0;background:linear-gradient(180deg,#02101d66 0%,#0412230d 33%,transparent 65%,#030d19b3 82%,#030b16 100%);pointer-events:none}
     .eot-cinema-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 22px);left:25px;right:25px;display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:.2em;color:#d3dce0}
     .eot-cinema-top b{font-weight:600;color:#dfc595;letter-spacing:.22em}
@@ -67,7 +67,7 @@
       el.style.height=screen.height+'px';
     }
     el.innerHTML=`
-      <img class="eot-cinema-art" src="./assets/opening-city-v217.webp" alt="" aria-hidden="true" fetchpriority="high" decoding="async">
+      <img class="eot-cinema-art" src="./assets/opening-city-v218.webp" alt="" aria-hidden="true" fetchpriority="high" decoding="async">
       <div class="eot-cinema-shade" aria-hidden="true"></div>
       <header class="eot-cinema-top"><b>E / T</b><span>ERKEN ERİŞİM</span></header>
       <div class="eot-cinema-brand">
