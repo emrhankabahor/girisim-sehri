@@ -19,33 +19,36 @@
   style.textContent=`
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;background:#050d16;color:#eef3f3;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
+    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;background:#061322;color:#fff8e8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
-    .eot-opening-atmosphere{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 78% 28%,#18586042,transparent 48%),radial-gradient(ellipse at 0 85%,#142c444d,transparent 50%),linear-gradient(140deg,#081722,#040b13 70%)}
-    .eot-opening-atmosphere::after{content:'';position:absolute;width:85vmax;height:85vmax;left:28%;top:-42%;border:1px solid #98c6cc0b;border-radius:50%;box-shadow:0 0 0 70px #98c6cc03,0 0 0 140px #98c6cc03}
-    .eot-opening-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 25px);left:max(26px,env(safe-area-inset-left,0px));right:max(26px,env(safe-area-inset-right,0px));display:flex;align-items:center;justify-content:space-between;font-size:9px;letter-spacing:.17em;color:#8496a2}
-    .eot-opening-signature{display:flex;align-items:center;gap:9px;color:#c7d9de;font-size:11px;font-weight:650;letter-spacing:.12em}
-    .eot-opening-signature i{display:block;width:5px;height:5px;background:#cfb98a;transform:rotate(45deg)}
-    .eot-opening-main{position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);width:min(82%,400px)}
-    .eot-opening-emblem{width:190px;height:190px;display:block;margin:0 auto 33px;overflow:visible}
-    .eot-opening-ring{transform:rotate(-90deg);transform-origin:120px 120px;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .18s linear}
-    .eot-opening-light{animation:eotOpeningLight 4s ease-in-out infinite}
-    @keyframes eotOpeningLight{0%,100%{opacity:.35}50%{opacity:.8}}
-    .eot-opening-title{margin:0;font-size:clamp(42px,12vw,64px);line-height:.98;letter-spacing:-.055em;font-weight:760;color:#f0f5f4}
-    .eot-opening-title span{display:flex;gap:12px;align-items:center;margin-top:9px;font-size:.79em;font-weight:300;letter-spacing:.03em;color:#c4d4d9}
-    .eot-opening-title em{font-style:normal;font-size:.24em;letter-spacing:.04em;color:#d1bb8c;font-weight:500}
-    .eot-opening-tagline{margin:21px 0 0;color:#869daa;font-size:12px;line-height:1.65;letter-spacing:.035em}
-    .eot-opening-status{margin-top:34px;padding-top:17px;border-top:1px solid #8ba7b222;display:flex;align-items:center;justify-content:space-between;gap:15px}
-    .eot-opening-status-label{display:flex;align-items:center;gap:9px;color:#a9c0ca;font-size:11px}
-    .eot-opening-status-label::before{content:'';width:5px;height:5px;border-radius:50%;background:#88c9c5;box-shadow:0 0 10px #88c9c544}
-    .eot-opening-percent{color:#d4be93;font-size:13px;font-variant-numeric:tabular-nums;letter-spacing:.04em}
-    .eot-opening-bottom{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 27px);left:24px;right:24px;text-align:center;color:#536e7e;font-size:8px;letter-spacing:.22em}
-    @media(min-width:760px){.eot-opening-main{width:400px}.eot-opening-top{left:42px;right:42px}}
-    @media(max-height:700px){.eot-opening-emblem{width:145px;height:145px;margin-bottom:24px}.eot-opening-title{font-size:46px}.eot-opening-status{margin-top:24px}.eot-opening-tagline{margin-top:15px}}
-    @media(max-height:540px) and (orientation:portrait){.eot-opening-emblem{width:100px;height:100px;margin-bottom:16px}.eot-opening-title{font-size:36px}.eot-opening-main{width:72%}.eot-opening-tagline{margin-top:12px;font-size:10px}.eot-opening-status{margin-top:15px;padding-top:12px}}
-    @media(max-height:500px) and (orientation:landscape){.eot-opening-main{width:min(82%,660px);display:grid;grid-template-columns:180px minmax(0,1fr);column-gap:42px;align-items:center}.eot-opening-emblem{grid-row:1/4;width:170px;height:170px;margin:0}.eot-opening-title{font-size:44px}.eot-opening-tagline{margin-top:12px}.eot-opening-status{margin-top:22px}.eot-opening-top{top:calc(env(safe-area-inset-top,0px) + 16px)}.eot-opening-bottom{bottom:calc(env(safe-area-inset-bottom,0px) + 15px)}}
-    @media(prefers-reduced-motion:reduce){#eotStartupSplash,.eot-opening-ring{transition:none}.eot-opening-light{animation:none}}
+    .eot-cinema-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 52%}
+    .eot-cinema-shade{position:absolute;inset:0;background:linear-gradient(180deg,#02101d66 0%,#0412230d 33%,transparent 65%,#030d19b3 82%,#030b16 100%);pointer-events:none}
+    .eot-cinema-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 22px);left:25px;right:25px;display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:.2em;color:#d3dce0}
+    .eot-cinema-top b{font-weight:600;color:#dfc595;letter-spacing:.22em}
+    .eot-cinema-top span{border:1px solid #bac5cc33;border-radius:20px;padding:6px 9px;background:#06142344}
+    .eot-cinema-brand{position:absolute;top:calc(env(safe-area-inset-top,0px) + 84px);left:50%;transform:translateX(-50%);width:min(90%,550px);text-align:center;text-shadow:0 3px 24px #0009}
+    .eot-cinema-eyebrow{display:flex;align-items:center;justify-content:center;gap:13px;color:#e0c38e;font-size:8px;font-weight:600;letter-spacing:.25em;margin:0 0 16px}
+    .eot-cinema-eyebrow::before,.eot-cinema-eyebrow::after{content:'';height:1px;width:28px;background:#d0b57c88}
+    .eot-cinema-title{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(45px,13.5vw,76px);line-height:.92;font-weight:700;letter-spacing:.035em;color:#fff4d7}
+    .eot-cinema-title span{display:flex;align-items:center;justify-content:center;gap:12px;font-size:.65em;line-height:1;margin-top:9px;letter-spacing:.13em;padding-left:.13em}
+    .eot-cinema-title em{font-style:normal;font-size:.3em;font-weight:400;letter-spacing:.05em;color:#c8b48d}
+    .eot-cinema-tagline{margin:17px 0 0;color:#c9d6de;font-size:11px;letter-spacing:.08em;line-height:1.5}
+    .eot-cinema-load{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 50px);left:50%;transform:translateX(-50%);width:min(82%,430px)}
+    .eot-cinema-status{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:15px}
+    .eot-cinema-status small{display:block;color:#c3ad82;font-size:8px;letter-spacing:.22em;margin-bottom:7px}
+    .eot-cinema-phase{color:#e5ebed;font-size:13px;font-weight:500;line-height:1.4}
+    .eot-cinema-percent{font-size:24px;font-weight:300;font-variant-numeric:tabular-nums;color:#ead9b6;letter-spacing:-.03em}
+    .eot-cinema-track{height:3px;border-radius:5px;overflow:hidden;background:#cfdbdd26}
+    .eot-cinema-fill{height:100%;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#599eac,#f2d6a1);box-shadow:0 0 12px #efc98688;transition:transform .18s linear}
+    .eot-cinema-caption{margin:13px 0 0;font-size:9px;line-height:1.5;color:#92a6b5;text-align:center;letter-spacing:.045em}
+    .eot-cinema-footer{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);left:20px;right:20px;text-align:center;font-size:7px;letter-spacing:.2em;color:#65808f}
+    .eot-cinema-spark{position:absolute;left:var(--x);top:var(--y);width:3px;height:3px;background:#f9d49b;border-radius:50%;box-shadow:0 0 10px #ffe3a8;opacity:0;animation:eotCitySpark 6s ease-in-out infinite;animation-delay:var(--delay);pointer-events:none}
+    @keyframes eotCitySpark{0%,100%{opacity:0;transform:translateY(10px)}40%{opacity:.7}80%{opacity:0;transform:translateY(-35px)}}
+    @media(min-width:760px) and (min-height:600px){.eot-cinema-art{object-fit:contain;object-position:75% center;width:100%;background:#05111e}.eot-cinema-shade{background:linear-gradient(90deg,#031020 0%,#031020ef 24%,#03102044 60%,#03102000 85%),linear-gradient(0deg,#031020aa,transparent 35%)}.eot-cinema-brand{left:9%;top:26%;width:40%;transform:none;text-align:left}.eot-cinema-eyebrow,.eot-cinema-title span{justify-content:flex-start}.eot-cinema-eyebrow::before{display:none}.eot-cinema-title{font-size:clamp(55px,7vw,92px)}.eot-cinema-load{left:9%;width:34%;transform:none;bottom:15%}.eot-cinema-caption{text-align:left}.eot-cinema-footer{text-align:left;left:9%}}
+    @media(max-height:700px) and (orientation:portrait){.eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 66px)}.eot-cinema-title{font-size:44px}.eot-cinema-eyebrow{margin-bottom:10px;font-size:7px}.eot-cinema-tagline{margin-top:12px;font-size:10px}.eot-cinema-load{bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}}
+    @media(max-height:500px) and (orientation:landscape){.eot-cinema-art{object-position:70% 60%}.eot-cinema-shade{background:linear-gradient(90deg,#031020f2,#03102077 55%,#03102011)}.eot-cinema-brand{left:6%;top:24%;width:42%;transform:none;text-align:left}.eot-cinema-title{font-size:43px}.eot-cinema-title span,.eot-cinema-eyebrow{justify-content:flex-start}.eot-cinema-eyebrow::before{display:none}.eot-cinema-tagline{font-size:9px}.eot-cinema-load{left:6%;bottom:calc(env(safe-area-inset-bottom,0px) + 37px);width:40%;transform:none}.eot-cinema-status{margin-bottom:9px}.eot-cinema-caption,.eot-cinema-status small{display:none}.eot-cinema-footer{text-align:left;left:6%}.eot-cinema-top{top:calc(env(safe-area-inset-top,0px) + 12px)}}
+    @media(prefers-reduced-motion:reduce){#eotStartupSplash,.eot-cinema-fill{transition:none}.eot-cinema-spark{animation:none}}
   `;
   document.head.appendChild(style);
   document.documentElement.classList.add('eot-booting');
@@ -64,33 +67,23 @@
       el.style.height=screen.height+'px';
     }
     el.innerHTML=`
-      <div class="eot-opening-atmosphere" aria-hidden="true"></div>
-      <header class="eot-opening-top"><span class="eot-opening-signature"><i></i>E / T</span><span>ERKEN ERİŞİM</span></header>
-      <main class="eot-opening-main">
-        <svg class="eot-opening-emblem" viewBox="0 0 240 240" aria-hidden="true">
-          <defs>
-            <linearGradient id="eotOpeningMetal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e9debd"/><stop offset=".5" stop-color="#bba77d"/><stop offset="1" stop-color="#827251"/></linearGradient>
-            <linearGradient id="eotOpeningGlass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8bced0"/><stop offset="1" stop-color="#2a677a"/></linearGradient>
-            <radialGradient id="eotOpeningHalo"><stop stop-color="#528c9b" stop-opacity=".22"/><stop offset="1" stop-color="#528c9b" stop-opacity="0"/></radialGradient>
-          </defs>
-          <circle class="eot-opening-light" cx="120" cy="120" r="105" fill="url(#eotOpeningHalo)"/>
-          <circle cx="120" cy="120" r="103" fill="none" stroke="#607f8c" stroke-opacity=".15" stroke-width=".7"/>
-          <circle id="eotOpeningRing" class="eot-opening-ring" cx="120" cy="120" r="103" pathLength="100" fill="none" stroke="#cdb98e" stroke-width="1.5" stroke-linecap="round"/>
-          <path d="M120 36 197 80V164L120 208 43 164V80Z" fill="#0b202d" fill-opacity=".7" stroke="#54808e" stroke-opacity=".28"/>
-          <path d="M120 36V208M43 80 120 124 197 80M43 164 120 124 197 164" fill="none" stroke="#628999" stroke-opacity=".12"/>
-          <path d="M70 91 118 64 168 93 120 121Z" fill="url(#eotOpeningMetal)"/>
-          <path d="M70 91V105L120 134V121Z" fill="#796849"/><path d="M120 121 168 93V107L120 134Z" fill="#b29c71"/>
-          <path d="M70 120 87 110 120 129 153 110 170 120 120 149Z" fill="url(#eotOpeningGlass)"/>
-          <path d="M70 120V134L120 163V149Z" fill="#285366"/><path d="M120 149 170 120V134L120 163Z" fill="#4f929f"/>
-          <path d="M70 150 87 140 120 159 153 140 170 150 120 179Z" fill="url(#eotOpeningMetal)"/>
-          <path d="M70 150V159L120 188V179Z" fill="#796849"/><path d="M120 179 170 150V159L120 188Z" fill="#b29c71"/>
-          <path d="M75 89 118 65 164 92M74 149 87 141M124 178 166 153" stroke="#eee1bc" stroke-width=".8" fill="none" opacity=".65"/>
-        </svg>
-        <h1 class="eot-opening-title">EMPIRE<span><em>OF</em> TRADE</span></h1>
-        <p class="eot-opening-tagline">Vizyonunla başla. Kararlarınla büyü.</p>
-        <div class="eot-opening-status" role="status" aria-label="Oyun yükleniyor"><span class="eot-opening-status-label" id="eotSplashPhase">Oyun hazırlanıyor</span><span class="eot-opening-percent" id="eotSplashPercent">%0</span></div>
-      </main>
-      <footer class="eot-opening-bottom">EKONOMİ · TİCARET · STRATEJİ</footer>`;
+      <img class="eot-cinema-art" src="./assets/opening-city-v217.webp" alt="" aria-hidden="true" fetchpriority="high" decoding="async">
+      <div class="eot-cinema-shade" aria-hidden="true"></div>
+      <header class="eot-cinema-top"><b>E / T</b><span>ERKEN ERİŞİM</span></header>
+      <div class="eot-cinema-brand">
+        <p class="eot-cinema-eyebrow">BİR ŞEHİR. SONSUZ FIRSAT.</p>
+        <h1 class="eot-cinema-title">EMPIRE<span><em>OF</em> TRADE</span></h1>
+        <p class="eot-cinema-tagline">Kendi imparatorluğunun mimarı ol.</p>
+      </div>
+      <i class="eot-cinema-spark" style="--x:22%;--y:63%;--delay:0s" aria-hidden="true"></i>
+      <i class="eot-cinema-spark" style="--x:72%;--y:48%;--delay:-2s" aria-hidden="true"></i>
+      <i class="eot-cinema-spark" style="--x:55%;--y:76%;--delay:-4s" aria-hidden="true"></i>
+      <div class="eot-cinema-load" role="status" aria-label="Oyun yükleniyor">
+        <div class="eot-cinema-status"><div><small>YENİ BİR HİKÂYE BAŞLIYOR</small><span class="eot-cinema-phase" id="eotSplashPhase">Oyun hazırlanıyor</span></div><span class="eot-cinema-percent" id="eotSplashPercent">%0</span></div>
+        <div class="eot-cinema-track" aria-hidden="true"><div class="eot-cinema-fill" id="eotCinemaFill"></div></div>
+        <p class="eot-cinema-caption">Her karar bir fırsat. Her yatırım yeni bir başlangıç.</p>
+      </div>
+      <footer class="eot-cinema-footer">EKONOMİ · TİCARET · STRATEJİ</footer>`;
     document.body.appendChild(el);
     requestAnimationFrame(()=>{ if(firstPaintGuard) firstPaintGuard.remove(); });
   }
@@ -104,8 +97,8 @@
     const display=Math.max(0,Math.min(100,Number(v)||0));
     shown=Math.max(shown,display);
     const visible=Math.max(0,Math.min(100,Math.round(shown)));
-    const ring=document.getElementById('eotOpeningRing');
-    if(ring)ring.style.strokeDashoffset=String(100-shown);
+    const fill=document.getElementById('eotCinemaFill');
+    if(fill)fill.style.transform='scaleX('+(shown/100)+')';
     const phase=document.getElementById('eotSplashPhase');
     if(phase)phase.textContent=visible>=100?'Başlamaya hazır':'Oyun hazırlanıyor';
     const pct=document.getElementById('eotSplashPercent');
