@@ -50,6 +50,14 @@
     @media(min-width:760px) and (min-height:600px){.eot-cinema-art{object-fit:contain;object-position:75% center;width:100%;background:#05111e}.eot-cinema-shade{background:linear-gradient(90deg,#031020 0%,#031020ef 24%,#03102044 60%,#03102000 85%),linear-gradient(0deg,#031020aa,transparent 35%)}.eot-cinema-brand{left:9%;top:26%;width:40%;transform:none;text-align:left}.eot-cinema-eyebrow,.eot-cinema-title span{justify-content:flex-start}.eot-cinema-eyebrow::before{display:none}.eot-cinema-title{font-size:clamp(55px,7vw,92px)}.eot-cinema-load{left:9%;width:34%;transform:none;bottom:15%}.eot-cinema-caption{text-align:left}.eot-cinema-footer{text-align:left;left:9%}}
     @media(max-height:700px) and (orientation:portrait){.eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 66px)}.eot-cinema-title{font-size:44px}.eot-cinema-eyebrow{margin-bottom:10px;font-size:7px}.eot-cinema-tagline{margin-top:12px;font-size:10px}.eot-cinema-load{bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}}
     @media(max-height:500px) and (orientation:landscape){.eot-cinema-art{object-position:70% 60%}.eot-cinema-shade{background:linear-gradient(90deg,#031020f2,#03102077 55%,#03102011)}.eot-cinema-brand{left:6%;top:24%;width:42%;transform:none;text-align:left}.eot-cinema-title{font-size:43px}.eot-cinema-title span,.eot-cinema-eyebrow{justify-content:flex-start}.eot-cinema-eyebrow::before{display:none}.eot-cinema-tagline{font-size:9px}.eot-cinema-load{left:6%;bottom:calc(env(safe-area-inset-bottom,0px) + 37px);width:40%;transform:none}.eot-cinema-status{margin-bottom:9px}.eot-cinema-caption,.eot-cinema-status small{display:none}.eot-cinema-footer{text-align:left;left:6%}.eot-cinema-top{top:calc(env(safe-area-inset-top,0px) + 12px)}}
+    .eot-logo-heading{margin:0;line-height:0}
+    .eot-opening-logo{display:block;width:min(52vw,220px);height:auto;margin:0 auto;border-radius:18px}
+    .eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 62px)}
+    .eot-cinema-eyebrow{margin-bottom:10px}
+    .eot-cinema-tagline{margin-top:10px}
+    @media(min-width:760px) and (min-height:600px){.eot-cinema-brand{top:20%}.eot-opening-logo{width:min(28vw,320px);margin-left:0}}
+    @media(max-height:700px) and (orientation:portrait){.eot-opening-logo{width:140px}.eot-cinema-eyebrow{display:none}}
+    @media(max-height:500px) and (orientation:landscape){.eot-cinema-brand{top:19%}.eot-opening-logo{width:140px;margin-left:0}.eot-cinema-eyebrow{display:none}.eot-cinema-tagline{margin-top:5px}}
     @media(prefers-reduced-motion:reduce){#eotStartupSplash,.eot-cinema-fill{transition:none}.eot-cinema-spark{animation:none}}
   `;
   document.head.appendChild(style);
@@ -73,7 +81,7 @@
       <header class="eot-cinema-top"><b>E / T</b><span>ERKEN ERİŞİM</span></header>
       <div class="eot-cinema-brand">
         <p class="eot-cinema-eyebrow">BİR ŞEHİR. SONSUZ FIRSAT.</p>
-        <h1 class="eot-cinema-title">EMPIRE<span><em>OF</em> TRADE</span></h1>
+        <h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v220-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1>
         <p class="eot-cinema-tagline">Şehrin canlanıyor. İmparatorluğun başlıyor.</p>
       </div>
       <i class="eot-cinema-spark" style="--x:22%;--y:63%;--delay:0s" aria-hidden="true"></i>

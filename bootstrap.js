@@ -1,7 +1,7 @@
 (async function(){
   window.__EOT_NATIVE_READY__=false;
   const root=document.getElementById('app-root');
-  const APP_VERSION='219';
+  const APP_VERSION='220';
   let versionCheckRunning=false;
 
   async function forceFreshVersion(remoteVersion){
@@ -104,7 +104,7 @@
     });
     document.querySelectorAll('.account-brand-logo,.career-brand-mark').forEach(el=>{
       el.textContent='';
-      el.style.backgroundImage="url('./apple-touch-icon.png?v=190')";
+      el.style.backgroundImage="url('./assets/logo-v220-180.png')";
       el.style.backgroundSize='cover';
       el.style.backgroundPosition='center';
     });
