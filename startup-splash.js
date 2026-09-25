@@ -10,6 +10,7 @@
     return;
   }
 
+  let cityScene=null;
   const started=performance.now();
   let visibleStarted=0;
   let target=8, shown=0, ready=false, removed=false, finishing=false, timer=null;
@@ -20,6 +21,7 @@
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting #app-root{visibility:hidden!important}
     #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;background:#061322;color:#fff8e8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
+    .eot-animated-city{position:absolute;inset:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 55%,#123346,#061322 65%)}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     .eot-cinema-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 55%;background:#061322}
@@ -67,13 +69,12 @@
       el.style.height=screen.height+'px';
     }
     el.innerHTML=`
-      <img class="eot-cinema-art" src="./assets/opening-city-v218.webp" alt="" aria-hidden="true" fetchpriority="high" decoding="async">
-      <div class="eot-cinema-shade" aria-hidden="true"></div>
+      <canvas id="eotAnimatedCity" class="eot-animated-city" aria-hidden="true"></canvas>
       <header class="eot-cinema-top"><b>E / T</b><span>ERKEN ERİŞİM</span></header>
       <div class="eot-cinema-brand">
         <p class="eot-cinema-eyebrow">BİR ŞEHİR. SONSUZ FIRSAT.</p>
         <h1 class="eot-cinema-title">EMPIRE<span><em>OF</em> TRADE</span></h1>
-        <p class="eot-cinema-tagline">Kendi imparatorluğunun mimarı ol.</p>
+        <p class="eot-cinema-tagline">Şehrin canlanıyor. İmparatorluğun başlıyor.</p>
       </div>
       <i class="eot-cinema-spark" style="--x:22%;--y:63%;--delay:0s" aria-hidden="true"></i>
       <i class="eot-cinema-spark" style="--x:72%;--y:48%;--delay:-2s" aria-hidden="true"></i>
@@ -85,6 +86,7 @@
       </div>
       <footer class="eot-cinema-footer">EKONOMİ · TİCARET · STRATEJİ</footer>`;
     document.body.appendChild(el);
+    if(window.EOTCityScene)cityScene=window.EOTCityScene.mount(document.getElementById("eotAnimatedCity"));
     requestAnimationFrame(()=>{ if(firstPaintGuard) firstPaintGuard.remove(); });
   }
 
@@ -97,6 +99,7 @@
     const display=Math.max(0,Math.min(100,Number(v)||0));
     shown=Math.max(shown,display);
     const visible=Math.max(0,Math.min(100,Math.round(shown)));
+    if(cityScene)cityScene.progress(shown);
     const fill=document.getElementById('eotCinemaFill');
     if(fill)fill.style.transform='scaleX('+(shown/100)+')';
     const phase=document.getElementById('eotSplashPhase');
@@ -119,7 +122,7 @@
         document.documentElement.classList.remove('eot-booting');
         requestAnimationFrame(()=>requestAnimationFrame(()=>{
           if(el)el.classList.add('eot-splash-out');
-          setTimeout(()=>{el&&el.remove();style.remove();removed=true},460);
+          setTimeout(()=>{if(cityScene)cityScene.destroy();el&&el.remove();style.remove();removed=true},460);
         }));
       },230);
     },wait);
