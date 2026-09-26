@@ -20,17 +20,17 @@
   style.textContent=`
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;background:#061322;color:#fff8e8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
-    .eot-animated-city{position:absolute;inset:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 55%,#123346,#061322 65%)}
+    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;background:#06152f;color:#fff8e8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
+    .eot-animated-city{position:absolute;inset:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 55%,#123d78,#06152f 65%)}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
-    .eot-cinema-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 55%;background:#061322}
+    .eot-cinema-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 55%;background:#06152f}
     .eot-cinema-shade{position:absolute;inset:0;background:linear-gradient(180deg,#02101d66 0%,#0412230d 33%,transparent 65%,#030d19b3 82%,#030b16 100%);pointer-events:none}
     .eot-cinema-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 22px);left:25px;right:25px;display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:.2em;color:#d3dce0}
-    .eot-cinema-top b{font-weight:600;color:#dfc595;letter-spacing:.22em}
+    .eot-cinema-top b{font-weight:600;color:#ffd34f;letter-spacing:.22em}
     .eot-cinema-top span{border:1px solid #bac5cc33;border-radius:20px;padding:6px 9px;background:#06142344}
     .eot-cinema-brand{position:absolute;top:calc(env(safe-area-inset-top,0px) + 84px);left:50%;transform:translateX(-50%);width:min(90%,550px);text-align:center;text-shadow:0 3px 24px #0009}
-    .eot-cinema-eyebrow{display:flex;align-items:center;justify-content:center;gap:13px;color:#e0c38e;font-size:8px;font-weight:600;letter-spacing:.25em;margin:0 0 16px}
+    .eot-cinema-eyebrow{display:flex;align-items:center;justify-content:center;gap:13px;color:#ffd34f;font-size:8px;font-weight:600;letter-spacing:.25em;margin:0 0 16px}
     .eot-cinema-eyebrow::before,.eot-cinema-eyebrow::after{content:'';height:1px;width:28px;background:#d0b57c88}
     .eot-cinema-title{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(45px,13.5vw,76px);line-height:.92;font-weight:700;letter-spacing:.035em;color:#fff4d7}
     .eot-cinema-title span{display:flex;align-items:center;justify-content:center;gap:12px;font-size:.65em;line-height:1;margin-top:9px;letter-spacing:.13em;padding-left:.13em}
@@ -40,9 +40,9 @@
     .eot-cinema-status{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:15px}
     .eot-cinema-status small{display:block;color:#c3ad82;font-size:8px;letter-spacing:.22em;margin-bottom:7px}
     .eot-cinema-phase{color:#e5ebed;font-size:13px;font-weight:500;line-height:1.4}
-    .eot-cinema-percent{font-size:24px;font-weight:300;font-variant-numeric:tabular-nums;color:#ead9b6;letter-spacing:-.03em}
+    .eot-cinema-percent{font-size:24px;font-weight:300;font-variant-numeric:tabular-nums;color:#ffd34f;letter-spacing:-.03em}
     .eot-cinema-track{height:3px;border-radius:5px;overflow:hidden;background:#cfdbdd26}
-    .eot-cinema-fill{height:100%;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#599eac,#f2d6a1);box-shadow:0 0 12px #efc98688;transition:transform .18s linear}
+    .eot-cinema-fill{height:100%;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#32caff,#ffd34f);box-shadow:0 0 12px #efc98688;transition:transform .18s linear}
     .eot-cinema-caption{margin:13px 0 0;font-size:9px;line-height:1.5;color:#92a6b5;text-align:center;letter-spacing:.045em}
     .eot-cinema-footer{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);left:20px;right:20px;text-align:center;font-size:7px;letter-spacing:.2em;color:#65808f}
     .eot-cinema-spark{position:absolute;left:var(--x);top:var(--y);width:3px;height:3px;background:#f9d49b;border-radius:50%;box-shadow:0 0 10px #ffe3a8;opacity:0;animation:eotCitySpark 6s ease-in-out infinite;animation-delay:var(--delay);pointer-events:none}
@@ -81,7 +81,7 @@
       <header class="eot-cinema-top"><b>E / T</b><span>ERKEN ERİŞİM</span></header>
       <div class="eot-cinema-brand">
         <p class="eot-cinema-eyebrow">BİR ŞEHİR. SONSUZ FIRSAT.</p>
-        <h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v220-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1>
+        <h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v221-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1>
         <p class="eot-cinema-tagline">Şehrin canlanıyor. İmparatorluğun başlıyor.</p>
       </div>
       <i class="eot-cinema-spark" style="--x:22%;--y:63%;--delay:0s" aria-hidden="true"></i>
