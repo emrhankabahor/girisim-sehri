@@ -1,0 +1,55 @@
+<!-- EOT_PART screen-stocks -->
+<section id="stocks" class="screen"><div class="panel-head"><a class="backbtn" href="#finance">‹</a><div class="panel-title"><h2>Borsa</h2><p>Hisse senetleri • aktif al-sat</p></div></div>
+<div class="summary-strip"><div><span>NAKİT</span><b data-cash>₺100.000</b></div><div><span>BORSA PORTFÖYÜ</span><b id="stockValue">₺0</b></div><div><span>KÂR / ZARAR</span><b id="stockPnl">₺0</b></div></div>
+<div class="asset-card">
+<div class="asset-head"><strong>GŞ Teknoloji<small>GSTEK</small></strong><div class="asset-price"><b>₺125</b><span class="gain">+%2.4</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺125</b></div><div><span>SATIŞ</span><b>₺124.2</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div>
+<div class="trade-panel"><input id="qty_GSTEK" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_GSTEK" onclick="syncTradeQty('GSTEK')">AL</a><a class="sell-btn trade-link" href="#trade_GSTEK" onclick="syncTradeQty('GSTEK')">SAT</a></div>
+</div><div class="asset-card">
+<div class="asset-head"><strong>Anadolu Sanayi<small>ANSAN</small></strong><div class="asset-price"><b>₺82</b><span class="loss">-%0.8</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺82</b></div><div><span>SATIŞ</span><b>₺81.4</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div>
+<div class="trade-panel"><input id="qty_ANSAN" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_ANSAN" onclick="syncTradeQty('ANSAN')">AL</a><a class="sell-btn trade-link" href="#trade_ANSAN" onclick="syncTradeQty('ANSAN')">SAT</a></div>
+</div><div class="asset-card">
+<div class="asset-head"><strong>Metro Yapı<small>MTRYP</small></strong><div class="asset-price"><b>₺210</b><span class="gain">+%1.1</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺210</b></div><div><span>SATIŞ</span><b>₺208.5</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div>
+<div class="trade-panel"><input id="qty_MTRYP" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_MTRYP" onclick="syncTradeQty('MTRYP')">AL</a><a class="sell-btn trade-link" href="#trade_MTRYP" onclick="syncTradeQty('MTRYP')">SAT</a></div>
+</div><div class="asset-card">
+<div class="asset-head"><strong>Atlas Otomotiv<small>ATOTO</small></strong><div class="asset-price"><b>₺168</b><span class="gain">+%0.7</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺168</b></div><div><span>SATIŞ</span><b>₺166.8</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div>
+<div class="trade-panel"><input id="qty_ATOTO" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_ATOTO" onclick="syncTradeQty('ATOTO')">AL</a><a class="sell-btn trade-link" href="#trade_ATOTO" onclick="syncTradeQty('ATOTO')">SAT</a></div>
+</div>
+<div class="portfolio-box"><h3>📊 Borsa Portföyüm</h3><div id="stockPortfolioRows"><div class="portfolio-row"><span>Henüz hisse yok.</span><b>— BTC ETH SOL XRP gram adet adet</b></div></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_GSTEK -->
+<section id="trade_GSTEK" class="screen"><div class="panel-head"><a class="backbtn" href="#stocks">‹</a><div class="panel-title"><h2>GŞ Teknoloji</h2><p>Borsa işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>GŞ Teknoloji</h3><p>GSTEK • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_GSTEK">₺125</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_GSTEK">₺124.2</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_GSTEK" type="number" inputmode="decimal" min="1" step="1" value="1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#stocks" onclick="return tradeFromScreenAndGo('GSTEK','buy','stocks')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#stocks" onclick="return tradeFromScreenAndGo('GSTEK','sell','stocks')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_GSTEK">0 adet</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_ANSAN -->
+<section id="trade_ANSAN" class="screen"><div class="panel-head"><a class="backbtn" href="#stocks">‹</a><div class="panel-title"><h2>Anadolu Sanayi</h2><p>Borsa işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Anadolu Sanayi</h3><p>ANSAN • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_ANSAN">₺82</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_ANSAN">₺81.4</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_ANSAN" type="number" inputmode="decimal" min="1" step="1" value="1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#stocks" onclick="return tradeFromScreenAndGo('ANSAN','buy','stocks')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#stocks" onclick="return tradeFromScreenAndGo('ANSAN','sell','stocks')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_ANSAN">0 adet</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_MTRYP -->
+<section id="trade_MTRYP" class="screen"><div class="panel-head"><a class="backbtn" href="#stocks">‹</a><div class="panel-title"><h2>Metro Yapı</h2><p>Borsa işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Metro Yapı</h3><p>MTRYP • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_MTRYP">₺210</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_MTRYP">₺208.5</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_MTRYP" type="number" inputmode="decimal" min="1" step="1" value="1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#stocks" onclick="return tradeFromScreenAndGo('MTRYP','buy','stocks')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#stocks" onclick="return tradeFromScreenAndGo('MTRYP','sell','stocks')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_MTRYP">0 adet</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_ATOTO -->
+<section id="trade_ATOTO" class="screen"><div class="panel-head"><a class="backbtn" href="#stocks">‹</a><div class="panel-title"><h2>Atlas Otomotiv</h2><p>Borsa işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Atlas Otomotiv</h3><p>ATOTO • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_ATOTO">₺168</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_ATOTO">₺166.8</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_ATOTO" type="number" inputmode="decimal" min="1" step="1" value="1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#stocks" onclick="return tradeFromScreenAndGo('ATOTO','buy','stocks')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#stocks" onclick="return tradeFromScreenAndGo('ATOTO','sell','stocks')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_ATOTO">0 adet</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_YARIM -->
+<section id="trade_YARIM" class="screen"><div class="panel-head"><a class="backbtn" href="#gold">‹</a><div class="panel-title"><h2>Yarım Altın</h2><p>Alım / Satım Onayı</p></div></div><div class="finance-hero"><div class="finance-label">GÜNCEL ALIŞ</div><div class="finance-balance" id="buy_YARIM">₺14.520</div><div class="finance-meta"><div><span>NAKİT</span><b data-cash>₺100.000</b></div><div><span>PORTFÖY</span><b id="held_YARIM">0 adet</b></div><div><span>BİRİM</span><b>adet</b></div></div></div><div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_YARIM" type="number" min="1" step="1" value="1"><div class="trade-actions"><a class="buy-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('YARIM','buy','gold')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('YARIM','sell','gold')">SATIŞI ONAYLA</a></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_CUMHUR -->
+<section id="trade_CUMHUR" class="screen"><div class="panel-head"><a class="backbtn" href="#gold">‹</a><div class="panel-title"><h2>Cumhuriyet Altını</h2><p>Alım / Satım Onayı</p></div></div><div class="finance-hero"><div class="finance-label">GÜNCEL ALIŞ</div><div class="finance-balance" id="buy_CUMHUR">₺30.150</div><div class="finance-meta"><div><span>NAKİT</span><b data-cash>₺100.000</b></div><div><span>PORTFÖY</span><b id="held_CUMHUR">0 adet</b></div><div><span>BİRİM</span><b>adet</b></div></div></div><div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_CUMHUR" type="number" min="1" step="1" value="1"><div class="trade-actions"><a class="buy-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('CUMHUR','buy','gold')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('CUMHUR','sell','gold')">SATIŞI ONAYLA</a></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_KULCE -->
+<section id="trade_KULCE" class="screen"><div class="panel-head"><a class="backbtn" href="#gold">‹</a><div class="panel-title"><h2>100g Külçe Altın</h2><p>Alım / Satım Onayı</p></div></div><div class="finance-hero"><div class="finance-label">GÜNCEL ALIŞ</div><div class="finance-balance" id="buy_KULCE">₺445.000</div><div class="finance-meta"><div><span>NAKİT</span><b data-cash>₺100.000</b></div><div><span>PORTFÖY</span><b id="held_KULCE">0 adet</b></div><div><span>BİRİM</span><b>adet</b></div></div></div><div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_KULCE" type="number" min="1" step="1" value="1"><div class="trade-actions"><a class="buy-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('KULCE','buy','gold')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('KULCE','sell','gold')">SATIŞI ONAYLA</a></div></div></section>
+<!-- EOT_END -->

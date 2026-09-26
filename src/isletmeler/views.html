@@ -1,0 +1,83 @@
+<!-- EOT_PART screen-business -->
+<section id="business" class="screen company-screen">
+<div class="panel-head">
+  <a class="backbtn" href="#home">‹</a>
+  <div class="panel-title"><h2>Şirketler</h2><p>Şirketlerini kur ve yönet</p></div>
+</div>
+
+<div class="companies-header-card">
+  <div>
+    <span>ŞİRKET PORTFÖYÜ</span>
+    <h3 id="companiesHeadline">Henüz şirketin yok</h3>
+    <p id="companiesSubtitle">İlk şirketini kurarak ticari faaliyetlere başlayabilirsin.</p>
+  </div>
+  <a href="#company_setup" onclick="beginNewCompany()">+ Yeni Şirket</a>
+</div>
+
+<div class="companies-summary">
+  <div><span>ŞİRKET SAYISI</span><b id="companyCount">0</b></div>
+  <div><span>TOPLAM DEĞER</span><b id="companiesTotalValue">₺0</b></div>
+  <div><span>TOPLAM ÇALIŞAN</span><b id="companiesTotalEmployees">0</b></div>
+</div>
+
+<div class="company-section-title">
+  <div><h3>Şirketlerim</h3><p>Yönetmek istediğin şirketi seç</p></div>
+</div>
+<div id="companyPortfolioList" class="company-portfolio-list">
+  <div class="empty-company-state">
+    <div>🏢</div>
+    <b>İlk şirketini kur</b>
+    <p>Faaliyet alanını seç, sermayeni belirle ve şirketini oluştur.</p>
+    <a href="#company_setup" onclick="beginNewCompany()">Şirket Oluştur</a>
+  </div>
+</div>
+
+<div id="selectedCompanyManagementArea" class="selected-company-management hidden">
+<div class="company-section-title company-section-gap selected-company-title">
+  <div>
+    <span class="selected-company-eyebrow">SEÇİLİ ŞİRKET</span>
+    <h3 id="selectedCompanyTitle">Önce bir şirket seç</h3>
+    <p id="selectedCompanyHint">Yönetim araçlarını kullanmak için yukarıdan bir şirket seç.</p>
+  </div>
+  <span id="selectedCompanySectorBadge">Şirket seçilmedi</span>
+</div>
+
+<div id="selectedCompanyContext" class="selected-company-context empty">
+  <div class="selected-company-context-icon" id="selectedCompanyContextIcon">🏢</div>
+  <div class="selected-company-context-copy">
+    <span>AKTİF YÖNETİM</span>
+    <b id="selectedCompanyContextName">Şirket seçilmedi</b>
+    <small id="selectedCompanyContextMeta">Şirket portföyünden bir şirket seç.</small>
+  </div>
+</div>
+
+<div class="company-simple-list selected-company-menu" id="selectedCompanyMenu">
+  <a href="#company_center" data-selected-company-link>
+    <span class="company-list-icon">🏢</span>
+    <div><b id="selectedCompanyCenterLabel">Şirket Merkezi</b><small id="selectedCompanyCenterSub">Seçili şirketin hesabı ve finansalları</small></div>
+    <strong>›</strong>
+  </a>
+  <a href="#employees" data-selected-company-link>
+    <span class="company-list-icon">👥</span>
+    <div><b>Personel</b><small id="selectedCompanyEmployeeSub">Seçili şirketin çalışan ve maaş yönetimi</small></div>
+    <strong>›</strong>
+  </a>
+  <a href="#business_credit" data-selected-company-link>
+    <span class="company-list-icon">🏦</span>
+    <div><b>Ticari Finansman</b><small id="selectedCompanyCreditSub">Seçili şirketin bilançosuna göre kredi</small></div>
+    <strong>›</strong>
+  </a>
+  <a href="#monthly_report" data-selected-company-link>
+    <span class="company-list-icon">📊</span>
+    <div><b>Aylık Rapor</b><small id="selectedCompanyReportSub">Seçili şirketin gelir, gider ve net kârı</small></div>
+    <strong>›</strong>
+  </a>
+</div>
+
+<div class="company-section-title company-section-gap">
+  <div><h3>Faaliyet Alanı</h3><p id="selectedCompanyActivityDesc">Seçili şirketin ana işi</p></div>
+</div>
+<div id="selectedCompanyActivities" class="company-operation-grid"></div>
+</div>
+</section>
+<!-- EOT_END -->

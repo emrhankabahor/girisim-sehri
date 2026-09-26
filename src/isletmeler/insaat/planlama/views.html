@@ -1,0 +1,8 @@
+<!-- EOT_PART screen-construction_planning -->
+<section id="construction_planning" class="screen"><div class="panel-head"><a class="backbtn" href="#project_catalog">‹</a><div class="panel-title"><h2>Proje Hazırlığı</h2><p id="planProjectName">Proje seçilmedi</p></div></div>
+<div class="planning-grid"><div><span>ARSA</span><b id="planLand">—</b></div><div><span>TAHMİNİ SÜRE</span><b id="planDays">—</b></div><div><span>TEMEL MALİYET</span><b id="planBaseCost">—</b></div><div><span>RUHSAT</span><b id="planPermitCost">—</b></div><div><span>RİSK PAYI</span><b id="planRisk">—</b></div><div><span>TOPLAM BÜTÇE</span><b id="planTotalCost">—</b></div></div>
+<div class="info-card"><strong>Mimari / Mühendislik Ekibi</strong><p>Kaliteli ekip proje süresini ve maliyet aşımı riskini azaltır.</p><select id="architectQuality" onchange="renderConstructionPlan()"><option value="standard">Standart Ekip</option><option value="expert">Uzman Ekip (+₺450.000)</option><option value="elite">Premium Proje Ekibi (+₺1.200.000)</option></select></div>
+<div class="info-card"><strong>Müteahhit & Şantiye Ekibi</strong><p>Daha güçlü ekip süreyi kısaltır fakat aylık maliyeti artırır.</p><select id="contractorQuality" onchange="renderConstructionPlan()"><option value="economy">Ekonomik Ekip</option><option value="professional">Profesyonel Ekip (+₺600.000)</option><option value="fast">Hızlı İnşaat Ekibi (+₺1.500.000)</option></select></div>
+<div class="permit-card"><div><span>RUHSAT DURUMU</span><b id="permitStatus">Başvuru yapılmadı</b></div><button onclick="obtainPermit()">Ruhsatı Al</button></div>
+<button class="btn wide" onclick="startPlannedProject()">İnşaata Başla</button></section>
+<!-- EOT_END -->

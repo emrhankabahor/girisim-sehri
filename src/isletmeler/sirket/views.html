@@ -1,0 +1,57 @@
+<!-- EOT_PART screen-company_center -->
+<section id="company_center" class="screen company-screen">
+<div class="panel-head">
+  <a class="backbtn" href="#business">‹</a>
+  <div class="panel-title"><h2>Şirket Merkezi</h2><p>Finansal ve kurumsal kontrol</p></div>
+</div>
+
+<div class="company-center-header">
+  <div class="company-avatar large">GŞ</div>
+  <div class="company-center-copy">
+    <span id="companyLegalType">—</span>
+    <h3 id="companyNameLabel">Henüz şirket kurulmadı</h3>
+    <p><span id="companySectorLabel">—</span> • <span id="companyCityLabel">—</span></p>
+  </div>
+  <div class="company-health-pill"><span>SAĞLIK</span><b id="companyHealthScore">—</b></div>
+</div>
+
+<div class="company-balance-panel">
+  <div>
+    <span>ŞİRKET HESABI</span>
+    <b id="companyAccountBalance">₺0</b>
+    <small>Kişisel bakiyeden ayrı ticari hesap</small>
+  </div>
+  <div class="company-account-actions">
+    <button onclick="transferToCompany()">Para Aktar</button>
+    <button onclick="transferFromCompany()">Para Çek</button>
+  </div>
+</div>
+
+<div class="company-center-kpis">
+  <div><span>ŞİRKET DEĞERİ</span><b id="companyValue">₺0</b></div>
+  <div><span>SON AY CİRO</span><b id="companyRevenue">₺0</b></div>
+  <div><span>SON AY NET</span><b id="companyNet">₺0</b></div>
+  <div><span>ÇALIŞAN</span><b id="employeeCount">0</b></div>
+</div>
+
+<div class="company-section-title">
+  <div><h3>Hızlı Yönetim</h3><p>En sık kullanılan şirket işlemleri</p></div>
+</div>
+<div class="company-simple-list">
+  <a href="#employees"><span class="company-list-icon">👥</span><div><b>Personel</b><small>İşe alım ve maaş yönetimi</small></div><strong>›</strong></a>
+  <a href="#business_credit"><span class="company-list-icon">🏦</span><div><b>Ticari Kredi</b><small>Şirket finansmanı ve borç yönetimi</small></div><strong>›</strong></a>
+  <a href="#monthly_report"><span class="company-list-icon">📊</span><div><b>Aylık Rapor</b><small>Gelir, gider ve net sonuç</small></div><strong>›</strong></a>
+  <a href="#company_setup"><span class="company-list-icon">⚙️</span><div><b>Şirket Bilgileri</b><small>Ad, sektör, merkez ve ofis</small></div><strong>›</strong></a>
+</div>
+
+<div class="company-section-title company-section-gap">
+  <div><h3>Son Dönem</h3><p>Finansal performans özeti</p></div>
+</div>
+<div class="company-performance-clean">
+  <div><span>CİRO</span><b id="companyRevenue2">₺0</b></div>
+  <div><span>GİDER</span><b id="companyExpense">₺0</b></div>
+  <div><span>NET</span><b id="companyNet2">₺0</b></div>
+</div>
+<div class="company-status-note"><span>ℹ️</span><p id="companyPerformance">Şirket kurulduktan sonra performans burada gösterilir.</p></div>
+</section>
+<!-- EOT_END -->

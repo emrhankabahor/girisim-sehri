@@ -1,0 +1,40 @@
+<!-- EOT_PART screen-gold -->
+<section id="gold" class="screen"><div class="panel-head"><a class="backbtn" href="#finance">‹</a><div class="panel-title"><h2>Altın</h2><p>Gram • Çeyrek • Yarım • Tam • Cumhuriyet • Külçe</p></div></div>
+<div class="summary-strip"><div><span>NAKİT</span><b data-cash>₺100.000</b></div><div><span>ALTIN PORTFÖYÜ</span><b id="goldValue">₺0</b></div><div><span>KÂR / ZARAR</span><b id="goldPnl">₺0</b></div></div>
+<div class="asset-card">
+<div class="asset-head"><strong>Gram Altın<small>GRAM</small></strong><div class="asset-price"><b>₺4.420</b><span class="gain">+%0.6</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺4.420</b></div><div><span>SATIŞ</span><b>₺4.375</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div>
+<div class="trade-panel"><input id="qty_GRAM" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_GRAM" onclick="syncTradeQty('GRAM')">AL</a><a class="sell-btn trade-link" href="#trade_GRAM" onclick="syncTradeQty('GRAM')">SAT</a></div>
+</div><div class="asset-card">
+<div class="asset-head"><strong>Çeyrek Altın<small>CEYREK</small></strong><div class="asset-price"><b>₺7.290</b><span class="gain">+%0.5</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺7.290</b></div><div><span>SATIŞ</span><b>₺7.180</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div>
+<div class="trade-panel"><input id="qty_CEYREK" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_CEYREK" onclick="syncTradeQty('CEYREK')">AL</a><a class="sell-btn trade-link" href="#trade_CEYREK" onclick="syncTradeQty('CEYREK')">SAT</a></div>
+</div><div class="asset-card">
+<div class="asset-head"><strong>Tam Altın<small>TAM</small></strong><div class="asset-price"><b>₺28.960</b><span class="gain">+%0.5</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺28.960</b></div><div><span>SATIŞ</span><b>₺28.520</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div>
+<div class="trade-panel"><input id="qty_TAM" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_TAM" onclick="syncTradeQty('TAM')">AL</a><a class="sell-btn trade-link" href="#trade_TAM" onclick="syncTradeQty('TAM')">SAT</a></div>
+</div>
+
+<div class="asset-card"><div class="asset-head"><strong>Yarım Altın<small>YARIM</small></strong><div class="asset-price"><b>₺14.520</b><span class="gain">+%0.4</span></div></div><div class="asset-mini"><div><span>ALIŞ</span><b>₺14.520</b></div><div><span>SATIŞ</span><b>₺14.270</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div><div class="trade-panel"><input id="qty_YARIM" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_YARIM" onclick="syncTradeQty('YARIM')">AL</a><a class="sell-btn trade-link" href="#trade_YARIM" onclick="syncTradeQty('YARIM')">SAT</a></div></div>
+<div class="asset-card"><div class="asset-head"><strong>Cumhuriyet Altını<small>CUMHUR</small></strong><div class="asset-price"><b>₺30.150</b><span class="gain">+%0.5</span></div></div><div class="asset-mini"><div><span>ALIŞ</span><b>₺30.150</b></div><div><span>SATIŞ</span><b>₺29.650</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div><div class="trade-panel"><input id="qty_CUMHUR" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_CUMHUR" onclick="syncTradeQty('CUMHUR')">AL</a><a class="sell-btn trade-link" href="#trade_CUMHUR" onclick="syncTradeQty('CUMHUR')">SAT</a></div></div>
+<div class="asset-card"><div class="asset-head"><strong>100g Külçe Altın<small>KULCE</small></strong><div class="asset-price"><b>₺445.000</b><span class="gain">+%0.6</span></div></div><div class="asset-mini"><div><span>ALIŞ</span><b>₺445.000</b></div><div><span>SATIŞ</span><b>₺439.500</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div><div class="trade-panel"><input id="qty_KULCE" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_KULCE" onclick="syncTradeQty('KULCE')">AL</a><a class="sell-btn trade-link" href="#trade_KULCE" onclick="syncTradeQty('KULCE')">SAT</a></div></div>
+<div class="portfolio-box"><h3>🪙 Altın Portföyüm</h3><div id="goldPortfolioRows"><div class="portfolio-row"><span>Henüz altın yok.</span><b>—</b></div></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_GRAM -->
+<section id="trade_GRAM" class="screen"><div class="panel-head"><a class="backbtn" href="#gold">‹</a><div class="panel-title"><h2>Gram Altın</h2><p>Altın işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Gram Altın</h3><p>GRAM • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_GRAM">₺4.420</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_GRAM">₺4.375</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(gram)</span></label><input id="tradeqty_GRAM" type="number" inputmode="decimal" min="1" step="1" value="1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('GRAM','buy','gold')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('GRAM','sell','gold')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_GRAM">0 gram</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_CEYREK -->
+<section id="trade_CEYREK" class="screen"><div class="panel-head"><a class="backbtn" href="#gold">‹</a><div class="panel-title"><h2>Çeyrek Altın</h2><p>Altın işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Çeyrek Altın</h3><p>CEYREK • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_CEYREK">₺7.290</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_CEYREK">₺7.180</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_CEYREK" type="number" inputmode="decimal" min="1" step="1" value="1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('CEYREK','buy','gold')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('CEYREK','sell','gold')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_CEYREK">0 adet</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_TAM -->
+<section id="trade_TAM" class="screen"><div class="panel-head"><a class="backbtn" href="#gold">‹</a><div class="panel-title"><h2>Tam Altın</h2><p>Altın işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Tam Altın</h3><p>TAM • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_TAM">₺28.960</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_TAM">₺28.520</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(adet)</span></label><input id="tradeqty_TAM" type="number" inputmode="decimal" min="1" step="1" value="1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('TAM','buy','gold')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#gold" onclick="return tradeFromScreenAndGo('TAM','sell','gold')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_TAM">0 adet</b></div></div></section>
+<!-- EOT_END -->

@@ -1,0 +1,25 @@
+<!-- EOT_PART screen-factory -->
+<section id="factory" class="screen"><div class="panel-head"><a class="backbtn" href="#business">‹</a><div class="panel-title"><h2>Sanayi & Üretim</h2><p>Gerçekçi sermaye ölçeğinde fabrika yönetimi</p></div></div>
+<div class="factory-visual">🏭<div><b>Üretim Tesisi</b><span id="factoryLevelText">Seviye 1 • 1 üretim hattı</span></div></div>
+<div class="metric-grid"><div><span>TESİS DEĞERİ</span><b id="factoryVal">₺7.500.000</b></div><div><span>KAPASİTE</span><b id="factoryCap">100 birim</b></div><div><span>PARTİ KÂRI</span><b id="factoryProfit">₺5.000.000</b></div></div>
+<div class="info-card" id="factoryStatus"><strong>Durum</strong><p>Tesis henüz kurulmadı.</p></div><div class="factory-actions normalized-actions"><a class="btn" href="#factory_detail">Tesisi İncele</a><a class="btn secondary" href="#factory_ops">Üretim Yönetimi</a><a class="btn secondary" href="#factory_upgrade">Tesis Geliştirmeleri</a></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-factory_detail -->
+<section id="factory_detail" class="screen"><div class="panel-head"><a class="backbtn" href="#factory">‹</a><div class="panel-title"><h2>Başlangıç Üretim Tesisi</h2><p>Kurulum paketi</p></div></div><div class="detail-hero">🏭<div><b>Mini Üretim Tesisi</b><span>100 birim başlangıç kapasitesi</span></div></div><div class="info-card"><strong>Pakete dahil</strong><p>1 üretim hattı, temel depo, 8 çalışan kapasitesi ve başlangıç lisansı.</p></div><a class="btn wide" href="#purchase_factory" onclick="return buyAsset('factory_basic','Mini Üretim Tesisi','İşletme',7500000)">₺7.500.000 • Fabrikayı Kur</a></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-purchase_factory -->
+<section id="purchase_factory" class="screen"><div class="panel-head"><a class="backbtn" href="#factory">‹</a><div class="panel-title"><h2>İşlem Sonucu</h2><p>Mini Üretim Tesisi</p></div></div>
+<div class="loan-detail"><h3 id="purchase_factory_title">İşlem kontrol ediliyor</h3><p id="purchase_factory_text">Satın alma sonucu hazırlanıyor.</p><div class="status-box" id="purchase_factory_detail">JavaScript çalışan ortamda bakiye ve portföy bilgisi burada güncellenir.</div><a class="btn wide" href="#myassets">Varlıklarıma Git</a></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-factory_ops -->
+<section id="factory_ops" class="screen"><div class="panel-head"><a class="backbtn" href="#factory">‹</a><div class="panel-title"><h2>Üretim Yönetimi</h2><p>Fabrika operasyonları</p></div></div>
+<div class="finance-hero"><div class="finance-label">TESİS DURUMU</div><div class="finance-balance" id="factoryOpsTitle">Kurulu değil</div><div class="finance-meta"><div><span>PARTİ MALİYETİ</span><b id="factoryBatchCost">₺550.000</b></div><div><span>PARTİ GELİRİ</span><b id="factoryBatchRevenue">₺800.000</b></div><div><span>SÜRE</span><b id="factoryBatchDuration">20 sn</b></div></div></div>
+<div class="info-card"><strong>Üretim Emri</strong><p id="factoryOpsText">Üretim başlatmak için önce fabrikayı kurmalısın.</p></div>
+<div class="button-group"><a class="btn wide" id="factoryStartBtn" href="#js_required" onclick="startFactoryBatch();return false">Üretim Başlat</a><a class="btn wide secondary" id="factoryCollectBtn" href="#js_required" onclick="collectFactoryBatch();return false">Ürünü Sat / Geliri Al</a></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-factory_upgrade -->
+<section id="factory_upgrade" class="screen"><div class="panel-head"><a class="backbtn" href="#factory">‹</a><div class="panel-title"><h2>Tesis Geliştirmeleri</h2><p>Kapasite ve kârlılığı artır</p></div></div>
+<div class="finance-hero"><div class="finance-label">MEVCUT SEVİYE</div><div class="finance-balance" id="factoryUpgradeLevel">1</div><div class="finance-meta"><div><span>SONRAKİ MALİYET</span><b id="factoryUpgradeCost">₺3.000.000</b></div><div><span>KAPASİTE ARTIŞI</span><b>+50%</b></div><div><span>MAX</span><b>Seviye 3</b></div></div></div>
+<div class="info-card"><strong>Geliştirme Etkisi</strong><p>Her seviye üretim maliyeti ve satış gelirini büyütür; net parti kârı artar.</p></div>
+<a class="btn wide" href="#factory_upgrade" onclick="upgradeFactory();return false">Tesisi Yükselt</a></section>
+<!-- EOT_END -->

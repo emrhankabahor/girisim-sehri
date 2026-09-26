@@ -1,0 +1,65 @@
+<!-- EOT_PART screen-company_setup -->
+<section id="company_setup" class="screen"><div class="panel-head"><a class="backbtn" href="#business">‹</a><div class="panel-title"><h2>Yeni Şirket Oluştur</h2><p>Faaliyet alanını seç ve şirketini kur</p></div></div>
+<div class="setup-stepper">
+  <div class="active" data-step-indicator="1"><b>1</b><span>Tür</span></div>
+  <div data-step-indicator="2"><b>2</b><span>Bilgiler</span></div>
+  <div data-step-indicator="3"><b>3</b><span>Merkez</span></div>
+  <div data-step-indicator="4"><b>4</b><span>Müşavir</span></div>
+  <div data-step-indicator="5"><b>5</b><span>Onay</span></div>
+</div>
+
+<div class="setup-step active" data-step="1">
+  <div class="section-head"><h3>Şirket Türünü Seç</h3><span>Hukuki yapıyı belirle</span></div>
+  <div class="choice-grid">
+    <button onclick="selectCompanyLegalType('Şahıs İşletmesi')" data-legal="Şahıs İşletmesi"><span>👤</span><b>Şahıs İşletmesi</b><small>Düşük başlangıç maliyeti • küçük ölçek</small></button>
+    <button onclick="selectCompanyLegalType('Limited Şirket')" data-legal="Limited Şirket"><span>🏢</span><b>Limited Şirket</b><small>Dengeli yapı • büyümeye uygun</small></button>
+    <button onclick="selectCompanyLegalType('Anonim Şirket')" data-legal="Anonim Şirket"><span>🏛️</span><b>Anonim Şirket</b><small>Yüksek sermaye • büyük ölçek</small></button>
+  </div>
+</div>
+
+<div class="setup-step" data-step="2">
+  <div class="section-head"><h3>Şirket Bilgileri</h3><span>Ad ve ana faaliyet alanı</span></div>
+  <div class="company-setup-grid">
+    <label>Şirket Adı<input id="setupCompanyName" maxlength="36" placeholder="Örn. Girişim Yapı A.Ş."></label>
+    <label>Ana Faaliyet Alanı<select id="setupSector" onchange="renderCompanySetup()"><option>İnşaat</option><option>Sanayi</option><option>Otomotiv</option><option>Gayrimenkul</option><option>Finans</option><option>Lojistik</option></select></label>
+    <label>Kuruluş Sermayesi<input id="setupCapital" oninput="renderCompanySetup()" type="number" min="100000" step="100000" value="1000000"></label>
+  </div>
+</div>
+
+<div class="setup-step" data-step="3">
+  <div class="section-head"><h3>Merkez & Ofis</h3><span>Şirketin fiziksel merkezi</span></div>
+  <div class="company-setup-grid">
+    <label>Merkez Şehir<select id="setupCity"><option>İstanbul</option><option>Ankara</option><option>İzmir</option><option>Bursa</option><option>Kocaeli</option><option>Antalya</option><option>Muğla</option><option>Gaziantep</option></select></label>
+    <label>Ofis Tipi<select id="setupOffice" onchange="renderCompanySetup()"><option value="home">Sanal / Ev Ofisi</option><option value="small">Küçük Ofis</option><option value="corporate">Kurumsal Ofis</option></select></label>
+  </div>
+</div>
+
+<div class="setup-step" data-step="4">
+  <div class="section-head"><h3>Mali Müşavir</h3><span>Muhasebe desteği</span></div>
+  <div class="choice-grid accountant-grid">
+    <button onclick="selectAccountant('basic')" data-accountant="basic"><span>🧾</span><b>Standart</b><small>Düşük maliyet</small></button>
+    <button onclick="selectAccountant('pro')" data-accountant="pro"><span>🧮</span><b>Deneyimli</b><small>Daha iyi finans takibi</small></button>
+    <button onclick="selectAccountant('corporate')" data-accountant="corporate"><span>🏦</span><b>Kurumsal</b><small>Büyük şirketlere uygun</small></button>
+  </div>
+</div>
+
+<div class="setup-step" data-step="5">
+  <div class="section-head"><h3>Kuruluş Özeti</h3><span>Son kontrol</span></div>
+  <div class="setup-summary-card">
+    <div><span>ŞİRKET TÜRÜ</span><b id="summaryLegalType">—</b></div>
+    <div><span>SEKTÖR</span><b id="summarySector">—</b></div>
+    <div><span>MERKEZ</span><b id="summaryCity">—</b></div>
+    <div><span>SERMAYE</span><b id="summaryCapital">₺0</b></div>
+    <div><span>KURULUŞ MASRAFI</span><b id="setupFoundingCost">₺0</b></div>
+    <div><span>TOPLAM GEREKLİ</span><b id="setupTotalRequired">₺0</b></div>
+  </div>
+  <div class="setup-company-cash"><span>ŞİRKET HESABINA AKTARILACAK</span><b id="setupCompanyCash">₺0</b></div>
+</div>
+
+<div class="setup-nav">
+  <button id="setupPrevBtn" class="secondary" onclick="changeSetupStep(-1)">Geri</button>
+  <button id="setupNextBtn" onclick="changeSetupStep(1)">Devam</button>
+  <button id="setupCreateButton" class="primary hidden" onclick="createOrUpdateCompany()">Şirketi Kur</button>
+</div>
+</section>
+<!-- EOT_END -->

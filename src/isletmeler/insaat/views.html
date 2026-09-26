@@ -1,0 +1,19 @@
+<!-- EOT_PART screen-construction -->
+<section id="construction" class="screen"><div class="panel-head"><a class="backbtn" href="#business">‹</a><div class="panel-title"><h2>İnşaat Şirketi</h2><p>Arsa geliştir, proje üret ve satış yap</p></div></div>
+<div class="factory-visual">🏗️<div><b>Başlangıç İnşaat Firması</b><span>Seviye 1 lisans • Konut ve ticari projeler</span></div></div>
+<div class="metric-grid"><div><span>KURULUŞ</span><b>₺5.000.000</b></div><div><span>PROJE BANDI</span><b>₺3–8,5 Mn</b></div><div><span>PROJE KÂRI</span><b>%35–50</b></div></div>
+<div class="info-card" id="constructionStatus"><strong>Durum</strong><p>Şirket henüz kurulmadı.</p></div><div class="construction-main-actions normalized-actions"><a class="btn" href="#construction_detail">Firmayı İncele</a><a class="btn secondary" href="#construction_ops">Proje Yönetimi</a></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-construction_detail -->
+<section id="construction_detail" class="screen"><div class="panel-head"><a class="backbtn" href="#construction">‹</a><div class="panel-title"><h2>Başlangıç İnşaat Firması</h2><p>Şirket kuruluş paketi</p></div></div><div class="detail-hero">🏗️<div><b>Seviye 1 İnşaat Şirketi</b><span>Konut, villa ve ticari proje lisansı</span></div></div><div class="info-card"><strong>Kuruluş sonrası</strong><p>Sahip olduğun arsaları geliştirebilir, proje maliyeti ve satış gelirini yönetebilirsin.</p></div><a class="btn wide" href="#purchase_construction" onclick="return buyAsset('construction_basic','Başlangıç İnşaat Firması','İşletme',5000000)">₺5.000.000 • Şirketi Kur</a></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-purchase_construction -->
+<section id="purchase_construction" class="screen"><div class="panel-head"><a class="backbtn" href="#construction">‹</a><div class="panel-title"><h2>İşlem Sonucu</h2><p>Başlangıç İnşaat Firması</p></div></div>
+<div class="loan-detail"><h3 id="purchase_construction_title">İşlem kontrol ediliyor</h3><p id="purchase_construction_text">Satın alma sonucu hazırlanıyor.</p><div class="status-box" id="purchase_construction_detail">JavaScript çalışan ortamda bakiye ve portföy bilgisi burada güncellenir.</div><a class="btn wide" href="#myassets">Varlıklarıma Git</a></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-construction_ops -->
+<section id="construction_ops" class="screen"><div class="panel-head"><a class="backbtn" href="#construction">‹</a><div class="panel-title"><h2>Proje Yönetimi</h2><p>Arsa seç, inşa et ve bağımsız bölümleri yönet</p></div></div>
+<div class="finance-hero"><div class="finance-label">AKTİF PROJE</div><div class="finance-balance" id="constructionOpsTitle">Proje yok</div><div class="finance-meta"><div><span>MALİYET</span><b id="projectCost">—</b></div><div><span>TAHMİNİ DEĞER</span><b id="projectRevenue">—</b></div><div><span>SÜRE</span><b id="projectDuration">—</b></div></div></div>
+<div class="info-card"><strong>Proje Durumu</strong><p id="constructionOpsText">Önce sahip olduğun bir arsayı proje için seç.</p></div>
+<div class="construction-actions"><a class="btn wide secondary" href="#development_center">Arsalarımı Gör</a><a class="btn wide secondary" href="#project_portfolio">Tamamlanan Projeler</a><a class="btn wide" id="constructionCollectBtn" href="#js_required" onclick="collectConstructionProject();return false">Projeyi Tamamla</a></div></section>
+<!-- EOT_END -->

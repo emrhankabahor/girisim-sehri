@@ -1,0 +1,46 @@
+<!-- EOT_PART screen-crypto -->
+<section id="crypto" class="screen"><div class="panel-head"><a class="backbtn" href="#finance">‹</a><div class="panel-title"><h2>Kripto</h2><p>BTC • ETH • SOL • XRP</p></div></div>
+<div class="summary-strip"><div><span>NAKİT</span><b data-cash>₺100.000</b></div><div><span>KRİPTO PORTFÖYÜ</span><b id="cryptoValue">₺0</b></div><div><span>KÂR / ZARAR</span><b id="cryptoPnl">₺0</b></div></div>
+<div class="asset-card">
+<div class="asset-head"><strong>Bitcoin<small>BTC</small></strong><div class="asset-price"><b>₺3.240.000</b><span class="gain">+%1.7</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺3.240.000</b></div><div><span>SATIŞ</span><b>₺3.215.000</b></div><div><span>MİN. İŞLEM</span><b>0.001</b></div></div>
+<div class="trade-panel"><input id="qty_BTC" type="number" inputmode="decimal" min="0.001" step="0.001" value="0.001"><a class="buy-btn trade-link" href="#trade_BTC" onclick="syncTradeQty('BTC')">AL</a><a class="sell-btn trade-link" href="#trade_BTC" onclick="syncTradeQty('BTC')">SAT</a></div>
+</div><div class="asset-card">
+<div class="asset-head"><strong>Ethereum<small>ETH</small></strong><div class="asset-price"><b>₺112.000</b><span class="loss">-%0.4</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺112.000</b></div><div><span>SATIŞ</span><b>₺111.200</b></div><div><span>MİN. İŞLEM</span><b>0.01</b></div></div>
+<div class="trade-panel"><input id="qty_ETH" type="number" inputmode="decimal" min="0.01" step="0.01" value="0.01"><a class="buy-btn trade-link" href="#trade_ETH" onclick="syncTradeQty('ETH')">AL</a><a class="sell-btn trade-link" href="#trade_ETH" onclick="syncTradeQty('ETH')">SAT</a></div>
+</div><div class="asset-card">
+<div class="asset-head"><strong>Solana<small>SOL</small></strong><div class="asset-price"><b>₺5.820</b><span class="gain">+%3.2</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺5.820</b></div><div><span>SATIŞ</span><b>₺5.780</b></div><div><span>MİN. İŞLEM</span><b>0.1</b></div></div>
+<div class="trade-panel"><input id="qty_SOL" type="number" inputmode="decimal" min="0.1" step="0.1" value="0.1"><a class="buy-btn trade-link" href="#trade_SOL" onclick="syncTradeQty('SOL')">AL</a><a class="sell-btn trade-link" href="#trade_SOL" onclick="syncTradeQty('SOL')">SAT</a></div>
+</div><div class="asset-card">
+<div class="asset-head"><strong>XRP<small>XRP</small></strong><div class="asset-price"><b>₺102</b><span class="loss">-%1.1</span></div></div>
+<div class="asset-mini"><div><span>ALIŞ</span><b>₺102</b></div><div><span>SATIŞ</span><b>₺101.2</b></div><div><span>MİN. İŞLEM</span><b>1</b></div></div>
+<div class="trade-panel"><input id="qty_XRP" type="number" inputmode="decimal" min="1" step="1" value="1"><a class="buy-btn trade-link" href="#trade_XRP" onclick="syncTradeQty('XRP')">AL</a><a class="sell-btn trade-link" href="#trade_XRP" onclick="syncTradeQty('XRP')">SAT</a></div>
+</div>
+<div class="portfolio-box"><h3>₿ Kripto Portföyüm</h3><div id="cryptoPortfolioRows"><div class="portfolio-row"><span>Henüz kripto yok.</span><b>—</b></div></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_BTC -->
+<section id="trade_BTC" class="screen"><div class="panel-head"><a class="backbtn" href="#crypto">‹</a><div class="panel-title"><h2>Bitcoin</h2><p>Kripto işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Bitcoin</h3><p>BTC • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_BTC">₺3.240.000</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_BTC">₺3.215.000</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(BTC)</span></label><input id="tradeqty_BTC" type="number" inputmode="decimal" min="0.001" step="0.001" value="0.001"><div class="trade-confirm"><a class="buy-btn trade-link" href="#crypto" onclick="return tradeFromScreenAndGo('BTC','buy','crypto')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#crypto" onclick="return tradeFromScreenAndGo('BTC','sell','crypto')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_BTC">0 BTC</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_ETH -->
+<section id="trade_ETH" class="screen"><div class="panel-head"><a class="backbtn" href="#crypto">‹</a><div class="panel-title"><h2>Ethereum</h2><p>Kripto işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Ethereum</h3><p>ETH • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_ETH">₺112.000</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_ETH">₺111.200</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(ETH)</span></label><input id="tradeqty_ETH" type="number" inputmode="decimal" min="0.01" step="0.01" value="0.01"><div class="trade-confirm"><a class="buy-btn trade-link" href="#crypto" onclick="return tradeFromScreenAndGo('ETH','buy','crypto')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#crypto" onclick="return tradeFromScreenAndGo('ETH','sell','crypto')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_ETH">0 ETH</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_SOL -->
+<section id="trade_SOL" class="screen"><div class="panel-head"><a class="backbtn" href="#crypto">‹</a><div class="panel-title"><h2>Solana</h2><p>Kripto işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>Solana</h3><p>SOL • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_SOL">₺5.820</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_SOL">₺5.780</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(SOL)</span></label><input id="tradeqty_SOL" type="number" inputmode="decimal" min="0.1" step="0.1" value="0.1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#crypto" onclick="return tradeFromScreenAndGo('SOL','buy','crypto')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#crypto" onclick="return tradeFromScreenAndGo('SOL','sell','crypto')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_SOL">0 SOL</b></div></div></section>
+<!-- EOT_END -->
+<!-- EOT_PART screen-trade_XRP -->
+<section id="trade_XRP" class="screen"><div class="panel-head"><a class="backbtn" href="#crypto">‹</a><div class="panel-title"><h2>XRP</h2><p>Kripto işlem ekranı</p></div></div>
+<div class="trade-screen-card"><h3>XRP</h3><p>XRP • AL/SAT işlemi</p><div class="trade-quote"><div><span>ALIŞ FİYATI</span><b><span id="buy_XRP">₺102</span></b></div><div><span>SATIŞ FİYATI</span><b><span id="sell_XRP">₺101.2</span></b></div></div>
+<div class="trade-form"><label>İşlem miktarı <span class="unit-hint">(XRP)</span></label><input id="tradeqty_XRP" type="number" inputmode="decimal" min="1" step="1" value="1"><div class="trade-confirm"><a class="buy-btn trade-link" href="#crypto" onclick="return tradeFromScreenAndGo('XRP','buy','crypto')">ALIMI ONAYLA</a><a class="sell-btn trade-link" href="#crypto" onclick="return tradeFromScreenAndGo('XRP','sell','crypto')">SATIŞI ONAYLA</a></div></div>
+<div class="status-box">Mevcut nakit: <b data-cash>₺100.000</b> • Portföy miktarı: <b id="held_XRP">0 XRP</b></div></div></section>
+<!-- EOT_END -->
