@@ -1,0 +1,61 @@
+{
+  "label": "Profil",
+  "purpose": "development-source-map",
+  "children": [
+    {
+      "label": "Hesap",
+      "source": "src/profil/hesap",
+      "children": []
+    },
+    {
+      "label": "Karakter",
+      "source": "src/profil/karakter",
+      "children": []
+    },
+    {
+      "label": "Varlıklar",
+      "source": "src/profil/varliklar",
+      "children": []
+    },
+    {
+      "label": "Garaj",
+      "source": "src/profil/garaj",
+      "children": [
+        {
+          "label": "servis",
+          "source": "src/profil/garaj/servis"
+        }
+      ]
+    },
+    {
+      "label": "Görevler",
+      "source": "src/profil/gorevler",
+      "children": []
+    },
+    {
+      "label": "Başarımlar",
+      "source": "src/profil/basarimlar",
+      "children": []
+    },
+    {
+      "label": "Bildirimler",
+      "source": "src/profil/bildirimler",
+      "children": []
+    },
+    {
+      "label": "Servet geçmişi",
+      "source": "src/profil/servet-gecmisi",
+      "children": []
+    },
+    {
+      "label": "Çok oyunculu",
+      "source": "src/profil/cok-oyunculu",
+      "children": []
+    },
+    {
+      "label": "İşlem geçmişi",
+      "source": "src/finans/islem-gecmisi",
+      "children": []
+    }
+  ]
+}

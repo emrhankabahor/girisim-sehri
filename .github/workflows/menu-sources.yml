@@ -1,0 +1,62 @@
+name: Menu source integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - '*.js'
+      - '*.css'
+      - 'content-*.html'
+      - 'tools/build_menu_sources.py'
+      - 'tools/migrate_menu_sources.py'
+      - 'tools/menu_function_spans.cjs'
+      - 'tests/menu_*.py'
+      - '.github/workflows/menu-sources.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - '*.js'
+      - '*.css'
+      - 'content-*.html'
+      - 'tools/**'
+      - 'tests/**'
+      - '.github/workflows/menu-sources.yml'
+permissions:
+  contents: write
+concurrency:
+  group: menu-sources-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Initialize menu sources once, verify exact migration
+        run: |
+          if [ ! -f src/menu-build.json ]; then
+            python tools/migrate_menu_sources.py
+            python tools/build_menu_sources.py --check --baseline
+          fi
+      - name: Verify source and runtime parity
+        run: |
+          python tools/build_menu_sources.py --check
+          python -m unittest discover -s tests -p 'menu_*.py'
+          node --check app.js
+          node --check bootstrap.js
+          node --test tests/*.test.cjs
+      - name: Preserve generated menu sources on first migration
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git add src
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Organize all menu sources with byte-identical runtime output'
+            git push origin HEAD:main
+          fi

@@ -1,0 +1,75 @@
+{
+  "label": "Pazar",
+  "purpose": "development-source-map",
+  "children": [
+    {
+      "label": "Arsa",
+      "source": "src/pazar/arsa",
+      "children": [
+        {
+          "label": "ilceler",
+          "source": "src/pazar/arsa/ilceler"
+        },
+        {
+          "label": "iller",
+          "source": "src/pazar/arsa/iller"
+        },
+        {
+          "label": "mahalleler",
+          "source": "src/pazar/arsa/mahalleler"
+        }
+      ]
+    },
+    {
+      "label": "Gayrimenkul",
+      "source": "src/pazar/gayrimenkul",
+      "children": [
+        {
+          "label": "ilceler",
+          "source": "src/pazar/gayrimenkul/ilceler"
+        },
+        {
+          "label": "iller",
+          "source": "src/pazar/gayrimenkul/iller"
+        }
+      ]
+    },
+    {
+      "label": "Galeri",
+      "source": "src/pazar/galeri",
+      "children": [
+        {
+          "label": "ikinci-el",
+          "source": "src/pazar/galeri/ikinci-el"
+        },
+        {
+          "label": "ilanlar",
+          "source": "src/pazar/galeri/ilanlar"
+        },
+        {
+          "label": "markalar",
+          "source": "src/pazar/galeri/markalar"
+        },
+        {
+          "label": "sifir",
+          "source": "src/pazar/galeri/sifir"
+        }
+      ]
+    },
+    {
+      "label": "Canlı ilanlar",
+      "source": "src/pazar/canli-ilanlar",
+      "children": []
+    },
+    {
+      "label": "Teklifler",
+      "source": "src/pazar/teklifler",
+      "children": []
+    },
+    {
+      "label": "Pazarlık",
+      "source": "src/pazar/pazarlik",
+      "children": []
+    }
+  ]
+}

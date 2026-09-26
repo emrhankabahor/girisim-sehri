@@ -1,0 +1,117 @@
+{
+  "label": "İşletmeler",
+  "purpose": "development-source-map",
+  "children": [
+    {
+      "label": "Mağazalar",
+      "source": "src/isletmeler/magazalar",
+      "children": [
+        {
+          "label": "market",
+          "source": "src/isletmeler/magazalar/market"
+        },
+        {
+          "label": "perakende",
+          "source": "src/isletmeler/magazalar/perakende"
+        },
+        {
+          "label": "restoran",
+          "source": "src/isletmeler/magazalar/restoran"
+        }
+      ]
+    },
+    {
+      "label": "Fabrika",
+      "source": "src/isletmeler/fabrika",
+      "children": []
+    },
+    {
+      "label": "İnşaat",
+      "source": "src/isletmeler/insaat",
+      "children": [
+        {
+          "label": "arsa-gelistirme",
+          "source": "src/isletmeler/insaat/arsa-gelistirme"
+        },
+        {
+          "label": "planlama",
+          "source": "src/isletmeler/insaat/planlama"
+        },
+        {
+          "label": "projeler",
+          "source": "src/isletmeler/insaat/projeler"
+        }
+      ]
+    },
+    {
+      "label": "Galeri",
+      "source": "src/isletmeler/galeri",
+      "children": []
+    },
+    {
+      "label": "Gayrimenkul",
+      "source": "src/isletmeler/gayrimenkul",
+      "children": [
+        {
+          "label": "tadilat",
+          "source": "src/isletmeler/gayrimenkul/tadilat"
+        }
+      ]
+    },
+    {
+      "label": "Şirket",
+      "source": "src/isletmeler/sirket",
+      "children": [
+        {
+          "label": "kurulus",
+          "source": "src/isletmeler/sirket/kurulus"
+        }
+      ]
+    },
+    {
+      "label": "Personel",
+      "source": "src/isletmeler/personel",
+      "children": []
+    },
+    {
+      "label": "Stok",
+      "source": "src/isletmeler/stok",
+      "children": []
+    },
+    {
+      "label": "Rakipler",
+      "source": "src/isletmeler/rakipler",
+      "children": []
+    },
+    {
+      "label": "İhaleler",
+      "source": "src/isletmeler/ihaleler",
+      "children": []
+    },
+    {
+      "label": "Gelişmiş",
+      "source": "src/isletmeler/gelismis",
+      "children": []
+    },
+    {
+      "label": "Yönetim",
+      "source": "src/isletmeler/yonetim",
+      "children": []
+    },
+    {
+      "label": "Kuruluş",
+      "source": "src/isletmeler/kurulus",
+      "children": []
+    },
+    {
+      "label": "Ticari kredi",
+      "source": "src/finans/krediler/ticari",
+      "children": []
+    },
+    {
+      "label": "Raporlar",
+      "source": "src/finans/raporlar",
+      "children": []
+    }
+  ]
+}

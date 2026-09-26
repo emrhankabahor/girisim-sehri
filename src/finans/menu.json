@@ -1,0 +1,103 @@
+{
+  "label": "Finans",
+  "purpose": "development-source-map",
+  "children": [
+    {
+      "label": "Banka",
+      "source": "src/finans/banka",
+      "children": []
+    },
+    {
+      "label": "Krediler",
+      "source": "src/finans/krediler",
+      "children": [
+        {
+          "label": "bankalar",
+          "source": "src/finans/krediler/bankalar"
+        },
+        {
+          "label": "teminat",
+          "source": "src/finans/krediler/teminat"
+        },
+        {
+          "label": "ticari",
+          "source": "src/finans/krediler/ticari"
+        },
+        {
+          "label": "yapilandirma",
+          "source": "src/finans/krediler/yapilandirma"
+        }
+      ]
+    },
+    {
+      "label": "Kredi kartı",
+      "source": "src/finans/kredi-karti",
+      "children": []
+    },
+    {
+      "label": "Mevduat",
+      "source": "src/finans/mevduat",
+      "children": []
+    },
+    {
+      "label": "Borsa",
+      "source": "src/finans/borsa",
+      "children": [
+        {
+          "label": "arastirma",
+          "source": "src/finans/borsa/arastirma"
+        }
+      ]
+    },
+    {
+      "label": "Kripto",
+      "source": "src/finans/kripto",
+      "children": []
+    },
+    {
+      "label": "Altın",
+      "source": "src/finans/altin",
+      "children": []
+    },
+    {
+      "label": "Halka arz",
+      "source": "src/finans/halka-arz",
+      "children": []
+    },
+    {
+      "label": "Bütçe",
+      "source": "src/finans/butce",
+      "children": []
+    },
+    {
+      "label": "İşlem geçmişi",
+      "source": "src/finans/islem-gecmisi",
+      "children": []
+    },
+    {
+      "label": "Raporlar",
+      "source": "src/finans/raporlar",
+      "children": []
+    },
+    {
+      "label": "Vergiler",
+      "source": "src/finans/vergiler",
+      "children": []
+    },
+    {
+      "label": "Ekonomi",
+      "source": "src/finans/ekonomi",
+      "children": [
+        {
+          "label": "haberler",
+          "source": "src/finans/ekonomi/haberler"
+        }
+      ]
+    },
+    {
+      "label": "Kriz",
+      "source": "src/finans/kriz",
+      "children": []
+    }
+  ]
+}
