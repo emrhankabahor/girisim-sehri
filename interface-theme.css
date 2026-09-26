@@ -231,12 +231,17 @@ body.eot-design-v1 .topbar .eot-brand b{
  font-family:EOTBrand,"Arial Black",sans-serif;font-weight:800;
  font-size:clamp(10px,3.15vw,18px);line-height:1.35;letter-spacing:-.025em;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
- color:#fff8e6;-webkit-text-stroke:.3px #f5cb59;
- text-shadow:0 1px 0 #eeb534,0 2px 0 #925515,0 3px 2px #020b1b;
+ color:#fffdf7;
+ -webkit-text-stroke:.18px rgba(238,181,52,.88);
+ text-shadow:0 .65px 0 #f3c74d,0 1.45px 0 #a96318,0 2.2px 1.2px rgba(2,11,27,.9);
+ transform:scaleX(1.045);
+ transform-origin:center center;
 }
 body.eot-design-v1 .topbar .eot-brand small{
  font-family:EOTBrand,"Arial Black",sans-serif;font-weight:800;
  font-size:clamp(6px,1.7vw,9px);line-height:1.4;letter-spacing:.14em;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffd34f;
- text-shadow:0 1px 0 #80521b;
+ text-shadow:0 .8px 0 #80521b;
+ transform:scaleX(1.025);
+ transform-origin:center center;
 }
