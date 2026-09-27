@@ -12,7 +12,7 @@
   function ensureCeoIntegration(){
     if(window.__eotCeoIdentityLoaded||document.querySelector('script[data-eot-ceo-identity]'))return;
     const s=document.createElement('script');
-    s.src='ceo-identity.js?v=190';
+    s.src='ceo-identity.js?v=3';
     s.dataset.eotCeoIdentity='1';
     document.body.appendChild(s);
   }

@@ -41,8 +41,9 @@
     const city=document.getElementById('eotCompanyCity');
     if(!city||document.getElementById('eotCompanyCeo'))return;
     const cityField=city.closest('.eot-field');if(!cityField)return;
-    const field=document.createElement('div');field.className='eot-field';field.innerHTML='<label>Şirket CEO Adı</label><input id="eotCompanyCeo" maxlength="40" autocomplete="name" placeholder="Örn. Emirhan Kabahor">';
-    cityField.parentNode.insertBefore(field,cityField);
+    const field=document.createElement('div');field.className='eot-field';field.innerHTML='<label for="eotCompanyCeo">Şirket CEO Adı</label><input id="eotCompanyCeo" maxlength="40" autocomplete="name" placeholder="Örn. Emirhan Kabahor">';
+    const anchor=city.closest('.eot-setup-location')||cityField;
+    anchor.parentNode.insertBefore(field,anchor);
     const preset=accountCeo();if(preset)field.querySelector('input').value=preset;
     const btn=document.getElementById('eotCompanySubmit');
     if(btn&&btn.onclick&&!btn.onclick.__eotCeo){
