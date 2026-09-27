@@ -20,7 +20,7 @@ function ensureStyle(){
   .eot-company-setup.show{display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
   .eot-setup-shell{width:min(100%,560px);margin:auto 0;display:flex;flex-direction:column;align-items:center}
   .eot-setup-brand{text-align:center;margin:8px 0 22px}
-  .eot-setup-logo{width:94px;height:94px;margin:auto;border-radius:25px;background:url('./apple-touch-icon.png?v=190') center/cover no-repeat;box-shadow:0 12px 34px rgba(0,0,0,.38),0 0 30px rgba(46,144,255,.2)}
+  .eot-setup-logo{width:94px;height:94px;margin:auto;border-radius:25px;background:url('./assets/logo-v221-192.png') center/cover no-repeat;box-shadow:0 12px 34px rgba(0,0,0,.38),0 0 30px rgba(46,144,255,.2)}
   .eot-setup-brand b{display:block;font-size:25px;letter-spacing:.08em;margin-top:14px}
   .eot-setup-brand small{display:block;color:#63d8ee;letter-spacing:.30em;font-size:9px;font-weight:900;margin-top:5px}
   .eot-setup-card{width:100%;background:linear-gradient(180deg,rgba(14,35,59,.98),rgba(8,25,43,.98));border:1px solid rgba(139,188,232,.30);border-radius:31px;padding:26px 22px 24px;box-shadow:0 20px 50px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.03)}
@@ -63,15 +63,15 @@ function buildOverlay(){
   ov.id='eotCompanySetup';
   ov.className='eot-company-setup';
   ov.innerHTML=`<div class="eot-setup-shell">
-    <div class="eot-setup-brand"><div class="eot-setup-logo"></div><b>EMPIRE OF TRADE</b><small>BUSINESS EMPIRE</small></div>
+    <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-192.png" width="96" height="96" alt="Empire of Trade"><b>EMPIRE OF TRADE</b><small>İMPARATORLUĞUN BURADA BAŞLIYOR</small></div>
     <section class="eot-setup-card">
       <h1>Şirketini Kur</h1>
-      <div class="eot-field"><label>Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">🎲</button></div></div>
-      <div class="eot-field"><label>Şirket Ünvanı</label><select id="eotCompanyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
-      <div class="eot-field"><label>Şirket Merkezi</label><select id="eotCompanyCountry"><option>Türkiye</option></select></div>
-      <div class="eot-field"><select id="eotCompanyCity">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div>
+      <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">🎲</button></div></div>
+      <div class="eot-field"><label for="eotCompanyTitle">Şirket Ünvanı</label><select id="eotCompanyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
+      <div class="eot-setup-location"><div class="eot-field"><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry"><option>Türkiye</option></select></div>
+      <div class="eot-field"><label for="eotCompanyCity">Şehir</label><select id="eotCompanyCity">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
       <div class="eot-terms">Kayıt olarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> kabul ediyorum.</div>
-      <div id="eotCompanySetupError" class="eot-setup-error"></div>
+      <div id="eotCompanySetupError" class="eot-setup-error" role="status" aria-live="polite"></div>
       <button class="eot-company-submit" id="eotCompanySubmit">Şirketini Kur</button>
     </section>
     <button class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button>

@@ -245,3 +245,41 @@ body.eot-design-v1 .topbar .eot-brand small{
  transform:scaleX(1.025);
  transform-origin:center center;
 }
+
+/* Company onboarding: compact safe-area layout with keyboard/zoom scroll fallback. */
+body.eot-design-v1 .eot-company-setup{
+ box-sizing:border-box;height:100%;height:100dvh;bottom:auto;overflow-x:hidden;overflow-y:auto;
+ padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);
+ background:radial-gradient(ellipse at 50% 0,#195aae55,transparent 55%),#06152f!important;
+ overscroll-behavior:contain;scroll-padding:20px;
+}
+body.eot-design-v1 .eot-company-setup *{box-sizing:border-box}
+body.eot-design-v1 .eot-setup-shell{width:min(100%,440px);flex-shrink:0;margin:auto 0}
+body.eot-design-v1 .eot-setup-brand{margin:0 0 16px;text-align:center}
+body.eot-design-v1 .eot-setup-logo{display:block;width:96px;height:96px;object-fit:contain;margin:0 auto;border-radius:22px;background:none;box-shadow:0 0 0 1px #ffd34f66,0 10px 30px #0004}
+body.eot-design-v1 .eot-setup-brand b{font-family:EOTBrand,"Arial Black",sans-serif;font-size:20px;line-height:1.3;letter-spacing:0;margin-top:10px;color:#fff6df;text-shadow:0 1px #d69c24}
+body.eot-design-v1 .eot-setup-brand small{font-size:8px;letter-spacing:.14em;line-height:1.5;color:#ffd34f;margin-top:5px}
+body.eot-design-v1 .eot-setup-card{padding:18px!important;border-radius:22px!important;background:linear-gradient(145deg,#123565,#0a2145)!important;border:1px solid #4277af!important;box-shadow:0 16px 40px #0003}
+body.eot-design-v1 .eot-setup-card h1{font-size:24px;line-height:1.25;margin:0 0 12px;padding-bottom:12px;border-bottom-color:#ffd34f33}
+body.eot-design-v1 .eot-field{min-width:0;margin:10px 0}
+body.eot-design-v1 .eot-field label{font-size:11px;line-height:1.4;margin:0 0 5px;color:#c4d7ee}
+body.eot-design-v1 .eot-field :is(input,select){min-width:0;max-width:100%;height:46px;padding:0 12px;color:#fff8ed;border:1px solid #426b9a!important;font-size:16px!important}
+body.eot-design-v1 .eot-name-input{padding-right:54px!important}
+body.eot-design-v1 .eot-random-name{top:1px;right:1px;width:44px;height:44px;border-radius:11px;background:#19497c;border-color:transparent;box-shadow:none;font-size:21px}
+body.eot-design-v1 .eot-setup-location{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+body.eot-design-v1 .eot-terms{margin:8px 0 0;font-size:10px;line-height:1.5;color:#b9cbe1}
+body.eot-design-v1 .eot-setup-error{min-height:0;margin:0;line-height:1.4}
+body.eot-design-v1 .eot-setup-error:not(:empty){margin-top:8px}
+body.eot-design-v1 :is(.eot-company-submit,.eot-existing-login){height:48px;margin-top:12px;font-size:13px!important;box-shadow:none}
+body.eot-design-v1 .eot-company-submit{background:linear-gradient(115deg,#ffe387,#ffc438)!important;color:#142443!important;border:1px solid #ffe999!important}
+body.eot-design-v1 .eot-existing-login{background:#103365!important;border:1px solid #3f70a8!important;color:#dcedff!important}
+body.eot-design-v1 .eot-version{align-self:center;margin-top:10px;padding:0;font-size:9px;line-height:1.4;color:#90a9ca}
+@media(max-height:740px){
+ body.eot-design-v1 .eot-company-setup{padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
+ body.eot-design-v1 .eot-setup-logo{width:64px;height:64px;border-radius:16px}
+ body.eot-design-v1 .eot-setup-brand{margin-bottom:10px}
+ body.eot-design-v1 .eot-setup-brand b{font-size:17px;margin-top:7px}
+ body.eot-design-v1 .eot-setup-card{padding:14px!important}
+ body.eot-design-v1 .eot-setup-card h1{font-size:21px;margin-bottom:8px;padding-bottom:8px}
+ body.eot-design-v1 .eot-field{margin:7px 0}
+}

@@ -2,7 +2,7 @@
 (async function(){
   window.__EOT_NATIVE_READY__=false;
   const root=document.getElementById('app-root');
-  const APP_VERSION='222';
+  const APP_VERSION='224';
   let versionCheckRunning=false;
 
   
