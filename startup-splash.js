@@ -95,7 +95,7 @@
       <footer class="eot-cinema-footer">EKONOMİ · TİCARET · STRATEJİ</footer>`;
     document.body.appendChild(el);
     if(window.EOTCityScene)cityScene=window.EOTCityScene.mount(document.getElementById("eotAnimatedCity"));
-    requestAnimationFrame(()=>{ if(firstPaintGuard) firstPaintGuard.remove(); });
+    requestAnimationFrame(()=>{ if(firstPaintGuard) firstPaintGuard.remove(); const preview=document.getElementById('eotFirstPaint');if(preview)preview.remove(); });
   }
 
   function removeSnapshotCover(){

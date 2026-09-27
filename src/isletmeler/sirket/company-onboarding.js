@@ -68,6 +68,7 @@ function buildOverlay(){
       <h1>Şirketini Kur</h1>
       <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">🎲</button></div></div>
       <div class="eot-field"><label for="eotCompanyTitle">Şirket Ünvanı</label><select id="eotCompanyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
+      <div class="eot-field"><label for="eotCompanyCeo">Şirket CEO Adı</label><input id="eotCompanyCeo" maxlength="40" autocomplete="name" placeholder="Adınız ve soyadınız"></div>
       <div class="eot-setup-location"><div class="eot-field"><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry"><option>Türkiye</option></select></div>
       <div class="eot-field"><label for="eotCompanyCity">Şehir</label><select id="eotCompanyCity">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
       <div class="eot-terms">Kayıt olarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> kabul ediyorum.</div>
@@ -80,13 +81,54 @@ function buildOverlay(){
   document.body.appendChild(ov);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
   ov.querySelector('#eotCompanyName').value=randomCompanyName();
+  try{const u=typeof currentAccount==='function'?currentAccount():null;ov.querySelector('#eotCompanyCeo').value=String(u?.ceoName||'')}catch(e){}
   ov.querySelector('#eotRandomCompanyName').onclick=()=>{ov.querySelector('#eotCompanyName').value=randomCompanyName()};
   ov.querySelector('#eotCompanySubmit').onclick=createCompany;
-  ov.querySelector('#eotExistingLogin').onclick=()=>{hideSetup();try{if(typeof openAccountModal==='function')openAccountModal();else if(typeof showAccountModal==='function')showAccountModal();else document.getElementById('accountModal')?.classList.add('show')}catch(e){}}
+  ov.querySelector('#eotExistingLogin').onclick=openExistingAccount;
 }
-function showSetup(force){buildOverlay();if(!force&&(hasCompany()||localStorage.getItem(setupKey())==='1'))return false;document.getElementById('eotCompanySetup').classList.add('show');document.body.style.overflow='hidden';return true}
+function showSetup(force){buildOverlay();if(!force&&hasCompany())return false;document.getElementById('eotCompanySetup').classList.add('show');document.body.style.overflow='hidden';return true}
 function hideSetup(){document.getElementById('eotCompanySetup')?.classList.remove('show');document.body.style.overflow=''}
-function createCompany(){if(typeof sim==='undefined'){const e=document.getElementById('eotCompanySetupError');if(e)e.textContent='Oyun hazırlanıyor, lütfen birkaç saniye bekle.';return}const name=String(document.getElementById('eotCompanyName')?.value||'').trim(),title=document.getElementById('eotCompanyTitle')?.value||TITLES[0],city=document.getElementById('eotCompanyCity')?.value||'İstanbul',err=document.getElementById('eotCompanySetupError');if(name.length<3){err.textContent='Şirket adı en az 3 karakter olmalı.';return}try{const id='company_main_'+Date.now(),company={id,established:true,name,legalType:title,sector:'Genel Ticaret',city,headquarters:{country:'Türkiye',city},capital:0,companyCash:0,brand:0,employees:[],monthlyHistory:[],currentMonth:{revenue:0,expense:0,tax:0},establishedAt:Date.now(),isMainCompany:true};if(!Array.isArray(sim.companies))sim.companies=[];sim.companies=sim.companies.filter(c=>!c?.isMainCompany);sim.companies.unshift(company);sim.selectedCompanyId=id;sim.companyName=name;sim.companyProfile={...(sim.companyProfile||{}),...company};localStorage.setItem(setupKey(),'1');localStorage.removeItem(pendingKey());persist();try{if(typeof render==='function')render();if(typeof renderGameExtras==='function')renderGameExtras()}catch(e){}try{if(typeof window.EOTReleaseCompanyBootGate==='function')window.EOTReleaseCompanyBootGate()}catch(e){}hideSetup();location.hash='home';window.scrollTo(0,0);if(typeof toast==='function')toast(name+' kuruldu • '+city)}catch(e){if(err)err.textContent='Şirket kurulamadı.'}}
+function openExistingAccount(){
+  const err=document.getElementById('eotCompanySetupError');
+  if(typeof showAccountOverlay!=='function'||!document.getElementById('accountOverlay')){
+    if(err)err.textContent='Giriş ekranı hazırlanıyor, lütfen tekrar dene.';
+    return false;
+  }
+  if(typeof setAccountMode==='function')setAccountMode('login');
+  // The login overlay lives under app-root; reveal it before hiding setup.
+  if(typeof window.EOTReleaseCompanyBootGate==='function')window.EOTReleaseCompanyBootGate();
+  showAccountOverlay();hideSetup();return true;
+}
+function createCompany(){
+  const err=document.getElementById('eotCompanySetupError');
+  if(typeof sim==='undefined'){if(err)err.textContent='Oyun hazırlanıyor, lütfen birkaç saniye bekle.';return false}
+  // A stale/double tap must not replace the company that was just created.
+  if(hasCompany()){hideSetup();return false}
+  const name=String(document.getElementById('eotCompanyName')?.value||'').trim();
+  const ceo=String(document.getElementById('eotCompanyCeo')?.value||'').trim();
+  const title=document.getElementById('eotCompanyTitle')?.value||TITLES[0];
+  const city=document.getElementById('eotCompanyCity')?.value||'İstanbul';
+  if(name.length<3||name.length>32){if(err)err.textContent='Şirket adı 3–32 karakter olmalı.';return false}
+  if(ceo.length<2||ceo.length>40){if(err)err.textContent='CEO adı 2–40 karakter olmalı.';return false}
+  if(!TITLES.includes(title)||!CITIES.includes(city)){if(err)err.textContent='Geçerli bir şirket ünvanı ve şehir seç.';return false}
+  try{
+    const id='company_main_'+Date.now(),company={id,established:true,name,ceoName:ceo,legalType:title,sector:'Genel Ticaret',city,headquarters:{country:'Türkiye',city},capital:0,companyCash:0,brand:0,employees:[],monthlyHistory:[],currentMonth:{revenue:0,expense:0,tax:0},establishedAt:Date.now(),isMainCompany:true};
+    if(!Array.isArray(sim.companies))sim.companies=[];
+    sim.companies=sim.companies.filter(c=>!c?.isMainCompany);sim.companies.unshift(company);
+    sim.selectedCompanyId=id;sim.companyName=name;sim.companyProfile={...(sim.companyProfile||{}),...company};
+    localStorage.setItem(setupKey(),'1');localStorage.removeItem(pendingKey());
+    // CEO is included in the first career save, including guest careers.
+    persist();
+    try{const u=typeof currentAccount==='function'?currentAccount():null;if(u&&u.id){u.ceoName=ceo;localStorage.setItem('gs_current_account',JSON.stringify(u));const users=JSON.parse(localStorage.getItem('gs_accounts')||'[]');const hit=users.find(x=>x&&x.id===u.id);if(hit){hit.ceoName=ceo;localStorage.setItem('gs_accounts',JSON.stringify(users))}}}catch(e){}
+    if(err)err.textContent='';
+    try{if(typeof render==='function')render();if(typeof renderGameExtras==='function')renderGameExtras()}catch(e){}
+    if(typeof window.EOTReleaseCompanyBootGate==='function')window.EOTReleaseCompanyBootGate();
+    hideSetup();location.hash='home';window.scrollTo(0,0);
+    if(typeof toast==='function')toast(name+' kuruldu • '+city);
+    return true;
+  }catch(e){if(err)err.textContent='Şirket kurulamadı.';return false}
+}
+
 function startNewGame(){if(!confirm('Yeni oyun başlatmak mevcut kariyerini sıfırlar. Devam etmek istiyor musun?'))return;if(!confirm('Bu işlem tüm kariyeri sıfırlayacak. Emin misin?'))return;try{const id=currentId(),fresh=freshCareerState();applyCareerState(fresh);localStorage.removeItem(setupKey());localStorage.setItem(pendingKey(),'1');if(id!=='guest')localStorage.setItem('gs_account_career_'+id,JSON.stringify(fresh));localStorage.setItem('gs140_state',JSON.stringify(fresh));persist();showSetup(true)}catch(e){if(typeof toast==='function')toast('Yeni oyun başlatılamadı')}}
 function mountNewGameButton(){const p=document.getElementById('profile');if(!p||document.getElementById('eotNewGameCard'))return;const card=document.createElement('section');card.id='eotNewGameCard';card.className='eot-new-game-card';card.innerHTML='<h3>Yeni Oyun</h3><p>Kariyerini sıfırdan başlatır.</p><button class="eot-new-game-btn">Yeni Oyun Başlat</button>';card.querySelector('button').onclick=startNewGame;p.appendChild(card)}
 function installNewAccountHook(){
@@ -94,7 +136,7 @@ function installNewAccountHook(){
   const original=window.enterGameAfterAccount;
   const wrapped=function(isNewAccount){
     const result=original.apply(this,arguments);
-    if(isNewAccount===true){
+    if(isNewAccount===true||!hasCompany()){
       try{localStorage.setItem(pendingKey(),'1')}catch(e){}
       setTimeout(()=>showSetup(false),60);
     }
@@ -116,6 +158,7 @@ function startup(){
      State yüklenmesine kısa süre tanı, sonra kesin kontrol yap. */
   const enforceCompanyGate=()=>{
     try{
+      if(typeof sim==='undefined')return;
       if(hasCompany()){
         localStorage.removeItem(pendingKey());
         hideSetup();
