@@ -65,7 +65,7 @@ window.EOTCityScene={mount(canvas){
   if(dead)return;frame=requestAnimationFrame(render);if(now-last<33||document.hidden)return;last=now;
   const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
   if(w!==rect.width||h!==rect.height){w=rect.width;h=rect.height;const dpr=Math.min(window.devicePixelRatio||1,1.5);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);c.setTransform(dpr,0,0,dpr,0,0)}
-  const wide=w>h*1.2;scale=Math.min(w*(wide?.60:1.16)/600,h*(wide?.90:.49)/390);cx=w*(wide?.73:.5);cy=h*(wide?.59:.60);
+  const wide=w>h*1.2;scale=Math.min(w*(wide?.50:1.0)/600,h*(wide?.90:.49)/390);cx=w*(wide?.72:.5);cy=h*(wide?.59:.60);
   const t=media.matches?0:(now-start)/1000;
   c.clearRect(0,0,w,h);
   const glow=c.createRadialGradient(cx,cy,0,cx,cy,300*scale);glow.addColorStop(0,'#1f687b55');glow.addColorStop(1,'#06132200');c.fillStyle=glow;c.fillRect(0,0,w,h);
