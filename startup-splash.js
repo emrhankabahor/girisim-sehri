@@ -10,7 +10,7 @@
     return;
   }
 
-  let cityScene=null;
+  let constructionBars=[],sectorLabels=[];
   const started=performance.now();
   let visibleStarted=0;
   let target=8, shown=0, ready=false, removed=false, finishing=false, timer=null;
@@ -20,71 +20,40 @@
   style.textContent=`
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;background:#06152f;color:#fff8e8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
-    .eot-animated-city{position:absolute;inset:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 55%,#123d78,#06152f 65%)}
+    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;color:#eef6ff;background:radial-gradient(ellipse at 50% 48%,#143b65 0%,#091e3c 40%,#06152f 75%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
-    .eot-cinema-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 22px);left:25px;right:25px;display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:.2em;color:#d3dce0}
-    .eot-cinema-top b{font-weight:600;color:#ffd34f;letter-spacing:.22em}
-    .eot-cinema-top span{border:1px solid #bac5cc33;border-radius:20px;padding:6px 9px;background:#06142344}
-    .eot-cinema-brand{position:absolute;top:calc(env(safe-area-inset-top,0px) + 84px);left:50%;transform:translateX(-50%);width:min(90%,550px);text-align:center;text-shadow:0 3px 24px #0009}
-    .eot-cinema-eyebrow{display:flex;align-items:center;justify-content:center;gap:13px;color:#ffd34f;font-size:8px;font-weight:600;letter-spacing:.25em;margin:0 0 16px}
-    .eot-cinema-eyebrow::before,.eot-cinema-eyebrow::after{content:'';height:1px;width:28px;background:#d0b57c88}
-    .eot-cinema-title{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(45px,13.5vw,76px);line-height:.92;font-weight:700;letter-spacing:.035em;color:#fff4d7}
-    .eot-cinema-title span{display:flex;align-items:center;justify-content:center;gap:12px;font-size:.65em;line-height:1;margin-top:9px;letter-spacing:.13em;padding-left:.13em}
-    .eot-cinema-title em{font-style:normal;font-size:.3em;font-weight:400;letter-spacing:.05em;color:#c8b48d}
-    .eot-cinema-tagline{margin:17px 0 0;color:#c9d6de;font-size:11px;letter-spacing:.08em;line-height:1.5}
-    .eot-cinema-load{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 50px);left:50%;transform:translateX(-50%);width:min(82%,430px)}
-    .eot-cinema-status{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:15px}
-    .eot-cinema-status small{display:block;color:#c3ad82;font-size:8px;letter-spacing:.22em;margin-bottom:7px}
-    .eot-cinema-phase{color:#e5ebed;font-size:13px;font-weight:500;line-height:1.4}
-    .eot-cinema-percent{font-size:24px;font-weight:300;font-variant-numeric:tabular-nums;color:#ffd34f;letter-spacing:-.03em}
-    .eot-cinema-track{height:3px;border-radius:5px;overflow:hidden;background:#cfdbdd26}
-    .eot-cinema-fill{height:100%;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#32caff,#ffd34f);box-shadow:0 0 12px #efc98688;transition:transform .18s linear}
-    .eot-cinema-caption{margin:13px 0 0;font-size:9px;line-height:1.5;color:#92a6b5;text-align:center;letter-spacing:.045em}
-    .eot-cinema-footer{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);left:20px;right:20px;text-align:center;font-size:7px;letter-spacing:.2em;color:#65808f}
-    .eot-cinema-spark{position:absolute;left:var(--x);top:var(--y);width:3px;height:3px;background:#f9d49b;border-radius:50%;box-shadow:0 0 10px #ffe3a8;opacity:0;animation:eotCitySpark 6s ease-in-out infinite;animation-delay:var(--delay);pointer-events:none}
-    @keyframes eotCitySpark{0%,100%{opacity:0;transform:translateY(10px)}40%{opacity:.7}80%{opacity:0;transform:translateY(-35px)}}
-    @media(min-width:760px) and (min-height:600px){.eot-cinema-art{object-fit:contain;object-position:75% center;width:100%;background:#05111e}.eot-cinema-shade{background:linear-gradient(90deg,#031020 0%,#031020ef 24%,#03102044 60%,#03102000 85%),linear-gradient(0deg,#031020aa,transparent 35%)}.eot-cinema-brand{left:9%;top:26%;width:40%;transform:none;text-align:left}.eot-cinema-eyebrow,.eot-cinema-title span{justify-content:flex-start}.eot-cinema-eyebrow::before{display:none}.eot-cinema-title{font-size:clamp(55px,7vw,92px)}.eot-cinema-load{left:9%;width:34%;transform:none;bottom:15%}.eot-cinema-caption{text-align:left}.eot-cinema-footer{text-align:left;left:9%}}
-    @media(max-height:700px) and (orientation:portrait){.eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 66px)}.eot-cinema-title{font-size:44px}.eot-cinema-eyebrow{margin-bottom:10px;font-size:7px}.eot-cinema-tagline{margin-top:12px;font-size:10px}.eot-cinema-load{bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}}
-    @media(max-height:500px) and (orientation:landscape){.eot-cinema-art{object-position:70% 60%}.eot-cinema-shade{background:linear-gradient(90deg,#031020f2,#03102077 55%,#03102011)}.eot-cinema-brand{left:6%;top:24%;width:42%;transform:none;text-align:left}.eot-cinema-title{font-size:43px}.eot-cinema-title span,.eot-cinema-eyebrow{justify-content:flex-start}.eot-cinema-eyebrow::before{display:none}.eot-cinema-tagline{font-size:9px}.eot-cinema-load{left:6%;bottom:calc(env(safe-area-inset-bottom,0px) + 37px);width:40%;transform:none}.eot-cinema-status{margin-bottom:9px}.eot-cinema-caption,.eot-cinema-status small{display:none}.eot-cinema-footer{text-align:left;left:6%}.eot-cinema-top{top:calc(env(safe-area-inset-top,0px) + 12px)}}
+    .eot-cinema-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 24px);left:7%;right:7%;display:flex;justify-content:space-between;gap:16px;align-items:center;font-size:8px;letter-spacing:.14em;color:#a5bfda}
+    .eot-cinema-top span{font-size:7px;color:#e9cc84;border:1px solid #cda85233;border-radius:20px;padding:7px 10px;background:#e8ba5710}
+    .eot-launch-composition{position:absolute;inset:calc(env(safe-area-inset-top,0px) + 75px) 0 calc(env(safe-area-inset-bottom,0px) + 35px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(36px,8vh,76px)}
+    .eot-cinema-brand{flex:none;position:relative;text-align:center}
+    .eot-cinema-brand::before{content:'';position:absolute;inset:-22%;border-radius:50%;background:radial-gradient(ellipse,#1b8fcc18,transparent 65%);z-index:-1}
     .eot-logo-heading{margin:0;line-height:0}
-    .eot-opening-logo{display:block;width:min(52vw,220px);height:auto;margin:0 auto;border-radius:18px}
-    .eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 62px)}
-    .eot-cinema-eyebrow{margin-bottom:10px}
-    .eot-cinema-tagline{margin-top:10px}
-    @media(min-width:760px) and (min-height:600px){.eot-cinema-brand{top:20%}.eot-opening-logo{width:min(28vw,320px);margin-left:0}}
-    @media(max-height:700px) and (orientation:portrait){.eot-opening-logo{width:140px}.eot-cinema-eyebrow{display:none}}
-    @media(max-height:500px) and (orientation:landscape){.eot-cinema-brand{top:19%}.eot-opening-logo{width:140px;margin-left:0}.eot-cinema-eyebrow{display:none}.eot-cinema-tagline{margin-top:5px}}
-    /* Observatory composition: fixed typography, living city, architectural progress. */
-    .eot-animated-city{background:radial-gradient(ellipse at 50% 57%,#153f72 0%,#091c3a 42%,#06152f 75%)}
-    #eotStartupSplash::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,#57caff08 50%,transparent 65%);z-index:1}
-    .eot-cinema-top{top:calc(env(safe-area-inset-top,0px) + 20px);font-size:8px;align-items:center}
-    .eot-cinema-top b{letter-spacing:.14em;color:#bed8ef}
-    .eot-cinema-top span{color:#ffe5a0;background:#ffcf5010;border-color:#ffcf5033;letter-spacing:.12em}
-    .eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 68px);z-index:2}
-    .eot-opening-logo{width:clamp(132px,23vh,195px);border-radius:22px;filter:drop-shadow(0 12px 32px #0005)}
-    .eot-cinema-eyebrow{font-size:8px;letter-spacing:.22em;color:#99bddb}
-    .eot-cinema-tagline{font-size:12px;font-weight:500;letter-spacing:.025em;color:#deecfa;margin-top:12px}
-    .eot-cinema-load{z-index:2;width:min(84%,420px);bottom:calc(env(safe-area-inset-bottom,0px) + 45px)}
-    .eot-cinema-status{margin-bottom:16px;align-items:flex-end}
-    .eot-cinema-status small{color:#7ca8c7;letter-spacing:.17em}
-    .eot-cinema-phase{font-size:15px;font-weight:600}
-    .eot-cinema-percent{font-size:30px;font-weight:700;min-width:96px;text-align:right;color:#ffdb77}
-    .eot-cinema-track{position:relative;height:38px;border-radius:0;background:none;overflow:visible;border-bottom:1px solid #6bcfff44;display:flex;gap:4px;align-items:flex-end}
-    .eot-cinema-track i{position:relative;flex:1;height:var(--height);border:1px solid #5a91ba44;border-bottom:0;border-radius:2px 2px 0 0;background:#193a55;overflow:hidden}
-    .eot-cinema-track i::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#187db8,#6ee1fa);transform:scaleY(var(--built,0));transform-origin:bottom;transition:transform .25s linear;box-shadow:inset 0 1px #bdf5ff}
-    .eot-cinema-track i:nth-child(4n)::after{background:linear-gradient(0deg,#cf9536,#ffe69b)}
-    .eot-cinema-fill{display:none}
-    .eot-cinema-sectors{display:flex;justify-content:space-between;gap:8px;margin-top:12px;color:#617f9d;font-size:8px;font-weight:700;letter-spacing:.1em}
-    .eot-cinema-sectors span{transition:color .3s}
-    .eot-cinema-sectors span.active{color:#e7cd8e}
-    .eot-cinema-caption{font-size:10px;color:#88a6be;margin-top:16px;letter-spacing:0}
-    .eot-cinema-footer{font-size:7px;letter-spacing:.22em;color:#55718f}
-    @media(min-width:760px) and (min-height:600px){.eot-cinema-brand{top:20%;left:8%;width:34%;text-align:left}.eot-opening-logo{width:clamp(180px,24vw,290px);margin:0}.eot-cinema-load{left:8%;width:33%;bottom:17%}.eot-cinema-tagline{max-width:300px;font-size:15px}.eot-cinema-top{left:8%;right:8%}.eot-cinema-footer{left:8%}}
-    @media(max-height:700px) and (orientation:portrait){.eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 54px)}.eot-opening-logo{width:125px}.eot-cinema-tagline{font-size:10px;margin-top:7px}.eot-cinema-caption{display:none}.eot-cinema-load{bottom:calc(env(safe-area-inset-bottom,0px) + 36px)}.eot-cinema-status{margin-bottom:8px}.eot-cinema-status small{display:none}}
-    @media(max-height:500px) and (orientation:landscape){.eot-cinema-brand{top:18%;left:6%;width:37%}.eot-opening-logo{width:110px;margin:0}.eot-cinema-tagline{font-size:10px}.eot-cinema-load{left:6%;width:37%;bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}.eot-cinema-track{height:23px}.eot-cinema-sectors{margin-top:6px;font-size:7px}.eot-cinema-phase{font-size:12px}.eot-cinema-percent{font-size:22px}}
-    @media(prefers-reduced-motion:reduce){#eotStartupSplash,.eot-cinema-fill,.eot-cinema-track i::after,.eot-cinema-sectors span{transition:none}.eot-cinema-spark{animation:none}}
+    .eot-opening-logo{display:block;width:clamp(150px,25vh,235px);height:auto;border-radius:22%;filter:drop-shadow(0 18px 28px #0004)}
+    .eot-cinema-load{width:min(84%,560px);flex:none}
+    .eot-construction{position:relative;padding-top:47px}
+    .eot-cinema-track{position:relative;height:clamp(90px,15vh,150px);display:flex;gap:clamp(4px,1.1vw,8px);align-items:flex-end;border-bottom:2px solid #e5c16d;filter:drop-shadow(0 10px 25px #0ba7dd20)}
+    .eot-cinema-track::after{content:'';position:absolute;left:-5%;right:-5%;bottom:-15px;height:13px;background:repeating-linear-gradient(90deg,transparent 0 19px,#87bde329 20px 21px);border-top:1px solid #64a8d433;transform:perspective(90px) rotateX(40deg);transform-origin:top}
+    .eot-tower{position:relative;flex:1;min-width:0;height:var(--height);border:1px solid #84b8dc20;border-bottom:0;border-radius:3px 3px 0 0;background:repeating-linear-gradient(0deg,transparent 0 11px,#88c6e912 11px 12px)}
+    .eot-tower-body{position:absolute;inset:0;border:1px solid #66ccec;border-bottom:0;border-radius:3px 3px 0 0;background:linear-gradient(90deg,#1b6897,#338eb2 70%,#164c7e 71%);clip-path:inset(var(--unbuilt,100%) 0 0);transition:clip-path .16s linear}
+    .eot-tower-body::before{content:'';position:absolute;inset:5px 4px 4px;background:repeating-linear-gradient(0deg,transparent 0 6px,#ffdf8f 6px 9px,transparent 9px 13px);mask-image:repeating-linear-gradient(90deg,#000 0 3px,transparent 3px 7px);opacity:.8}
+    .eot-tower:nth-child(4n) .eot-tower-body{border-color:#f3cd82;background:linear-gradient(90deg,#946934,#c29551 70%,#695334 71%)}
+    .eot-tower-cap{position:absolute;left:-2px;right:-2px;bottom:var(--built,0%);height:3px;background:#b7ecff;box-shadow:0 0 12px #60cfff88;opacity:0;transition:bottom .16s linear,opacity .2s}
+    .eot-tower.building .eot-tower-cap{opacity:1}
+    .eot-tower.complete{border-color:#6ac6e255}
+    .eot-crane{position:absolute;top:4px;left:var(--crane-x,4%);width:56px;height:35px;transform:translateX(-50%);transition:left .2s linear,opacity .3s;pointer-events:none;color:#e9bd62}
+    .eot-crane::before{content:'';position:absolute;left:27px;top:0;height:33px;width:3px;background:currentColor}
+    .eot-crane::after{content:'';position:absolute;left:0;right:0;top:7px;height:7px;border:1px solid currentColor;background:repeating-linear-gradient(135deg,transparent 0 5px,#e9bd6277 5px 6px)}
+    .eot-crane-cable{position:absolute;left:42px;top:15px;width:1px;height:23px;background:#dbbf83}
+    .eot-crane-cable::after{content:'';position:absolute;bottom:-3px;left:-3px;width:7px;height:5px;background:#efca7f;border-radius:1px}
+    .eot-cinema-sectors{display:flex;justify-content:space-between;gap:8px;margin-top:25px;color:#6686a7;font-size:8px;font-weight:700;letter-spacing:.1em}
+    .eot-cinema-sectors span.active{color:#efcd83}
+    .eot-cinema-status{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:30px;padding-top:17px;border-top:1px solid #91b9db1c}
+    .eot-cinema-phase{font-size:12px;letter-spacing:.04em;color:#acc5dd}
+    .eot-cinema-percent{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;color:#f9d785;min-width:80px;text-align:right}
+    @media(max-height:650px){.eot-launch-composition{gap:25px}.eot-opening-logo{width:135px}.eot-cinema-track{height:85px}.eot-cinema-status{margin-top:18px;padding-top:12px}}
+    @media(orientation:landscape) and (max-height:600px){.eot-launch-composition{flex-direction:row;gap:7vw;inset:65px 6% 25px}.eot-cinema-load{width:55%;max-width:520px}.eot-opening-logo{width:min(25vw,190px)}.eot-cinema-track{height:90px}.eot-cinema-status{margin-top:18px}}
+    @media(prefers-reduced-motion:reduce){#eotStartupSplash,.eot-tower-body,.eot-tower-cap,.eot-crane{transition:none}}
   `;
   document.head.appendChild(style);
   document.documentElement.classList.add('eot-booting');
@@ -103,22 +72,21 @@
       el.style.height=screen.height+'px';
     }
     el.innerHTML=`
-      <canvas id="eotAnimatedCity" class="eot-animated-city" aria-hidden="true"></canvas>
       <header class="eot-cinema-top"><b>EMPIRE OF TRADE</b><span>GELİŞTİRME SÜRÜMÜ</span></header>
-      <div class="eot-cinema-brand">
-        <h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v221-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1>
-      </div>
-      <i class="eot-cinema-spark" style="--x:22%;--y:63%;--delay:0s" aria-hidden="true"></i>
-      <i class="eot-cinema-spark" style="--x:72%;--y:48%;--delay:-2s" aria-hidden="true"></i>
-      <i class="eot-cinema-spark" style="--x:55%;--y:76%;--delay:-4s" aria-hidden="true"></i>
-      <div class="eot-cinema-load" role="status" aria-label="Oyun yükleniyor">
-        <div class="eot-cinema-status"><div><span class="eot-cinema-phase" id="eotSplashPhase">Yükleniyor…</span></div><span class="eot-cinema-percent" id="eotSplashPercent">%0</span></div>
-        <div class="eot-cinema-track" aria-hidden="true">${[32,48,38,67,52,80,63,100,74,88,59,78,46,64,39,53].map(h=>'<i style="--height:'+h+'%"></i>').join('')}<div class="eot-cinema-fill" id="eotCinemaFill"></div></div>
-        <div class="eot-cinema-sectors" aria-hidden="true"><span>ARSA</span><span>GALERİ</span><span>İŞLETMELER</span><span>FİNANS</span></div>
-      </div>
-      `;
+      <div class="eot-launch-composition">
+        <div class="eot-cinema-brand"><h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v221-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1></div>
+        <div class="eot-cinema-load" role="status" aria-label="Oyun yükleniyor">
+          <div class="eot-construction" aria-hidden="true">
+            <div class="eot-crane" id="eotLoadingCrane"><i class="eot-crane-cable"></i></div>
+            <div class="eot-cinema-track">${[34,49,40,68,55,84,64,100,77,89,58,72].map((h,i)=>'<div class="eot-tower" data-floors="'+Math.round(h/10)+'" style="--height:'+h+'%"><i class="eot-tower-body"></i><i class="eot-tower-cap"></i></div>').join('')}</div>
+          </div>
+          <div class="eot-cinema-sectors" aria-hidden="true"><span>ARSA</span><span>GALERİ</span><span>İŞLETMELER</span><span>FİNANS</span></div>
+          <div class="eot-cinema-status"><span class="eot-cinema-phase" id="eotSplashPhase">Yükleniyor…</span><span class="eot-cinema-percent" id="eotSplashPercent">%0</span></div>
+        </div>
+      </div>`;
     document.body.appendChild(el);
-    if(window.EOTCityScene)cityScene=window.EOTCityScene.mount(document.getElementById("eotAnimatedCity"));
+    constructionBars=Array.from(el.querySelectorAll('.eot-tower'));
+    sectorLabels=Array.from(el.querySelectorAll('.eot-cinema-sectors span'));
     requestAnimationFrame(()=>{ if(firstPaintGuard) firstPaintGuard.remove(); const preview=document.getElementById('eotFirstPaint');if(preview)preview.remove(); });
   }
 
@@ -131,13 +99,20 @@
     const display=Math.max(0,Math.min(100,Number(v)||0));
     shown=Math.max(shown,display);
     const visible=Math.max(0,Math.min(100,Math.round(shown)));
-    if(cityScene)cityScene.progress(shown);
-    const fill=document.getElementById('eotCinemaFill');
-    if(fill)fill.style.transform='scaleX('+(shown/100)+')';
     const phase=document.getElementById('eotSplashPhase');
     if(phase)phase.textContent=visible>=100?'Yüklendi':'Yükleniyor…';
-    document.querySelectorAll('.eot-cinema-track i').forEach((bar,i)=>bar.style.setProperty('--built',String(Math.max(0,Math.min(1,(shown-i*5.5)/17.5)))));
-    document.querySelectorAll('.eot-cinema-sectors span').forEach((item,i)=>item.classList.toggle('active',shown>i*25));
+    constructionBars.forEach((bar,i)=>{
+      const floors=Number(bar.dataset.floors)||5;
+      const raw=Math.max(0,Math.min(1,(shown-i*7)/23));
+      const built=Math.floor(raw*floors)/floors;
+      bar.style.setProperty('--unbuilt',((1-built)*100)+'%');
+      bar.style.setProperty('--built',(built*100)+'%');
+      bar.classList.toggle('building',raw>0&&raw<1);
+      bar.classList.toggle('complete',raw>=1);
+    });
+    sectorLabels.forEach((item,i)=>item.classList.toggle('active',shown>i*25));
+    const crane=document.getElementById('eotLoadingCrane');
+    if(crane){crane.style.setProperty('--crane-x',(4+Math.min(1,shown/95)*90)+'%');crane.style.opacity=shown>=100?'0':'1'}
     const pct=document.getElementById('eotSplashPercent');
 
     if(pct)pct.textContent='%'+visible;
@@ -156,7 +131,7 @@
         document.documentElement.classList.remove('eot-booting');
         requestAnimationFrame(()=>requestAnimationFrame(()=>{
           if(el)el.classList.add('eot-splash-out');
-          setTimeout(()=>{if(cityScene)cityScene.destroy();el&&el.remove();style.remove();removed=true},460);
+          setTimeout(()=>{el&&el.remove();style.remove();removed=true},460);
         }));
       },230);
     },wait);
