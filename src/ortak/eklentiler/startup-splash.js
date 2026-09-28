@@ -106,20 +106,17 @@
       <canvas id="eotAnimatedCity" class="eot-animated-city" aria-hidden="true"></canvas>
       <header class="eot-cinema-top"><b>EMPIRE OF TRADE</b><span>GELİŞTİRME SÜRÜMÜ</span></header>
       <div class="eot-cinema-brand">
-        <p class="eot-cinema-eyebrow">KÜÇÜK BİR ADIM. BÜYÜK BİR İMPARATORLUK.</p>
         <h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v221-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1>
-        <p class="eot-cinema-tagline">Bir şehrin geleceği, senin kararların.</p>
       </div>
       <i class="eot-cinema-spark" style="--x:22%;--y:63%;--delay:0s" aria-hidden="true"></i>
       <i class="eot-cinema-spark" style="--x:72%;--y:48%;--delay:-2s" aria-hidden="true"></i>
       <i class="eot-cinema-spark" style="--x:55%;--y:76%;--delay:-4s" aria-hidden="true"></i>
       <div class="eot-cinema-load" role="status" aria-label="Oyun yükleniyor">
-        <div class="eot-cinema-status"><div><small>YENİ BİR HİKÂYE BAŞLIYOR</small><span class="eot-cinema-phase" id="eotSplashPhase">Oyun hazırlanıyor</span></div><span class="eot-cinema-percent" id="eotSplashPercent">%0</span></div>
+        <div class="eot-cinema-status"><div><span class="eot-cinema-phase" id="eotSplashPhase">Yükleniyor…</span></div><span class="eot-cinema-percent" id="eotSplashPercent">%0</span></div>
         <div class="eot-cinema-track" aria-hidden="true">${[32,48,38,67,52,80,63,100,74,88,59,78,46,64,39,53].map(h=>'<i style="--height:'+h+'%"></i>').join('')}<div class="eot-cinema-fill" id="eotCinemaFill"></div></div>
         <div class="eot-cinema-sectors" aria-hidden="true"><span>ARSA</span><span>GALERİ</span><span>İŞLETMELER</span><span>FİNANS</span></div>
-        <p class="eot-cinema-caption">Her karar bir fırsat. Her yatırım yeni bir başlangıç.</p>
       </div>
-      <footer class="eot-cinema-footer">EKONOMİ · TİCARET · STRATEJİ</footer>`;
+      `;
     document.body.appendChild(el);
     if(window.EOTCityScene)cityScene=window.EOTCityScene.mount(document.getElementById("eotAnimatedCity"));
     requestAnimationFrame(()=>{ if(firstPaintGuard) firstPaintGuard.remove(); const preview=document.getElementById('eotFirstPaint');if(preview)preview.remove(); });
@@ -138,12 +135,12 @@
     const fill=document.getElementById('eotCinemaFill');
     if(fill)fill.style.transform='scaleX('+(shown/100)+')';
     const phase=document.getElementById('eotSplashPhase');
-    if(phase)phase.textContent=visible>=100?'İmparatorluğun hazır':visible>=70?'Son hazırlıklar yapılıyor':visible>=35?'Ticaret şehri canlanıyor':'Şehrin temelleri atılıyor';
+    if(phase)phase.textContent=visible>=100?'Yüklendi':'Yükleniyor…';
     document.querySelectorAll('.eot-cinema-track i').forEach((bar,i)=>bar.style.setProperty('--built',String(Math.max(0,Math.min(1,(shown-i*5.5)/17.5)))));
     document.querySelectorAll('.eot-cinema-sectors span').forEach((item,i)=>item.classList.toggle('active',shown>i*25));
     const pct=document.getElementById('eotSplashPercent');
 
-    if(pct)pct.textContent=visible>=100?'Hazır · %100':'%'+visible;
+    if(pct)pct.textContent='%'+visible;
   }
 
   function finish(){
