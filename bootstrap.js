@@ -1,20 +1,18 @@
 (async function(){
   window.__EOT_NATIVE_READY__=false;
   const root=document.getElementById('app-root');
-  const APP_VERSION='227';
+  const APP_VERSION='228';
   let versionCheckRunning=false;
+  // A forced refresh is only needed once. Do not bypass the shell on later launches.
+  const launchURL=new URL(location.href);
+  if(launchURL.searchParams.get('v')===APP_VERSION && launchURL.searchParams.has('_fresh')){
+    launchURL.searchParams.delete('_fresh');
+    history.replaceState(history.state,'',launchURL.toString());
+  }
 
   async function forceFreshVersion(remoteVersion){
-    try{
-      if('caches' in window){
-        const keys=await caches.keys();
-        await Promise.all(keys.map(k=>caches.delete(k)));
-      }
-      if('serviceWorker' in navigator){
-        const regs=await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(r=>r.unregister()));
-      }
-    }catch(e){console.warn('Eski önbellek temizlenemedi:',e)}
+    // Keep the installed shell available during updates. The one-shot _fresh
+    // request bypasses HTML cache; versioned assets already bypass old code.
     const url=new URL(location.href);
     url.searchParams.set('v',remoteVersion);
     url.searchParams.set('_fresh',Date.now().toString());
@@ -25,11 +23,15 @@
     if(versionCheckRunning) return;
     versionCheckRunning=true;
     try{
-      const res=await fetch('./version.json?_='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),2500);
+      let res;
+      try{res=await fetch('./version.json?_='+Date.now(),{cache:'no-store',signal:controller.signal,headers:{'Cache-Control':'no-cache'}})}
+      finally{clearTimeout(timeout)}
       if(res.ok){
         const data=await res.json();
         const remote=String(data.version||'');
-        if(remote && remote!==APP_VERSION){
+        if(/^\d+$/.test(remote) && Number(remote)>Number(APP_VERSION)){
           await forceFreshVersion(remote);
           return;
         }

@@ -2,8 +2,14 @@
 (async function(){
   window.__EOT_NATIVE_READY__=false;
   const root=document.getElementById('app-root');
-  const APP_VERSION='227';
+  const APP_VERSION='228';
   let versionCheckRunning=false;
+  // A forced refresh is only needed once. Do not bypass the shell on later launches.
+  const launchURL=new URL(location.href);
+  if(launchURL.searchParams.get('v')===APP_VERSION && launchURL.searchParams.has('_fresh')){
+    launchURL.searchParams.delete('_fresh');
+    history.replaceState(history.state,'',launchURL.toString());
+  }
 
   
 /* EOT_END */
