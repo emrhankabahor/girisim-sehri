@@ -36,10 +36,10 @@ window.EOTCityScene={mount(canvas){
   if(b.type==='site'){
    for(let z=0;z<height;z+=16){box(b.x,b.y,b.w,b.d,3,'#91a3a4','#566f76','#364e5b',z);for(const dx of [2,b.w-5])for(const dy of [2,b.d-5])box(b.x+dx,b.y+dy,3,3,Math.min(13,height-z),'#81999d','#526f7a','#2e4d5c',z+3)}
   }else{
-   box(b.x,b.y,b.w,b.d,height,warm?'#b28b61':'#3c7f90',warm?'#5d4c41':'#1d485e',warm?'#3f3935':'#113144');
+   box(b.x,b.y,b.w,b.d,height,warm?'#ffce73':'#49b7e9',warm?'#b57945':'#1769a1',warm?'#704d42':'#10376a');
    for(let z=8;z<height-5;z+=12){
-    for(let dx=5;dx<b.w-5;dx+=9){const lit=((dx+z+b.x)%4!==0);polygon([[b.x+dx,b.y+b.d+.2,z],[b.x+dx+4,b.y+b.d+.2,z],[b.x+dx+4,b.y+b.d+.2,z+6],[b.x+dx,b.y+b.d+.2,z+6]],lit?'#d9b981':'#367688')}
-    for(let dy=5;dy<b.d-5;dy+=10)polygon([[b.x+b.w+.2,b.y+dy,z],[b.x+b.w+.2,b.y+dy+4,z],[b.x+b.w+.2,b.y+dy+4,z+6],[b.x+b.w+.2,b.y+dy,z+6]],'#51818a');
+    for(let dx=5;dx<b.w-5;dx+=9){const lit=((dx+z+b.x)%4!==0);polygon([[b.x+dx,b.y+b.d+.2,z],[b.x+dx+4,b.y+b.d+.2,z],[b.x+dx+4,b.y+b.d+.2,z+6],[b.x+dx,b.y+b.d+.2,z+6]],lit?'#ffe49a':'#367688')}
+    for(let dy=5;dy<b.d-5;dy+=10)polygon([[b.x+b.w+.2,b.y+dy,z],[b.x+b.w+.2,b.y+dy+4,z],[b.x+b.w+.2,b.y+dy+4,z+6],[b.x+b.w+.2,b.y+dy,z+6]],'#42abd1');
    }
    if(b.type==='tower'){
     box(b.x+6,b.y+6,b.w-12,b.d-12,5,'#72a5ad','#406b7c','#294959',height);
@@ -65,13 +65,32 @@ window.EOTCityScene={mount(canvas){
   if(dead)return;frame=requestAnimationFrame(render);if(now-last<33||document.hidden)return;last=now;
   const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
   if(w!==rect.width||h!==rect.height){w=rect.width;h=rect.height;const dpr=Math.min(window.devicePixelRatio||1,1.5);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);c.setTransform(dpr,0,0,dpr,0,0)}
-  const wide=w>h*1.2;scale=Math.min(w*(wide?.52:.95)/600,h*(wide?.85:.5)/390);cx=w*(wide?.73:.5);cy=h*(wide?.61:.61);
+  const wide=w>h*1.2;scale=Math.min(w*(wide?.60:1.16)/600,h*(wide?.90:.49)/390);cx=w*(wide?.73:.5);cy=h*(wide?.59:.60);
   const t=media.matches?0:(now-start)/1000;
   c.clearRect(0,0,w,h);
   const glow=c.createRadialGradient(cx,cy,0,cx,cy,300*scale);glow.addColorStop(0,'#1f687b55');glow.addColorStop(1,'#06132200');c.fillStyle=glow;c.fillRect(0,0,w,h);
-  box(-170,-165,340,330,10,'#122d3b','#0b1e2e','#081827',-10);
-  polygon([[-170,-18,1],[170,-18,1],[170,0,1],[-170,0,1]],'#213d4a');
-  polygon([[-5,-165,1],[13,-165,1],[13,165,1],[-5,165,1]],'#213d4a');
+  // A trading district suspended above a luminous planning grid.
+  c.save();
+  c.translate(cx,cy+25*scale);c.scale(1,.46);
+  for(let ring=0;ring<3;ring++){
+   c.beginPath();c.ellipse(0,0,(260+ring*27)*scale,(260+ring*27)*scale,0,0,Math.PI*2);
+   c.strokeStyle=ring===0?'#47c9ff55':'#4699d321';c.lineWidth=1;c.stroke();
+  }
+  for(let k=0;k<5;k++){
+   const a=t*.16+k*Math.PI*2/5;
+   c.beginPath();c.arc(Math.cos(a)*288*scale,Math.sin(a)*288*scale,2.5*scale,0,Math.PI*2);
+   c.fillStyle=k%2?'#ffd34f':'#65daff';c.fill();
+  }
+  c.restore();
+  for(let grid=-210;grid<=210;grid+=35){
+   line([[grid,-210,-14],[grid,210,-14]],'#57baf013',.7);
+   line([[-210,grid,-14],[210,grid,-14]],'#57baf013',.7);
+  }
+  box(-176,-171,352,342,14,'#174367','#0c2444','#091c36',-18);
+  line([[-176,171,-4],[176,171,-4],[176,-171,-4]],'#38c9ff99',1.6);
+  box(-170,-165,340,330,10,'#153b52','#0b2842','#081e37',-10);
+  polygon([[-170,-18,1],[170,-18,1],[170,0,1],[-170,0,1]],'#173049');
+  polygon([[-5,-165,1],[13,-165,1],[13,165,1],[-5,165,1]],'#173049');
   for(let i=-160;i<160;i+=24){line([[i,-9,1],[i+10,-9,1]],'#7d8f8855',1);line([[4,i,1],[4,i+10,1]],'#7d8f8855',1)}
   // Empty parcel and boundary stakes are a distinct land investment.
   polygon([[35,100,1],[126,100,1],[126,147,1],[35,147,1]],'#34544b','#7aa19a');

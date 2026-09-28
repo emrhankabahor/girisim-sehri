@@ -31,6 +31,6 @@ test('loaded version consumes refresh flag while preserving route and other quer
  const core=fs.readFileSync(path.join(__dirname,'../src/ortak/bootstrap.js'),'utf8');
  const init=core.slice(core.indexOf('  const APP_VERSION='),core.indexOf('/* EOT_END */'));
  let result;
- vm.runInNewContext(init,{URL,location:{href:'https://game.test/?v=228&_fresh=1&app=201#home'},history:{state:{test:1},replaceState:(_state,_title,url)=>{result=new URL(url)}}});
+ vm.runInNewContext(init,{URL,location:{href:'https://game.test/?v=229&_fresh=1&app=201#home'},history:{state:{test:1},replaceState:(_state,_title,url)=>{result=new URL(url)}}});
  assert(!result.searchParams.has('_fresh'));assert.equal(result.searchParams.get('app'),'201');assert.equal(result.hash,'#home');
 });

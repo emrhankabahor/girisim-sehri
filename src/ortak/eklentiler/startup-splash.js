@@ -24,8 +24,6 @@
     .eot-animated-city{position:absolute;inset:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 55%,#123d78,#06152f 65%)}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
-    .eot-cinema-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 55%;background:#06152f}
-    .eot-cinema-shade{position:absolute;inset:0;background:linear-gradient(180deg,#02101d66 0%,#0412230d 33%,transparent 65%,#030d19b3 82%,#030b16 100%);pointer-events:none}
     .eot-cinema-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 22px);left:25px;right:25px;display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:.2em;color:#d3dce0}
     .eot-cinema-top b{font-weight:600;color:#ffd34f;letter-spacing:.22em}
     .eot-cinema-top span{border:1px solid #bac5cc33;border-radius:20px;padding:6px 9px;background:#06142344}
@@ -58,7 +56,35 @@
     @media(min-width:760px) and (min-height:600px){.eot-cinema-brand{top:20%}.eot-opening-logo{width:min(28vw,320px);margin-left:0}}
     @media(max-height:700px) and (orientation:portrait){.eot-opening-logo{width:140px}.eot-cinema-eyebrow{display:none}}
     @media(max-height:500px) and (orientation:landscape){.eot-cinema-brand{top:19%}.eot-opening-logo{width:140px;margin-left:0}.eot-cinema-eyebrow{display:none}.eot-cinema-tagline{margin-top:5px}}
-    @media(prefers-reduced-motion:reduce){#eotStartupSplash,.eot-cinema-fill{transition:none}.eot-cinema-spark{animation:none}}
+    /* Observatory composition: fixed typography, living city, architectural progress. */
+    .eot-animated-city{background:radial-gradient(ellipse at 50% 57%,#153f72 0%,#091c3a 42%,#06152f 75%)}
+    #eotStartupSplash::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,#57caff08 50%,transparent 65%);z-index:1}
+    .eot-cinema-top{top:calc(env(safe-area-inset-top,0px) + 20px);font-size:8px;align-items:center}
+    .eot-cinema-top b{letter-spacing:.14em;color:#bed8ef}
+    .eot-cinema-top span{color:#ffe5a0;background:#ffcf5010;border-color:#ffcf5033;letter-spacing:.12em}
+    .eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 68px);z-index:2}
+    .eot-opening-logo{width:clamp(132px,23vh,195px);border-radius:22px;filter:drop-shadow(0 12px 32px #0005)}
+    .eot-cinema-eyebrow{font-size:8px;letter-spacing:.22em;color:#99bddb}
+    .eot-cinema-tagline{font-size:12px;font-weight:500;letter-spacing:.025em;color:#deecfa;margin-top:12px}
+    .eot-cinema-load{z-index:2;width:min(84%,420px);bottom:calc(env(safe-area-inset-bottom,0px) + 45px)}
+    .eot-cinema-status{margin-bottom:16px;align-items:flex-end}
+    .eot-cinema-status small{color:#7ca8c7;letter-spacing:.17em}
+    .eot-cinema-phase{font-size:15px;font-weight:600}
+    .eot-cinema-percent{font-size:30px;font-weight:700;min-width:96px;text-align:right;color:#ffdb77}
+    .eot-cinema-track{position:relative;height:38px;border-radius:0;background:none;overflow:visible;border-bottom:1px solid #6bcfff44;display:flex;gap:4px;align-items:flex-end}
+    .eot-cinema-track i{position:relative;flex:1;height:var(--height);border:1px solid #5a91ba44;border-bottom:0;border-radius:2px 2px 0 0;background:#193a55;overflow:hidden}
+    .eot-cinema-track i::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#187db8,#6ee1fa);transform:scaleY(var(--built,0));transform-origin:bottom;transition:transform .25s linear;box-shadow:inset 0 1px #bdf5ff}
+    .eot-cinema-track i:nth-child(4n)::after{background:linear-gradient(0deg,#cf9536,#ffe69b)}
+    .eot-cinema-fill{display:none}
+    .eot-cinema-sectors{display:flex;justify-content:space-between;gap:8px;margin-top:12px;color:#617f9d;font-size:8px;font-weight:700;letter-spacing:.1em}
+    .eot-cinema-sectors span{transition:color .3s}
+    .eot-cinema-sectors span.active{color:#e7cd8e}
+    .eot-cinema-caption{font-size:10px;color:#88a6be;margin-top:16px;letter-spacing:0}
+    .eot-cinema-footer{font-size:7px;letter-spacing:.22em;color:#55718f}
+    @media(min-width:760px) and (min-height:600px){.eot-cinema-brand{top:20%;left:8%;width:34%;text-align:left}.eot-opening-logo{width:clamp(180px,24vw,290px);margin:0}.eot-cinema-load{left:8%;width:33%;bottom:17%}.eot-cinema-tagline{max-width:300px;font-size:15px}.eot-cinema-top{left:8%;right:8%}.eot-cinema-footer{left:8%}}
+    @media(max-height:700px) and (orientation:portrait){.eot-cinema-brand{top:calc(env(safe-area-inset-top,0px) + 54px)}.eot-opening-logo{width:125px}.eot-cinema-tagline{font-size:10px;margin-top:7px}.eot-cinema-caption{display:none}.eot-cinema-load{bottom:calc(env(safe-area-inset-bottom,0px) + 36px)}.eot-cinema-status{margin-bottom:8px}.eot-cinema-status small{display:none}}
+    @media(max-height:500px) and (orientation:landscape){.eot-cinema-brand{top:18%;left:6%;width:37%}.eot-opening-logo{width:110px;margin:0}.eot-cinema-tagline{font-size:10px}.eot-cinema-load{left:6%;width:37%;bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}.eot-cinema-track{height:23px}.eot-cinema-sectors{margin-top:6px;font-size:7px}.eot-cinema-phase{font-size:12px}.eot-cinema-percent{font-size:22px}}
+    @media(prefers-reduced-motion:reduce){#eotStartupSplash,.eot-cinema-fill,.eot-cinema-track i::after,.eot-cinema-sectors span{transition:none}.eot-cinema-spark{animation:none}}
   `;
   document.head.appendChild(style);
   document.documentElement.classList.add('eot-booting');
@@ -78,18 +104,19 @@
     }
     el.innerHTML=`
       <canvas id="eotAnimatedCity" class="eot-animated-city" aria-hidden="true"></canvas>
-      <header class="eot-cinema-top"><b>E / T</b><span>ERKEN ERİŞİM</span></header>
+      <header class="eot-cinema-top"><b>EMPIRE OF TRADE</b><span>GELİŞTİRME SÜRÜMÜ</span></header>
       <div class="eot-cinema-brand">
-        <p class="eot-cinema-eyebrow">BİR ŞEHİR. SONSUZ FIRSAT.</p>
+        <p class="eot-cinema-eyebrow">KÜÇÜK BİR ADIM. BÜYÜK BİR İMPARATORLUK.</p>
         <h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v221-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1>
-        <p class="eot-cinema-tagline">Şehrin canlanıyor. İmparatorluğun başlıyor.</p>
+        <p class="eot-cinema-tagline">Bir şehrin geleceği, senin kararların.</p>
       </div>
       <i class="eot-cinema-spark" style="--x:22%;--y:63%;--delay:0s" aria-hidden="true"></i>
       <i class="eot-cinema-spark" style="--x:72%;--y:48%;--delay:-2s" aria-hidden="true"></i>
       <i class="eot-cinema-spark" style="--x:55%;--y:76%;--delay:-4s" aria-hidden="true"></i>
       <div class="eot-cinema-load" role="status" aria-label="Oyun yükleniyor">
         <div class="eot-cinema-status"><div><small>YENİ BİR HİKÂYE BAŞLIYOR</small><span class="eot-cinema-phase" id="eotSplashPhase">Oyun hazırlanıyor</span></div><span class="eot-cinema-percent" id="eotSplashPercent">%0</span></div>
-        <div class="eot-cinema-track" aria-hidden="true"><div class="eot-cinema-fill" id="eotCinemaFill"></div></div>
+        <div class="eot-cinema-track" aria-hidden="true">${[32,48,38,67,52,80,63,100,74,88,59,78,46,64,39,53].map(h=>'<i style="--height:'+h+'%"></i>').join('')}<div class="eot-cinema-fill" id="eotCinemaFill"></div></div>
+        <div class="eot-cinema-sectors" aria-hidden="true"><span>ARSA</span><span>GALERİ</span><span>İŞLETMELER</span><span>FİNANS</span></div>
         <p class="eot-cinema-caption">Her karar bir fırsat. Her yatırım yeni bir başlangıç.</p>
       </div>
       <footer class="eot-cinema-footer">EKONOMİ · TİCARET · STRATEJİ</footer>`;
@@ -111,7 +138,9 @@
     const fill=document.getElementById('eotCinemaFill');
     if(fill)fill.style.transform='scaleX('+(shown/100)+')';
     const phase=document.getElementById('eotSplashPhase');
-    if(phase)phase.textContent=visible>=100?'Başlamaya hazır':'Oyun hazırlanıyor';
+    if(phase)phase.textContent=visible>=100?'İmparatorluğun hazır':visible>=70?'Son hazırlıklar yapılıyor':visible>=35?'Ticaret şehri canlanıyor':'Şehrin temelleri atılıyor';
+    document.querySelectorAll('.eot-cinema-track i').forEach((bar,i)=>bar.style.setProperty('--built',String(Math.max(0,Math.min(1,(shown-i*5.5)/17.5)))));
+    document.querySelectorAll('.eot-cinema-sectors span').forEach((item,i)=>item.classList.toggle('active',shown>i*25));
     const pct=document.getElementById('eotSplashPercent');
 
     if(pct)pct.textContent=visible>=100?'Hazır · %100':'%'+visible;
