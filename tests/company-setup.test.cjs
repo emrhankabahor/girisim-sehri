@@ -8,9 +8,9 @@ function setup(){
  let hidden=false,released=0,opened=0,saved=[];
  fields.eotCompanySetup={classList:{remove(){hidden=true},add(){hidden=false}}};
  const data=new Map();
- const context={window:{addEventListener(){},scrollTo(){},EOTReleaseCompanyBootGate(){released++}},document:{readyState:'loading',addEventListener(){},getElementById:id=>fields[id],body:{style:{}}},localStorage:{getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)},sim:{companies:[],companyProfile:{established:false},cash:12345},currentAccount:()=>null,simSave(){saved.push(JSON.parse(JSON.stringify(context.sim)))},location:{hash:''},setTimeout(){},requestAnimationFrame(){}};
+ const context={window:{addEventListener(){},scrollTo(){},EOTReleaseCompanyBootGate(){released++}},document:{readyState:'loading',addEventListener(){},getElementById:id=>fields[id],body:{style:{},classList:{add(){},remove(){}}}},localStorage:{getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)},sim:{companies:[],companyProfile:{established:false},cash:12345},currentAccount:()=>null,simSave(){saved.push(JSON.parse(JSON.stringify(context.sim)))},location:{hash:''},setTimeout(){},requestAnimationFrame(){}};
  vm.createContext(context);
- vm.runInContext(source.replace(/\}\)\(\);\s*$/, 'window.testSetup={createCompany,openExistingAccount,enableSetupTextEntry};})();'),context);
+ vm.runInContext(source.replace(/\}\)\(\);\s*$/, 'window.testSetup={createCompany,openExistingAccount};})();'),context);
  return {context,fields,data,saved,api:context.window.testSetup,state:()=>({hidden,released,opened}),enableLogin(){fields.accountOverlay={};context.showAccountOverlay=()=>opened++;context.setAccountMode=()=>{}}};
 }
 test('invalid company or CEO never changes career or saves partial CEO',()=>{
@@ -36,15 +36,4 @@ test('first visible loading shell does not wait on external styles or scripts',(
  assert(html.indexOf('id="eotFirstPaint"')<html.indexOf('<script defer src='));
  for(const tag of html.match(/<script[^>]+src=[^>]+>/g)||[])assert(/\bdefer\b/.test(tag),tag);
  for(const tag of html.match(/<link[^>]+rel="stylesheet"[^>]+>/g)||[])assert(/media="print"/.test(tag),tag);
-});
-
-test('a text-field tap focuses synchronously but scrolling and cancelled touches do not',()=>{
- const h=setup(),handlers={};let focused=0;
- h.api.enableSetupTextEntry({addEventListener:(name,fn)=>handlers[name]=fn});
- const field={tagName:'INPUT',focus(){focused++}};
- const start=()=>handlers.touchstart({touches:[{clientX:10,clientY:10}]});
- const end=y=>handlers.touchend({target:field,changedTouches:[{clientX:10,clientY:y}]});
- start();end(11);assert.equal(focused,1);
- start();end(70);assert.equal(focused,1);
- start();handlers.touchcancel();end(10);assert.equal(focused,1);
 });

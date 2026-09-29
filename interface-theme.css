@@ -283,3 +283,17 @@ body.eot-design-v1 .eot-version{align-self:center;margin-top:10px;padding:0;font
  body.eot-design-v1 .eot-setup-card h1{font-size:21px;margin-bottom:8px;padding-bottom:8px}
  body.eot-design-v1 .eot-field{margin:7px 0}
 }
+
+/* Company setup is a normal document while editing, not a fixed nested scroller.
+   This keeps native text focus and the iOS keyboard in the same scroll viewport. */
+body.eot-setting-up{overflow:auto!important;min-height:100svh}
+body.eot-setting-up #app-root{display:none!important}
+body.eot-setting-up .eot-company-setup.show{
+ position:relative!important;inset:auto!important;z-index:100!important;
+ width:100%;height:auto!important;min-height:100svh;
+ overflow:visible!important;touch-action:auto;overscroll-behavior:auto;
+}
+body.eot-setting-up .eot-setup-shell{margin:0 auto!important}
+body.eot-setting-up .eot-field :is(input,select){touch-action:auto;scroll-margin-block:28px}
+body.eot-setting-up .eot-field input{-webkit-appearance:none;appearance:none;-webkit-user-select:text;user-select:text}
+body.eot-setting-up .eot-field input:focus{border-color:#7edcff!important;outline:2px solid #43b9ed44;outline-offset:1px}

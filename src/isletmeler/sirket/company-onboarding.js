@@ -82,7 +82,6 @@ function buildOverlay(){
     <div class="eot-version">Empire of Trade • Yeni Kariyer</div>
   </div>`;
   document.body.appendChild(ov);
-  enableSetupTextEntry(ov);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
   ov.querySelector('#eotCompanyName').value=randomCompanyName();
   try{const u=typeof currentAccount==='function'?currentAccount():null;ov.querySelector('#eotCompanyCeo').value=String(u?.ceoName||'')}catch(e){}
@@ -90,26 +89,19 @@ function buildOverlay(){
   ov.querySelector('#eotCompanySubmit').onclick=createCompany;
   ov.querySelector('#eotExistingLogin').onclick=openExistingAccount;
 }
-// Focus inside the original tap gesture: iOS may not open its keyboard
-// when focus is deferred until a timer or animation frame.
-function enableSetupTextEntry(overlay){
-  let touch=null;
-  overlay.addEventListener('touchstart',event=>{
-    const point=event.touches&&event.touches[0];
-    touch=point?{x:point.clientX,y:point.clientY}:null;
-  },{passive:true});
-  overlay.addEventListener('touchend',event=>{
-    const point=event.changedTouches&&event.changedTouches[0];
-    const moved=!touch||!point||Math.hypot(point.clientX-touch.x,point.clientY-touch.y)>10;
-    touch=null;
-    const field=event.target;
-    if(moved||!field||field.tagName!=='INPUT'||field.disabled||field.readOnly)return;
-    field.focus();
-  },{passive:true});
-  overlay.addEventListener('touchcancel',()=>{touch=null},{passive:true});
+function showSetup(force){
+  buildOverlay();
+  if(!force&&hasCompany())return false;
+  document.getElementById('eotCompanySetup').classList.add('show');
+  document.body.classList.add('eot-setting-up');
+  document.body.style.overflow='';
+  return true;
 }
-function showSetup(force){buildOverlay();if(!force&&hasCompany())return false;document.getElementById('eotCompanySetup').classList.add('show');document.body.style.overflow='hidden';return true}
-function hideSetup(){document.getElementById('eotCompanySetup')?.classList.remove('show');document.body.style.overflow=''}
+function hideSetup(){
+  document.getElementById('eotCompanySetup')?.classList.remove('show');
+  document.body.classList.remove('eot-setting-up');
+  document.body.style.overflow='';
+}
 function openExistingAccount(){
   const err=document.getElementById('eotCompanySetupError');
   if(typeof showAccountOverlay!=='function'||!document.getElementById('accountOverlay')){
