@@ -30,6 +30,9 @@ function ensureStyle(){
   .eot-input-wrap{position:relative}
   .eot-field input,.eot-field select{width:100%;height:58px;border-radius:16px;border:1px solid rgba(145,190,230,.38);background:linear-gradient(180deg,#0b2035,#08192a);color:#fff;padding:0 16px;font-size:16px!important;font-weight:750;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
   .eot-field select{appearance:auto}
+  #eotCompanySetup input{pointer-events:auto;touch-action:manipulation;-webkit-user-select:text;user-select:text;caret-color:#ffd34f}
+  #eotCompanySetup input:focus{border-color:#7edcff;box-shadow:0 0 0 3px #43b9ed26}
+  #eotCompanySetup input,#eotCompanySetup select{scroll-margin-block:24px}
   .eot-name-input{padding-right:68px!important}
   .eot-random-name{position:absolute;right:7px;top:7px;width:44px;height:44px;border:1px solid rgba(130,187,234,.25);border-radius:13px;background:linear-gradient(145deg,#2f7ed0,#1e5f9e);font-size:23px;display:grid;place-items:center;color:white;box-shadow:0 7px 18px rgba(0,0,0,.25)}
   .eot-terms{margin:15px 6px 2px;text-align:center;color:#b6c5d4;font-size:10px;line-height:1.4}
@@ -66,9 +69,9 @@ function buildOverlay(){
     <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-192.png" width="96" height="96" alt="Empire of Trade"><b>EMPIRE OF TRADE</b><small>İMPARATORLUĞUN BURADA BAŞLIYOR</small></div>
     <section class="eot-setup-card">
       <h1>Şirketini Kur</h1>
-      <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">🎲</button></div></div>
+      <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="organization" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">🎲</button></div></div>
       <div class="eot-field"><label for="eotCompanyTitle">Şirket Ünvanı</label><select id="eotCompanyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
-      <div class="eot-field"><label for="eotCompanyCeo">Şirket CEO Adı</label><input id="eotCompanyCeo" maxlength="40" autocomplete="name" placeholder="Adınız ve soyadınız"></div>
+      <div class="eot-field"><label for="eotCompanyCeo">Şirket CEO Adı</label><input id="eotCompanyCeo" type="text" inputmode="text" enterkeyhint="done" maxlength="40" autocomplete="name" placeholder="Adınız ve soyadınız"></div>
       <div class="eot-setup-location"><div class="eot-field"><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry"><option>Türkiye</option></select></div>
       <div class="eot-field"><label for="eotCompanyCity">Şehir</label><select id="eotCompanyCity">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
       <div class="eot-terms">Kayıt olarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> kabul ediyorum.</div>
@@ -79,12 +82,31 @@ function buildOverlay(){
     <div class="eot-version">Empire of Trade • Yeni Kariyer</div>
   </div>`;
   document.body.appendChild(ov);
+  enableSetupTextEntry(ov);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
   ov.querySelector('#eotCompanyName').value=randomCompanyName();
   try{const u=typeof currentAccount==='function'?currentAccount():null;ov.querySelector('#eotCompanyCeo').value=String(u?.ceoName||'')}catch(e){}
   ov.querySelector('#eotRandomCompanyName').onclick=()=>{ov.querySelector('#eotCompanyName').value=randomCompanyName()};
   ov.querySelector('#eotCompanySubmit').onclick=createCompany;
   ov.querySelector('#eotExistingLogin').onclick=openExistingAccount;
+}
+// Focus inside the original tap gesture: iOS may not open its keyboard
+// when focus is deferred until a timer or animation frame.
+function enableSetupTextEntry(overlay){
+  let touch=null;
+  overlay.addEventListener('touchstart',event=>{
+    const point=event.touches&&event.touches[0];
+    touch=point?{x:point.clientX,y:point.clientY}:null;
+  },{passive:true});
+  overlay.addEventListener('touchend',event=>{
+    const point=event.changedTouches&&event.changedTouches[0];
+    const moved=!touch||!point||Math.hypot(point.clientX-touch.x,point.clientY-touch.y)>10;
+    touch=null;
+    const field=event.target;
+    if(moved||!field||field.tagName!=='INPUT'||field.disabled||field.readOnly)return;
+    field.focus();
+  },{passive:true});
+  overlay.addEventListener('touchcancel',()=>{touch=null},{passive:true});
 }
 function showSetup(force){buildOverlay();if(!force&&hasCompany())return false;document.getElementById('eotCompanySetup').classList.add('show');document.body.style.overflow='hidden';return true}
 function hideSetup(){document.getElementById('eotCompanySetup')?.classList.remove('show');document.body.style.overflow=''}

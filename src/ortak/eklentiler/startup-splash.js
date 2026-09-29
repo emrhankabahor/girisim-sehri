@@ -130,7 +130,7 @@
         // Restore page layout while the cover is still opaque; fade only after paint.
         document.documentElement.classList.remove('eot-booting');
         requestAnimationFrame(()=>requestAnimationFrame(()=>{
-          if(el)el.classList.add('eot-splash-out');
+          if(el){el.style.pointerEvents='none';el.setAttribute('aria-hidden','true');el.classList.add('eot-splash-out');}
           setTimeout(()=>{el&&el.remove();style.remove();removed=true},460);
         }));
       },230);
