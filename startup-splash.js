@@ -11,6 +11,7 @@
   }
 
   let constructionBars=[],sectorLabels=[];
+  const towerHeights=[34,49,40,68,55,84,64,100,77,89,58,72];
   const started=performance.now();
   let visibleStarted=0;
   let target=8, shown=0, ready=false, removed=false, finishing=false, timer=null;
@@ -37,14 +38,14 @@
     .eot-tower{position:relative;flex:1;min-width:0;height:var(--height);border:1px solid #84b8dc20;border-bottom:0;border-radius:3px 3px 0 0;background:repeating-linear-gradient(0deg,transparent 0 11px,#88c6e912 11px 12px)}
     .eot-tower-body{position:absolute;inset:0;border:1px solid #66ccec;border-bottom:0;border-radius:3px 3px 0 0;background:linear-gradient(90deg,#1b6897,#338eb2 70%,#164c7e 71%);clip-path:inset(var(--unbuilt,100%) 0 0);transition:clip-path .16s linear}
     .eot-tower-body::before{content:'';position:absolute;inset:5px 4px 4px;background:repeating-linear-gradient(0deg,transparent 0 6px,#ffdf8f 6px 9px,transparent 9px 13px);mask-image:repeating-linear-gradient(90deg,#000 0 3px,transparent 3px 7px);opacity:.8}
-    .eot-tower:nth-child(4n) .eot-tower-body{border-color:#f3cd82;background:linear-gradient(90deg,#946934,#c29551 70%,#695334 71%)}
+    .eot-tower:nth-of-type(4n) .eot-tower-body{border-color:#f3cd82;background:linear-gradient(90deg,#946934,#c29551 70%,#695334 71%)}
     .eot-tower-cap{position:absolute;left:-2px;right:-2px;bottom:var(--built,0%);height:3px;background:#b7ecff;box-shadow:0 0 12px #60cfff88;opacity:0;transition:bottom .16s linear,opacity .2s}
     .eot-tower.building .eot-tower-cap{opacity:1}
     .eot-tower.complete{border-color:#6ac6e255}
-    .eot-crane{position:absolute;top:4px;left:var(--crane-x,4%);width:56px;height:35px;transform:translateX(-50%);transition:left .2s linear,opacity .3s;pointer-events:none;color:#e9bd62}
-    .eot-crane::before{content:'';position:absolute;left:27px;top:0;height:33px;width:3px;background:currentColor}
+    .eot-crane{position:absolute;z-index:2;bottom:0;left:var(--crane-x,4%);width:56px;height:calc(100% + 30px);transform:translateX(-50%);transition:left .2s linear,opacity .3s;pointer-events:none;color:#e9bd62}
+    .eot-crane::before{content:'';position:absolute;left:27px;top:0;height:100%;width:3px;background:repeating-linear-gradient(0deg,#e9bd62 0 2px,transparent 2px 9px);border-inline:1px solid currentColor}
     .eot-crane::after{content:'';position:absolute;left:0;right:0;top:7px;height:7px;border:1px solid currentColor;background:repeating-linear-gradient(135deg,transparent 0 5px,#e9bd6277 5px 6px)}
-    .eot-crane-cable{position:absolute;left:42px;top:15px;width:1px;height:23px;background:#dbbf83}
+    .eot-crane-cable{position:absolute;left:42px;top:15px;bottom:var(--roof,0%);width:1px;background:#dbbf83;transition:bottom .16s linear}
     .eot-crane-cable::after{content:'';position:absolute;bottom:-3px;left:-3px;width:7px;height:5px;background:#efca7f;border-radius:1px}
     .eot-cinema-sectors{display:flex;justify-content:space-between;gap:8px;margin-top:25px;color:#6686a7;font-size:8px;font-weight:700;letter-spacing:.1em}
     .eot-cinema-sectors span.active{color:#efcd83}
@@ -61,10 +62,13 @@
     .eot-cinema-track{border-bottom:2px solid #e5c16d99}
     .eot-tower{border-color:#729dbe33;background:repeating-linear-gradient(0deg,transparent 0 11px,#88c6e90b 11px 12px),linear-gradient(90deg,#15335440,#081a3140)}
     .eot-tower-body{background:linear-gradient(90deg,#17496b,#287fab 67%,#113856 68%);border-color:#65cae8aa;box-shadow:inset 2px 0 #a1e9ff22}
-    .eot-tower:nth-child(3n) .eot-tower-body{background:linear-gradient(90deg,#205b82,#43a7c5 67%,#143b58 68%)}
-    .eot-tower:nth-child(4n) .eot-tower-body{background:linear-gradient(90deg,#695338,#a68044 67%,#493d2b 68%);border-color:#e6bf79aa}
-    .eot-tower:nth-child(6)::before,.eot-tower:nth-child(8)::before{content:'';position:absolute;width:1px;height:13px;left:50%;top:-14px;background:#80b8d86b}
-    .eot-tower-body::before{opacity:.65}
+    .eot-tower:nth-of-type(3n) .eot-tower-body{background:linear-gradient(90deg,#205b82,#43a7c5 67%,#143b58 68%)}
+    .eot-tower:nth-of-type(4n) .eot-tower-body{background:linear-gradient(90deg,#695338,#a68044 67%,#493d2b 68%);border-color:#e6bf79aa}
+    .eot-tower:nth-of-type(6)::before,.eot-tower:nth-of-type(8)::before{content:'';position:absolute;width:1px;height:13px;left:50%;top:-14px;background:#80b8d86b}
+    .eot-tower-body::before{opacity:.35;transition:opacity .45s ease}
+    .eot-tower.complete .eot-tower-body::before{opacity:1}
+    .eot-tower.complete .eot-tower-body{border-color:#a4dced;box-shadow:inset 2px 0 #d4f2ff33}
+    .eot-cinema-track.eot-city-complete{filter:drop-shadow(0 0 18px #53bfe644)}
     .eot-cinema-sectors{margin-top:28px;font-size:8px;letter-spacing:.07em}
     .eot-cinema-sectors span{position:relative;padding-top:10px;transition:color .3s}
     .eot-cinema-sectors span::before{content:'';position:absolute;top:0;left:50%;width:3px;height:3px;border-radius:50%;background:#34506e}
@@ -98,8 +102,7 @@
         <div class="eot-cinema-brand"><h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v221-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1></div>
         <div class="eot-cinema-load" role="status" aria-label="Oyun yükleniyor">
           <div class="eot-construction" aria-hidden="true">
-            <div class="eot-crane" id="eotLoadingCrane"><i class="eot-crane-cable"></i></div>
-            <div class="eot-cinema-track">${[34,49,40,68,55,84,64,100,77,89,58,72].map((h,i)=>'<div class="eot-tower" data-floors="'+Math.round(h/10)+'" style="--height:'+h+'%"><i class="eot-tower-body"></i><i class="eot-tower-cap"></i></div>').join('')}</div>
+            <div class="eot-cinema-track"><span class="eot-crane" id="eotLoadingCrane"><i class="eot-crane-cable"></i></span>${towerHeights.map((h,i)=>'<div class="eot-tower" data-floors="'+Math.round(h/10)+'" style="--height:'+h+'%"><i class="eot-tower-body"></i><i class="eot-tower-cap"></i></div>').join('')}</div>
           </div>
           <div class="eot-cinema-sectors" aria-hidden="true"><span>ARSA</span><span>GALERİ</span><span>İŞLETMELER</span><span>FİNANS</span></div>
           <div class="eot-cinema-status"><span class="eot-cinema-phase" id="eotSplashPhase">Yükleniyor…</span><span class="eot-cinema-percent" id="eotSplashPercent">%0</span></div>
@@ -124,7 +127,7 @@
     if(phase)phase.textContent=visible>=100?'Yüklendi':'Yükleniyor…';
     constructionBars.forEach((bar,i)=>{
       const floors=Number(bar.dataset.floors)||5;
-      const raw=Math.max(0,Math.min(1,(shown-i*7)/23));
+      const raw=Math.max(0,Math.min(1,(shown/100*constructionBars.length)-i));
       const built=Math.floor(raw*floors)/floors;
       bar.style.setProperty('--unbuilt',((1-built)*100)+'%');
       bar.style.setProperty('--built',(built*100)+'%');
@@ -133,7 +136,16 @@
     });
     sectorLabels.forEach((item,i)=>item.classList.toggle('active',shown>i*25));
     const crane=document.getElementById('eotLoadingCrane');
-    if(crane){crane.style.setProperty('--crane-x',(4+Math.min(1,shown/95)*90)+'%');crane.style.opacity=shown>=100?'0':'1'}
+    if(crane){
+      const active=Math.min(constructionBars.length-1,Math.floor(shown/100*constructionBars.length));
+      const fraction=Math.min(1,Math.max(0,shown/100*constructionBars.length-active));
+      const floors=Number(constructionBars[active]?.dataset.floors)||5;
+      const roof=towerHeights[active]*Math.floor(fraction*floors)/floors;
+      crane.style.setProperty('--crane-x',((active+.5)/constructionBars.length*100)+'%');
+      crane.style.setProperty('--roof',(roof*.82)+'%');
+      crane.style.opacity=shown>=100?'0':'1';
+      crane.parentElement.classList.toggle('eot-city-complete',shown>=100);
+    }
     const pct=document.getElementById('eotSplashPercent');
 
     if(pct)pct.textContent='%'+visible;
