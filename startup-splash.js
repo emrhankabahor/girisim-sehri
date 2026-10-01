@@ -20,19 +20,19 @@
   style.textContent=`
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;color:#eef6ff;background:radial-gradient(ellipse at 50% 48%,#143b65 0%,#091e3c 40%,#06152f 75%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
+    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;box-sizing:border-box;isolation:isolate;overflow:hidden;z-index:2147483646;color:#eef6ff;background:radial-gradient(ellipse at 50% 35%,#123968 0%,#081d3b 43%,#040d20 85%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     .eot-cinema-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 24px);left:7%;right:7%;display:flex;justify-content:space-between;gap:16px;align-items:center;font-size:8px;letter-spacing:.14em;color:#a5bfda}
     .eot-cinema-top span{font-size:7px;color:#e9cc84;border:1px solid #cda85233;border-radius:20px;padding:7px 10px;background:#e8ba5710}
-    .eot-launch-composition{position:absolute;inset:calc(env(safe-area-inset-top,0px) + 75px) 0 calc(env(safe-area-inset-bottom,0px) + 35px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(36px,8vh,76px)}
+    .eot-launch-composition{position:absolute;inset:calc(env(safe-area-inset-top,0px) + 75px) 0 calc(env(safe-area-inset-bottom,0px) + 35px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(30px,6vh,60px)}
     .eot-cinema-brand{flex:none;position:relative;text-align:center}
     .eot-cinema-brand::before{content:'';position:absolute;inset:-22%;border-radius:50%;background:radial-gradient(ellipse,#1b8fcc18,transparent 65%);z-index:-1}
     .eot-logo-heading{margin:0;line-height:0}
-    .eot-opening-logo{display:block;width:clamp(150px,25vh,235px);height:auto;border-radius:22%;filter:drop-shadow(0 18px 28px #0004)}
-    .eot-cinema-load{width:min(84%,560px);flex:none}
+    .eot-opening-logo{display:block;width:clamp(190px,31vh,290px);height:auto;border-radius:22%;filter:drop-shadow(0 18px 28px #0004)}
+    .eot-cinema-load{width:min(84%,500px);flex:none}
     .eot-construction{position:relative;padding-top:47px}
-    .eot-cinema-track{position:relative;height:clamp(90px,15vh,150px);display:flex;gap:clamp(4px,1.1vw,8px);align-items:flex-end;border-bottom:2px solid #e5c16d;filter:drop-shadow(0 10px 25px #0ba7dd20)}
+    .eot-cinema-track{position:relative;height:clamp(100px,17vh,160px);display:flex;gap:clamp(4px,1.1vw,8px);align-items:flex-end;border-bottom:2px solid #e5c16d;filter:drop-shadow(0 10px 25px #0ba7dd20)}
     .eot-cinema-track::after{content:'';position:absolute;left:-5%;right:-5%;bottom:-15px;height:13px;background:repeating-linear-gradient(90deg,transparent 0 19px,#87bde329 20px 21px);border-top:1px solid #64a8d433;transform:perspective(90px) rotateX(40deg);transform-origin:top}
     .eot-tower{position:relative;flex:1;min-width:0;height:var(--height);border:1px solid #84b8dc20;border-bottom:0;border-radius:3px 3px 0 0;background:repeating-linear-gradient(0deg,transparent 0 11px,#88c6e912 11px 12px)}
     .eot-tower-body{position:absolute;inset:0;border:1px solid #66ccec;border-bottom:0;border-radius:3px 3px 0 0;background:linear-gradient(90deg,#1b6897,#338eb2 70%,#164c7e 71%);clip-path:inset(var(--unbuilt,100%) 0 0);transition:clip-path .16s linear}
@@ -50,7 +50,28 @@
     .eot-cinema-sectors span.active{color:#efcd83}
     .eot-cinema-status{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:30px;padding-top:17px;border-top:1px solid #91b9db1c}
     .eot-cinema-phase{font-size:12px;letter-spacing:.04em;color:#acc5dd}
-    .eot-cinema-percent{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;color:#f9d785;min-width:80px;text-align:right}
+    .eot-cinema-percent{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;color:#f9d785;min-width:80px;text-align:right}
+    #eotStartupSplash::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 49.8%,#a2cbed05 50%,transparent 50.2%),repeating-linear-gradient(0deg,transparent 0 79px,#91c6e905 80px);pointer-events:none}
+    #eotStartupSplash::after{content:'';position:absolute;inset:calc(env(safe-area-inset-top,0px) + 64px) 20px calc(env(safe-area-inset-bottom,0px) + 26px);border:1px solid #8fb9d514;border-radius:160px 160px 24px 24px;pointer-events:none;z-index:-1}
+    .eot-cinema-brand::before{inset:-18%;background:radial-gradient(ellipse,#238bc32b,transparent 67%);border:1px solid #8cbfe918;box-shadow:0 0 0 22px #88bfff03,0 0 0 44px #88bfff02}
+    .eot-cinema-brand::after{content:'';position:absolute;left:12%;right:12%;bottom:-18px;height:1px;background:linear-gradient(90deg,transparent,#eac16e,transparent);box-shadow:0 0 20px #dfb55955}
+    .eot-opening-logo{filter:drop-shadow(0 20px 32px #0008)}
+    .eot-cinema-load{padding:0 4px}
+    .eot-construction{padding:38px 10px 0;background:radial-gradient(ellipse at 50% 100%,#1f80af20,transparent 70%)}
+    .eot-cinema-track{border-bottom:2px solid #e5c16d99}
+    .eot-tower{border-color:#729dbe33;background:repeating-linear-gradient(0deg,transparent 0 11px,#88c6e90b 11px 12px),linear-gradient(90deg,#15335440,#081a3140)}
+    .eot-tower-body{background:linear-gradient(90deg,#17496b,#287fab 67%,#113856 68%);border-color:#65cae8aa;box-shadow:inset 2px 0 #a1e9ff22}
+    .eot-tower:nth-child(3n) .eot-tower-body{background:linear-gradient(90deg,#205b82,#43a7c5 67%,#143b58 68%)}
+    .eot-tower:nth-child(4n) .eot-tower-body{background:linear-gradient(90deg,#695338,#a68044 67%,#493d2b 68%);border-color:#e6bf79aa}
+    .eot-tower:nth-child(6)::before,.eot-tower:nth-child(8)::before{content:'';position:absolute;width:1px;height:13px;left:50%;top:-14px;background:#80b8d86b}
+    .eot-tower-body::before{opacity:.65}
+    .eot-cinema-sectors{margin-top:28px;font-size:8px;letter-spacing:.07em}
+    .eot-cinema-sectors span{position:relative;padding-top:10px;transition:color .3s}
+    .eot-cinema-sectors span::before{content:'';position:absolute;top:0;left:50%;width:3px;height:3px;border-radius:50%;background:#34506e}
+    .eot-cinema-sectors span.active::before{background:#edca7a;box-shadow:0 0 8px #edca7a66}
+    .eot-cinema-status{margin-top:24px;padding-top:18px;border-top:1px solid #91b9db20}
+    .eot-cinema-phase{font-size:11px;color:#b2c7d9}
+    .eot-cinema-percent{font-size:28px;letter-spacing:-.04em;color:#f3db9d}
     @media(max-height:650px){.eot-launch-composition{gap:25px}.eot-opening-logo{width:135px}.eot-cinema-track{height:85px}.eot-cinema-status{margin-top:18px;padding-top:12px}}
     @media(orientation:landscape) and (max-height:600px){.eot-launch-composition{flex-direction:row;gap:7vw;inset:65px 6% 25px}.eot-cinema-load{width:55%;max-width:520px}.eot-opening-logo{width:min(25vw,190px)}.eot-cinema-track{height:90px}.eot-cinema-status{margin-top:18px}}
     @media(prefers-reduced-motion:reduce){#eotStartupSplash,.eot-tower-body,.eot-tower-cap,.eot-crane{transition:none}}
@@ -72,7 +93,7 @@
       el.style.height=screen.height+'px';
     }
     el.innerHTML=`
-      <header class="eot-cinema-top"><b>EMPIRE OF TRADE</b><span>GELİŞTİRME SÜRÜMÜ</span></header>
+      <header class="eot-cinema-top"><b>EMPIRE OF TRADE</b><span>ERKEN ERİŞİM</span></header>
       <div class="eot-launch-composition">
         <div class="eot-cinema-brand"><h1 class="eot-logo-heading"><img class="eot-opening-logo" src="./assets/logo-v221-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1></div>
         <div class="eot-cinema-load" role="status" aria-label="Oyun yükleniyor">
