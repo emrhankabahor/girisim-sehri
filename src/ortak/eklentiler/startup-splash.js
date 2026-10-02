@@ -25,7 +25,7 @@
     .eot-atmosphere{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 41%,#19497077,transparent 60%),linear-gradient(155deg,#06152f,#071830 70%,#0a2238)}
     .eot-atmosphere::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#77c5e331,transparent 65%);opacity:0;transition:opacity .23s ease}
     .eot-arriving .eot-atmosphere::after{opacity:1}
-    .eot-metropolis{position:absolute;inset:27% 0 0;pointer-events:none;overflow:hidden}
+    .eot-metropolis{position:absolute;inset:27% 0 0;pointer-events:none;overflow:hidden;mask-image:linear-gradient(transparent,#000 24%)}
     .eot-metropolis svg{width:100%;height:100%;display:block;overflow:visible}
     .eot-metropolis::after{content:'';position:absolute;inset:0;background:linear-gradient(#06152f 0%,transparent 24%,transparent 63%,#06152fdd 100%)}
     .eot-building-lights{opacity:.15;animation:eotCityWake 1.8s ease-out var(--delay,0s) both}
@@ -50,7 +50,7 @@
     .eot-loading-line i{display:block;width:100%;height:100%;transform:scaleX(var(--progress,0));transform-origin:left;background:linear-gradient(90deg,#987033,#e3bf70,#fff1c1);box-shadow:0 0 12px #eec47780}
     .eot-loading-caption{display:flex;justify-content:space-between;gap:20px;margin-top:15px;font-size:10px;letter-spacing:.04em;color:#91a9bb}
     #eotSplashPercent{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:#dcc28b;min-width:36px;text-align:right}
-    .eot-cinema-wordmark{text-shadow:0 3px 20px #06152f}
+    .eot-cinema-wordmark{text-shadow:0 3px 20px #06152f;padding:12px 22px;background:radial-gradient(ellipse,#06152fe6,transparent 75%)}
     .eot-cinema-footer{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);left:20px;right:20px;text-align:center;font-size:7px;letter-spacing:.22em;color:#8196aa80}
     @keyframes eotLogoReveal{from{opacity:.55;filter:brightness(.7)}to{opacity:1;filter:brightness(1)}}
     @keyframes eotLogoSweep{from{transform:translateX(-75%);opacity:0}20%{opacity:1}to{transform:translateX(75%);opacity:0}}
