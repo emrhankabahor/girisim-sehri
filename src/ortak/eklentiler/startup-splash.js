@@ -10,20 +10,19 @@
     return;
   }
 
-  const started=performance.now();
-  let visibleStarted=0;
-  let target=8, shown=0, ready=false, removed=false, finishing=false, timer=null;
+  let target=8, shown=0, ready=false, removed=false, finishing=false;
 
   const style=document.createElement('style');
   style.id='eot-startup-splash-style';
   style.textContent=`
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
+    html.eot-booting,html.eot-booting body,html.eot-booting body.eot-design-v1{background:#040c1b!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;z-index:2147483646;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#102c50 0%,#07182e 37%,#040c1b 78%);color:#f5dfaa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
+    #eotStartupSplash{position:fixed;inset:0;width:100%;height:auto;min-height:100vh;min-height:100lvh;z-index:2147483646;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#102c50 0%,#07182e 37%,#040c1b 78%);color:#f5dfaa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:1;transition:opacity .42s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     .eot-logo-stage{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:min(78vw,380px,48vh);aspect-ratio:1;isolation:isolate}
-    .eot-logo-aura{position:absolute;inset:-30%;background:radial-gradient(ellipse at 32% 64%,#149cbb26,transparent 52%),radial-gradient(ellipse at 70% 30%,#d9a7481f,transparent 48%);pointer-events:none}
+    .eot-logo-aura{position:absolute;inset:-30%;border-radius:50%;-webkit-mask-image:radial-gradient(ellipse,#000 20%,transparent 70%);mask-image:radial-gradient(ellipse,#000 20%,transparent 70%);background:radial-gradient(ellipse at 32% 64%,#149cbb26,transparent 52%),radial-gradient(ellipse at 70% 30%,#d9a7481f,transparent 48%);pointer-events:none}
     .eot-trade-trails{position:absolute;inset:-15%;width:130%;height:130%;overflow:visible;pointer-events:none}
     .eot-trade-trails .rail{fill:none;stroke:#64b9d5;stroke-width:1;opacity:.18}
     .eot-trade-trails .gold{stroke:#e4bc6c}
@@ -55,16 +54,10 @@
 
   function mount(){
     if(document.getElementById('eotStartupSplash'))return;
-    visibleStarted=performance.now();
     const el=document.createElement('div');
     el.id='eotStartupSplash';
-    // iOS standalone initially reports a shorter viewport during its launch animation.
-    // Use the full screen height from the first frame so the centered content stays put.
-    const standalone=(typeof navigator!=='undefined'&&navigator.standalone===true)||
-      (typeof window.matchMedia==='function'&&window.matchMedia('(display-mode: standalone)').matches);
-    if(standalone&&typeof screen!=='undefined'&&Number.isFinite(screen.height)&&screen.height>0){
-      el.style.height=screen.height+'px';
-    }
+    // Let CSS cover the complete viewport, including the iOS home-indicator area.
+    // screen.height can differ from the CSS viewport under display zoom or rotation.
     el.innerHTML=`
       <div class="eot-logo-stage">
         <div class="eot-logo-aura" aria-hidden="true"></div>
@@ -106,23 +99,20 @@
   function finish(){
     if(removed||finishing)return;
     finishing=true;
-    const wait=0;
+    paint(100);
     setTimeout(()=>{
-      paint(100);
-      setTimeout(()=>{
-        const el=document.getElementById('eotStartupSplash');
-        // Restore page layout while the cover is still opaque; fade only after paint.
-        document.documentElement.classList.remove('eot-booting');
-        requestAnimationFrame(()=>requestAnimationFrame(()=>{
-          if(el){el.style.pointerEvents='none';el.setAttribute('aria-hidden','true');el.classList.add('eot-splash-out');}
-          setTimeout(()=>{el&&el.remove();style.remove();removed=true},460);
-        }));
-      },230);
-    },wait);
+      const el=document.getElementById('eotStartupSplash');
+      // Restore page layout while the cover is still opaque; fade only after paint.
+      document.documentElement.classList.remove('eot-booting');
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        if(el){el.style.pointerEvents='none';el.setAttribute('aria-hidden','true');el.classList.add('eot-splash-out');}
+        setTimeout(()=>{el&&el.remove();style.remove();removed=true},460);
+      }));
+    },230);
   }
 
   function tick(){
-    if(removed)return;
+    if(removed||finishing)return;
     if(!ready){
       target=Math.min(94,target+(.35+Math.random()*.75));
     }else{
@@ -131,7 +121,7 @@
     shown+=(target-shown)*.16;
     paint(shown);
     if(ready&&shown>=97){finish();return}
-    timer=requestAnimationFrame(tick);
+    requestAnimationFrame(tick);
   }
 
   window.EOTStartupSplash={
