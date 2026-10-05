@@ -33,7 +33,12 @@ test('login stays on setup until account overlay exists, then opens real login',
 });
 test('first visible loading shell does not wait on external styles or scripts',()=>{
  const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
- assert(html.indexOf('id="eotFirstPaint"')<html.indexOf('<script defer src='));
+ assert(html.indexOf('id="eot-startup-inline"')<html.indexOf('<script defer src='));
+ assert(!html.includes('eotFirstPaint'));
+ assert(!html.includes('apple-touch-startup-image'));
+ assert(!/<script[^>]+src="startup-splash/.test(html));
+ const splash=fs.readFileSync(require('node:path').join(__dirname,'../startup-splash.js'),'utf8');
+ assert(html.includes(splash), 'inline splash must match the single source');
  for(const tag of html.match(/<script[^>]+src=[^>]+>/g)||[])assert(/\bdefer\b/.test(tag),tag);
  for(const tag of html.match(/<link[^>]+rel="stylesheet"[^>]+>/g)||[])assert(/media="print"/.test(tag),tag);
 });

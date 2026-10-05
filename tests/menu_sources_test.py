@@ -25,6 +25,7 @@ class MenuSources(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             shutil.copytree(ROOT/'src',root/'src')
+            shutil.copyfile(ROOT/'index.html',root/'index.html')
             file=root/'src/ana-sayfa/app.js'
             text=file.read_text()
             self.assertIn('function renderBusinessSummary(){',text)

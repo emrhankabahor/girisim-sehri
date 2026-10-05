@@ -39,6 +39,11 @@ def assemble(root=ROOT):
         start = end
     if len(used) != len(set(used)) or set(used) != set(blocks):
         raise ValueError('Missing or repeated source block in build order')
+    # The only splash source is embedded before external requests, preventing
+    # a separate first-paint screen and a second network-dependent loader.
+    shell = (root/'index.html').read_text()
+    inline = '<!-- EOT_STARTUP_INLINE -->\n<script id="eot-startup-inline">\n' + outputs['startup-splash.js'] + '\n</script>\n<!-- EOT_STARTUP_END -->'
+    outputs['index.html'] = re.sub(r'<!-- EOT_STARTUP_INLINE -->.*?<!-- EOT_STARTUP_END -->', lambda _: inline, shell, flags=re.S)
     return outputs
 
 def main():

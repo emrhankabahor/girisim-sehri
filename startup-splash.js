@@ -22,7 +22,7 @@
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     .eot-royal-pattern{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(45deg,transparent 0 22px,#5196cd06 22px 23px),repeating-linear-gradient(-45deg,transparent 0 22px,#5196cd06 22px 23px);mask-image:linear-gradient(#000,transparent 48%,#000)}
-    .eot-royal-frame{position:absolute;inset:calc(env(safe-area-inset-top,0px) + 12px) 16px calc(env(safe-area-inset-bottom,0px) + 12px);border-left:1px solid #cba85b66;border-right:1px solid #cba85b66;pointer-events:none}
+    .eot-royal-frame{position:absolute;inset:0;border-left:1px solid #cba85b66;border-right:1px solid #cba85b66;pointer-events:none}
     .eot-frame-corner{position:absolute;width:clamp(95px,30vw,200px);height:clamp(95px,30vw,200px);overflow:visible}
     .eot-frame-corner:nth-child(1){top:0;left:0}.eot-frame-corner:nth-child(2){top:0;right:0;transform:scaleX(-1)}
     .eot-frame-corner:nth-child(3){bottom:0;left:0;transform:scaleY(-1)}.eot-frame-corner:nth-child(4){bottom:0;right:0;transform:scale(-1)}
@@ -65,7 +65,6 @@
   `;
   document.head.appendChild(style);
   document.documentElement.classList.add('eot-booting');
-  const firstPaintGuard=document.getElementById('eot-first-paint-guard');
 
   function mount(){
     if(document.getElementById('eotStartupSplash'))return;
@@ -86,7 +85,6 @@
       </div>
       <div class="eot-logo-loading" role="status" aria-label="Oyun yükleniyor"><div class="eot-loading-ornament" aria-hidden="true">◆</div><div class="eot-loading-caption"><span id="eotSplashPhase">Yükleniyor…</span><strong id="eotSplashPercent">%0</strong></div><div class="eot-loading-shell"><div class="eot-loading-line" aria-hidden="true"><i id="eotLoadingFill"></i></div></div></div>`;
     document.body.appendChild(el);
-    requestAnimationFrame(()=>{ if(firstPaintGuard) firstPaintGuard.remove(); const preview=document.getElementById('eotFirstPaint');if(preview)preview.remove(); });
   }
 
   function removeSnapshotCover(){
