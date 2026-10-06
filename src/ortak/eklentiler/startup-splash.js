@@ -1,4 +1,4 @@
-/* Empire of Trade • Sade açılış temeli + render perdesi */
+/* Empire of Trade • Küresel ticaret açılışı + render perdesi */
 (function(){
   'use strict';
   if(window.__eotStartupSplashLoaded)return;
@@ -21,36 +21,24 @@
     #eotStartupSplash{position:fixed;inset:0;min-height:100vh;min-height:100lvh;z-index:2147483646;overflow:hidden;isolation:isolate;background:#050e1c;color:#ecdfc1;font-family:system-ui,sans-serif;opacity:1;transition:opacity .35s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
-    .eot-atlas-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 34%,#154c77a8,transparent 52%),radial-gradient(ellipse at 90% 90%,#bd863518,transparent 45%);pointer-events:none}
-    .eot-atlas-grid{position:absolute;inset:0;background:linear-gradient(90deg,#91c9e007 1px,transparent 1px),linear-gradient(#91c9e007 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(transparent,#000 40%,#000 85%,transparent)}
-    .eot-atlas-border{position:absolute;inset:0;border-left:1px solid #a48a5040;border-right:1px solid #a48a5040;pointer-events:none}
-    .eot-atlas-border::before,.eot-atlas-border::after{content:'';position:absolute;width:32vw;max-width:360px;height:140px;border-top:1px solid #d4b67177;transform:skewY(-28deg);background:linear-gradient(170deg,#b78d3015,transparent)}
-    .eot-atlas-border::before{left:-9%;top:18%}.eot-atlas-border::after{right:-9%;bottom:18%;transform:skewY(-28deg) rotate(180deg)}
-    .eot-atlas-label{position:absolute;top:calc(env(safe-area-inset-top,0px) + 28px);left:0;right:0;display:flex;align-items:center;justify-content:center;gap:14px;color:#b4a381;font-size:9px;letter-spacing:.32em;font-weight:650}
-    .eot-atlas-label::before,.eot-atlas-label::after{content:'';width:32px;height:1px;background:#b4a38166}
-    .eot-atlas-logo{position:absolute;top:33%;left:50%;transform:translate(-50%,-50%);width:min(76vw,380px,39vh);margin:0;z-index:2}
-    .eot-atlas-logo::before{content:'';position:absolute;inset:-25%;background:radial-gradient(ellipse,#429bd52b,transparent 65%);animation:eotAtlasBreathe 5s ease-in-out infinite alternate;pointer-events:none}
-    .eot-atlas-logo img{position:relative;display:block;width:100%;height:auto;border-radius:21%;box-shadow:0 24px 50px #02081288}
-    .eot-atlas-city{position:absolute;top:49%;left:50%;transform:translateX(-50%);width:min(115vw,690px);height:min(31vh,280px);pointer-events:none;mask-image:linear-gradient(transparent,#000 15%,#000 80%,transparent)}
-    .eot-atlas-city svg{display:block;width:100%;height:100%;overflow:visible}
-    .eot-atlas-city .plan{fill:none;stroke:#5b91a73d;stroke-width:1}
-    .eot-atlas-city .tower{fill:#0e2439;stroke:#75aec166;stroke-width:1}
-    .eot-atlas-city .side{fill:#102f46;stroke:#5d8d9f66;stroke-width:1}
-    .eot-atlas-city .roof{fill:#244655;stroke:#d3b77188;stroke-width:1}
-    .eot-atlas-city .windows{stroke:#91d5e6;stroke-width:2;opacity:.08;transition:opacity .6s ease}
-    .eot-atlas-city .lit .windows{opacity:.85}
-    .eot-atlas-city .route{fill:none;stroke:#dfb96e;stroke-width:1.8;stroke-dasharray:12 500;animation:eotAtlasRoute 8s linear infinite}
-    .eot-atlas-loading{position:absolute;left:50%;top:78%;transform:translateX(-50%);width:min(78vw,370px);z-index:3}
-    .eot-startup-caption{display:flex;justify-content:space-between;align-items:baseline;gap:16px;font-size:13px;letter-spacing:.03em;margin-bottom:18px;color:#c7d1d9}
-    #eotSplashPercent{font-variant-numeric:tabular-nums;font-size:24px;color:#ecd49b;font-weight:400;letter-spacing:-.04em}
-    .eot-startup-track{height:6px;background:#35536944;border:1px solid #8d9b9133;transform:skewX(-22deg);overflow:hidden}
-    #eotLoadingFill{display:block;height:100%;width:100%;transform:scaleX(var(--progress,0));transform-origin:left;background:linear-gradient(90deg,#966b34,#d7b06a,#ffedb2);box-shadow:0 0 15px #dfb96e66}
-    .eot-atlas-sectors{display:flex;justify-content:space-between;margin-top:18px;font-size:8px;color:#6c8599;letter-spacing:.13em;font-weight:600}
-    .eot-atlas-footer{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);left:0;right:0;text-align:center;font-size:8px;letter-spacing:.2em;color:#60758b}
-    @keyframes eotAtlasBreathe{from{opacity:.5}to{opacity:1}}
-    @keyframes eotAtlasRoute{to{stroke-dashoffset:-1024}}
-    @media(max-height:650px){.eot-atlas-label{top:16px}.eot-atlas-loading{top:76%}.eot-atlas-sectors{margin-top:10px}.eot-startup-caption{margin-bottom:10px}.eot-atlas-footer{bottom:10px}}
-    @media(orientation:landscape) and (max-height:600px){.eot-atlas-logo{top:48%;left:28%;width:min(50vh,240px)}.eot-atlas-city{left:72%;top:18%;width:48vw;height:44vh}.eot-atlas-loading{left:72%;top:65%;width:38vw}.eot-atlas-footer{display:none}}
+    .eot-atlas-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 5%,#0868c9a8,transparent 55%),radial-gradient(ellipse at 50% 52%,#064ca3,transparent 68%),linear-gradient(#031632,#04112b);pointer-events:none}
+    .eot-atlas-grid{position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent 0 150px,#3b8cf012 151px,transparent 152px 300px),repeating-linear-gradient(-45deg,transparent 0 150px,#3b8cf012 151px,transparent 152px 300px)}
+    .eot-atlas-border{position:absolute;left:50%;bottom:9%;width:min(75vw,440px);aspect-ratio:1;transform:translateX(-50%) rotate(45deg);border-right:1px solid #d7ae5366;border-bottom:1px solid #d7ae5366;pointer-events:none}
+    .eot-atlas-globe{position:absolute;left:50%;top:14%;transform:translateX(-50%);width:min(92vw,530px,64vh);aspect-ratio:1;border:1px solid #f4ce77aa;border-radius:50%;box-shadow:0 -3px 25px #199dff55,inset 0 15px 36px #047bfd44;overflow:hidden;mask-image:linear-gradient(#000 60%,transparent)}
+    .eot-atlas-globe svg{width:100%;height:100%}
+    .eot-atlas-globe::after{content:'';position:absolute;inset:0;border-radius:50%;background:linear-gradient(115deg,transparent 30%,#44caff22 48%,transparent 65%);animation:eotGlobeLight 6s ease-in-out infinite alternate}
+    .eot-atlas-logo{position:absolute;top:47%;left:50%;transform:translate(-50%,-50%);width:min(92vw,490px,53vh);margin:0;z-index:2}
+    .eot-atlas-logo img{position:relative;display:block;width:100%;height:auto;mask-image:radial-gradient(ellipse,#000 57%,#000c 67%,transparent 76%)}
+    .eot-atlas-logo::after{content:'';position:absolute;left:20%;right:20%;bottom:9%;height:2px;background:linear-gradient(90deg,transparent,#ffe5a0,transparent);box-shadow:0 0 15px #ffe6a0;animation:eotGlobeLight 3s ease-in-out infinite alternate;pointer-events:none}
+    .eot-atlas-loading{position:absolute;left:50%;top:75%;transform:translateX(-50%);width:min(78vw,410px);z-index:3}
+    .eot-startup-caption{text-align:center;margin-bottom:24px;color:#fff1bf;font-size:clamp(23px,5vw,32px);font-weight:850;text-shadow:0 2px 0 #9f6518,0 4px 8px #000}
+    #eotSplashPercent{display:block;margin-top:8px;font-size:12px;letter-spacing:.12em;font-weight:600;color:#aacbdf;text-shadow:none;font-variant-numeric:tabular-nums}
+    .eot-startup-track{height:30px;padding:5px;background:linear-gradient(#ffe8a4,#a96514 40%,#fff0ae 55%,#b77924 90%,#ffeab0);border-radius:30px;box-shadow:0 0 20px #efa91f55,0 7px 18px #0008;position:relative}
+    .eot-startup-track::before{content:'';position:absolute;inset:4px;border-radius:24px;background:#00102c;box-shadow:inset 0 2px 5px #000}
+    #eotLoadingFill{position:relative;display:block;height:100%;width:calc(var(--progress,0)*100%);border-radius:20px;background:repeating-linear-gradient(125deg,#ffffff00 0 12px,#b9faff40 13px 22px),linear-gradient(#91f5ff,#08b8fa 35%,#0063e9 70%,#1fd7ff);box-shadow:0 0 12px #05caff,inset 0 1px 1px #fff;max-width:100%;min-width:0}
+    #eotLoadingFill::after{content:'';position:absolute;right:0;top:15%;height:70%;width:2px;background:#fff8bb;box-shadow:0 0 10px 3px #6aeaff}
+    @keyframes eotGlobeLight{from{opacity:.4}to{opacity:1}}
+    @media(orientation:landscape) and (max-height:600px){.eot-atlas-logo{left:30%;top:50%;width:65vh}.eot-atlas-globe{left:30%;top:8%;width:80vh}.eot-atlas-loading{left:74%;top:43%;width:38vw}.eot-atlas-border{display:none}}
     @media(prefers-reduced-motion:reduce){#eotStartupSplash,#eotStartupSplash *,#eotStartupSplash *::before{animation:none!important;transition:none!important}}
   `;
   document.head.appendChild(style);
@@ -62,16 +50,12 @@
     el.id='eotStartupSplash';
     // Let CSS cover the complete viewport, including the iOS home-indicator area.
     // screen.height can differ from the CSS viewport under display zoom or rotation.
-    const buildings=[[95,133,42,61],[163,111,46,108],[242,98,50,155],[333,130,44,92],[407,154,56,66],[490,132,40,104]];
-    const skyline=buildings.map(([x,y,w,h],i)=>{
-      const base=y+h;
-      return '<g data-atlas-tower="'+i+'"><path class="tower" d="M'+x+' '+y+'l'+w+' -22v'+h+'l-'+w+' 22Z"/><path class="side" d="M'+(x+w)+' '+(y-22)+'l22 13v'+h+'l-22 -13Z"/><path class="roof" d="M'+x+' '+y+'l'+w+' -22 22 13-'+w+' 22Z"/><path class="windows" d="M'+(x+10)+' '+(y+13)+'v'+(h-22)+'m12 -'+(h+4)+'v'+(h-22)+'m12 -'+(h+4)+'v'+(h-22)+'"/></g>';
-    }).join('');
+    const globeLines=[-60,-30,0,30,60].map(n=>'<ellipse cx="250" cy="250" rx="'+(240-Math.abs(n)*2)+'" ry="240" fill="none" stroke="#32baff" stroke-opacity=".23"/>').join('');
+    const city=[75,120,158,195,240,287,326,365,405].map((x,i)=>{const h=[55,95,70,140,205,125,85,65,45][i];return '<rect x="'+x+'" y="'+(350-h)+'" width="29" height="'+h+'" fill="url(#eotTowerBlue)" stroke="#40b8ff" stroke-opacity=".4"/>';}).join('');
     el.innerHTML=`<div class="eot-atlas-glow" aria-hidden="true"></div><div class="eot-atlas-grid" aria-hidden="true"></div><div class="eot-atlas-border" aria-hidden="true"></div>
-      <div class="eot-atlas-label">EKONOMİ &amp; TİCARET</div>
+      <div class="eot-atlas-globe" aria-hidden="true"><svg viewBox="0 0 500 500"><defs><radialGradient id="eotEarthBlue"><stop stop-color="#084d9b"/><stop offset="1" stop-color="#03214b"/></radialGradient><linearGradient id="eotTowerBlue" x2="1" y2="0"><stop stop-color="#05255c"/><stop offset="1" stop-color="#22a9f3"/></linearGradient></defs><circle cx="250" cy="250" r="240" fill="url(#eotEarthBlue)" stroke="#36c7ff"/>${globeLines}<g fill="none" stroke="#38bcff" stroke-opacity=".25"><ellipse cx="250" cy="250" rx="240" ry="70"/><ellipse cx="250" cy="250" rx="240" ry="150"/><path d="M10 250H490M250 10V490"/></g><path d="M60 310Q320 280 426 85L426 131 453 62 383 92 416 90Q300 260 60 310" fill="#1687d3" stroke="#64c9ff" stroke-opacity=".4"/>${city}</svg></div>
       <h1 class="eot-atlas-logo"><img src="./assets/logo-v221-512.png" alt="Empire of Trade" width="512" height="512" fetchpriority="high"></h1>
-      <div class="eot-atlas-city" aria-hidden="true"><svg viewBox="0 0 640 360"><path class="plan" d="M0 205 260 55 640 275M0 255 270 99 640 314M60 328 370 149 620 294M90 145 415 333M180 94 510 285M15 280 330 98M160 354 575 115"/><path class="plan" d="M50 230 160 166 255 221 145 285ZM283 261 384 203 465 250 364 308ZM434 299 543 236 607 273 499 337Z"/>${skyline}<path class="route" d="M-20 262 82 203 314 337 610 166 670 201"/><path class="route" style="animation-delay:-4s;stroke:#75c4de" d="M-20 184 300 368 660 160"/></svg></div>
-      <div class="eot-atlas-loading" role="status" aria-label="Oyun yükleniyor"><div class="eot-startup-caption"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div><div class="eot-atlas-sectors" aria-hidden="true"><span>ARSA</span><span>GALERİ</span><span>İŞLETMELER</span><span>FİNANS</span></div></div><div class="eot-atlas-footer">EMPIRE OF TRADE</div>`;
+      <div class="eot-atlas-loading" role="status" aria-label="Oyun yükleniyor"><div class="eot-startup-caption"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div>`;
     document.body.appendChild(el);
   }
 
@@ -91,8 +75,6 @@
     const pct=document.getElementById('eotSplashPercent');
 
     if(pct)pct.textContent='%'+visible;
-    const splash=document.getElementById('eotStartupSplash');
-    if(splash)splash.querySelectorAll('[data-atlas-tower]').forEach((tower,i)=>tower.classList.toggle('lit',visible>=(i+1)*14));
   }
 
   function finish(){
