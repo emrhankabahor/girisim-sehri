@@ -61,8 +61,10 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     #eotStartupSplash{background:radial-gradient(ellipse at 50% 12%,#074a99 0%,#032959 35%,#02132f 70%,#010b22 100%)}
-    .eot-reference-stage{position:absolute;inset:0}
-    .eot-reference-art{display:block;width:100%;height:100%;object-fit:contain;mask-image:linear-gradient(transparent,#000 12%,#000 85%,transparent);pointer-events:none}
+    .eot-reference-stage{position:absolute;inset:0;overflow:hidden}
+    .eot-reference-stage::before{content:'';position:absolute;inset:-40px;background:url('./assets/splash-brand-v250.jpg') center/cover no-repeat;filter:blur(32px);pointer-events:none}
+    /* Mask the actual image bounds, not the letterboxed viewport-sized img box. */
+    .eot-reference-art{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block;width:min(100%,56.2799vh);height:auto;aspect-ratio:941/1672;mask-image:linear-gradient(transparent 0%,#000 14%,#000 82%,transparent 100%);pointer-events:none}
     .eot-loading-ui{position:absolute;left:50%;top:79%;transform:translateX(-50%);width:min(76vw,420px);text-align:center}
     #eotSplashPhase{display:block;color:#fff1bb;font-size:clamp(23px,5.2vw,32px);font-weight:850;text-shadow:0 2px 1px #a16410,0 4px 6px #00102d;margin-bottom:22px}
     .eot-track-frame{padding:5px;border-radius:999px;background:linear-gradient(#fff1bb,#bd7619 35%,#fff0b2 58%,#a76a16 86%,#ffdd77);box-shadow:0 0 15px #edb43466,0 3px 12px #00102d}
@@ -159,6 +161,6 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
 <script defer src="company-boot-gate.js?v=2"></script>
 <script defer src="company-onboarding.js?v=15"></script>
 <script defer src="investment-visibility.js?v=205"></script>
-<script defer src="bootstrap.js?v=250"></script>
+<script defer src="bootstrap.js?v=251"></script>
 </body>
 </html>
