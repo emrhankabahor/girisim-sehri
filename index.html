@@ -60,7 +60,7 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
     #eotStartupSplash{position:fixed;inset:0;height:100%;height:100dvh;min-height:0;z-index:2147483646;overflow:hidden;isolation:isolate;background:#050e1c;color:#ecdfc1;font-family:system-ui,sans-serif;opacity:1;transition:opacity .35s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
-    #eotStartupSplash{background:#031531}
+    #eotStartupSplash{background:repeating-linear-gradient(135deg,transparent 0 125px,#0877f91a 126px 128px,transparent 129px 250px),repeating-linear-gradient(45deg,transparent 0 125px,#0877f91a 126px 128px,transparent 129px 250px),radial-gradient(ellipse at 50% 0,#0065d5 0,#04266a 35%,#031531 75%)}
     /* One cover-sized artwork plane keeps the supplied logo, caption and gold frame aligned. */
     .eot-reference-stage{position:absolute;left:50%;top:50%;width:100%;height:100%;transform:translate(-50%,-50%);overflow:hidden;pointer-events:none}
     .eot-reference-art{position:absolute;left:50%;top:50%;width:var(--eot-art-width,100%);height:auto;aspect-ratio:852/1846;transform:translate(-50%,-50%)}
@@ -98,7 +98,11 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
     el.style.top=(viewport?viewport.offsetTop:0)+'px';
     el.style.width=width+'px';el.style.height=height+'px';
     el.style.right='auto';el.style.bottom='auto';
-    el.style.setProperty('--eot-art-width',Math.ceil(Math.max(width,height*852/1846))+'px');
+    // Portrait phones retain full bleed. Wide windows show the complete artwork
+    // at a height-limited size, so the logo and loading bar cannot be cropped.
+    const portrait=width/height<=.65;
+    const artWidth=portrait?Math.max(width,height*852/1846):Math.min(width,height*852/1846);
+    el.style.setProperty('--eot-art-width',(portrait?Math.ceil(artWidth):Math.floor(artWidth))+'px');
   }
   window.addEventListener('resize',fitViewport);
   if(window.visualViewport){
@@ -193,6 +197,6 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
 <script defer src="company-boot-gate.js?v=2"></script>
 <script defer src="company-onboarding.js?v=15"></script>
 <script defer src="investment-visibility.js?v=205"></script>
-<script defer src="bootstrap.js?v=256"></script>
+<script defer src="bootstrap.js?v=257"></script>
 </body>
 </html>

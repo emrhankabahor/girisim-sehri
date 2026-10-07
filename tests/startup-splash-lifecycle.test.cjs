@@ -48,3 +48,17 @@ test('splash uses window dimensions when VisualViewport is unavailable',()=>{
  h.window.innerHeight=740;h.window.emit('resize');
  assert.equal(splash.style.height,'740px');
 });
+
+test('desktop and landscape fit the entire artwork inside the visible height',()=>{
+ const h=setup({width:1440,height:900,offsetLeft:0,offsetTop:0});
+ const splash=h.elements.get('eotStartupSplash');
+ const artWidth=Number.parseInt(splash.style['--eot-art-width']);
+ assert(artWidth*1846/852<=900);
+ assert(artWidth<1440/2);
+ h.window.visualViewport.width=844;h.window.visualViewport.height=390;
+ h.window.visualViewport.emit('resize');
+ assert(Number.parseInt(splash.style['--eot-art-width'])*1846/852<=390);
+ h.window.visualViewport.width=390;h.window.visualViewport.height=844;
+ h.window.visualViewport.emit('resize');
+ assert(Number.parseInt(splash.style['--eot-art-width'])>=390);
+});
