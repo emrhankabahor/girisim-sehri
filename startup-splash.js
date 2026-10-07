@@ -22,15 +22,15 @@
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     #eotStartupSplash{background:#031531}
-    .eot-reference-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;overflow:hidden}
-    .eot-art-slice{display:block;width:100%;min-height:0;overflow:hidden;pointer-events:none}
-    .eot-art-top{flex:180 1 0}
-    .eot-art-bottom{flex:306 1 0}
-    .eot-art-core{position:relative;flex:none;width:100%;height:126.036132vw;max-height:70.933014vh}
-    .eot-art-core>svg{display:block;width:100%;height:100%}
-    .eot-reference-stage{width:min(100%,56.2799vh);margin:auto}
-    .eot-startup-track{position:absolute;left:12%;top:91%;width:76%;height:4.5%;border:3px solid #ffd36b;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
-    .eot-splash-caption{position:absolute;top:82%;left:0;right:0;text-align:center;color:#fff0b5;font:850 clamp(22px,5vw,32px) system-ui;text-shadow:0 2px #a56516}
+    /* One cover-sized artwork plane keeps the supplied logo, caption and gold frame aligned. */
+    .eot-reference-stage{position:absolute;left:50%;top:50%;width:100%;height:100%;transform:translate(-50%,-50%);overflow:hidden;pointer-events:none}
+    .eot-reference-art{position:absolute;left:50%;top:50%;width:max(100%,46.153846vh);height:auto;aspect-ratio:852/1846;transform:translate(-50%,-50%)}
+    @supports(height:100cqh){
+      #eotStartupSplash{container-type:size}
+      .eot-reference-art{width:max(100cqw,46.153846cqh)}
+    }
+    .eot-reference-art>img{display:block;width:100%;height:100%;pointer-events:none}
+    .eot-startup-track{position:absolute;left:15.15%;top:72.77%;width:69.7%;height:2.8%;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
     #eotLoadingFill{display:block;height:100%;width:calc(var(--progress,0)*100%);border-radius:999px;background:repeating-linear-gradient(130deg,transparent 0 13px,#b8ffff44 14px 25px),linear-gradient(#91ffff,#00c2ff 25%,#0877f9 65%,#15d6ff);box-shadow:0 0 10px #16e2ff,inset 0 1px 2px #fff;position:relative}
     #eotLoadingFill::after{content:'';position:absolute;right:0;top:5%;height:90%;width:3px;background:#ffffcc;box-shadow:0 0 8px 2px #e5fcff}
     .eot-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -43,11 +43,8 @@
     if(document.getElementById('eotStartupSplash'))return;
     const el=document.createElement('div');
     el.id='eotStartupSplash';
-    // Let CSS cover the complete viewport, including the iOS home-indicator area.
-    // screen.height can differ from the CSS viewport under display zoom or rotation.
-    // Stretch only the empty upper/lower art; the central design keeps its aspect ratio.
-    const slice=(y,h,cls)=>'<svg class="eot-art-slice '+cls+'" viewBox="0 '+y+' 941 '+h+'" preserveAspectRatio="none" aria-hidden="true"><image href="./assets/splash-brand-v250.jpg" width="941" height="1672"/></svg>';
-    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade">${slice(0,180,'eot-art-top')}<div class="eot-art-core">${slice(180,1186,'')}<div class="eot-splash-caption" aria-hidden="true">Yükleniyor…</div><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div>${slice(1366,306,'eot-art-bottom')}<div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
+    // Use the reference unchanged; only the fill inside its gold loading frame is live.
+    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade"><div class="eot-reference-art"><img src="./assets/splash-reference-v255.png" width="852" height="1846" alt="" fetchpriority="high"><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div><div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
     document.body.appendChild(el);
   }
 
