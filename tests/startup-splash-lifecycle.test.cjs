@@ -33,7 +33,7 @@ test('splash follows iPhone visible viewport without an extra bottom safe-area s
  h.window.visualViewport.height=844;
  h.window.visualViewport.emit('resize');
  assert.equal(splash.style.height,'844px');
- assert(Number.parseInt(splash.style['--eot-art-width'])>=844*852/1846);
+ assert(Number.parseInt(splash.style['--eot-art-width'])>=844*853/1844);
  h.window.visualViewport.offsetTop=12;
  h.window.visualViewport.emit('scroll');
  assert.equal(splash.style.top,'12px');
@@ -53,11 +53,11 @@ test('desktop and landscape fit the entire artwork inside the visible height',()
  const h=setup({width:1440,height:900,offsetLeft:0,offsetTop:0});
  const splash=h.elements.get('eotStartupSplash');
  const artWidth=Number.parseInt(splash.style['--eot-art-width']);
- assert(artWidth*1846/852<=900);
+ assert(artWidth*1844/853<=900);
  assert(artWidth<1440/2);
  h.window.visualViewport.width=844;h.window.visualViewport.height=390;
  h.window.visualViewport.emit('resize');
- assert(Number.parseInt(splash.style['--eot-art-width'])*1846/852<=390);
+ assert(Number.parseInt(splash.style['--eot-art-width'])*1844/853<=390);
  h.window.visualViewport.width=390;h.window.visualViewport.height=844;
  h.window.visualViewport.emit('resize');
  assert(Number.parseInt(splash.style['--eot-art-width'])>=390);
@@ -69,20 +69,20 @@ for(const mode of ['iosStandalone','displayStandalone'])test(mode+' covers home-
  const splash=h.elements.get('eotStartupSplash');
  assert.equal(splash.getBoundingClientRect().height,896);
  assert.equal(splash.style.top,'0px');
- assert(Number.parseInt(splash.style['--eot-art-width'])*1846/852>=896);
+ assert(Number.parseInt(splash.style['--eot-art-width'])*1844/853>=896);
  // Safari can report a nonzero offset or change its safe viewport on resume.
  h.window.visualViewport.offsetTop=34;h.window.visualViewport.height=828;
  h.window.visualViewport.emit('resize');
  assert.equal(splash.style.height,'100vh');assert.equal(splash.style.top,'0px');
  // Rotation uses the newly measured CSS canvas, not cached screen dimensions.
  canvas.width=896;canvas.height=414;h.window.emit('orientationchange');
- assert(Number.parseInt(splash.style['--eot-art-width'])*1846/852<=414);
+ assert(Number.parseInt(splash.style['--eot-art-width'])*1844/853<=414);
 });
 
 test('standalone canvas paint is removed after splash fade and never reappears on resume',()=>{
  const h=setup({width:414,height:862,offsetLeft:0,offsetTop:0},{iosStandalone:true});
  assert(h.classes.has('eot-splash-surface'));
- assert(h.elements.get('eot-startup-canvas-style').textContent.includes('splash-reference-v255.png'));
+ assert(h.elements.get('eot-startup-canvas-style').textContent.includes('splash-refined-v260.png'));
  h.finish();
  assert(!h.elements.has('eotStartupSplash'));
  assert(!h.elements.has('eot-startup-canvas-style'));

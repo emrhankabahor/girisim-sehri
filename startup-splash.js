@@ -24,9 +24,9 @@
     #eotStartupSplash{background:repeating-linear-gradient(135deg,transparent 0 125px,#0877f91a 126px 128px,transparent 129px 250px),repeating-linear-gradient(45deg,transparent 0 125px,#0877f91a 126px 128px,transparent 129px 250px),radial-gradient(ellipse at 50% 0,#0065d5 0,#04266a 35%,#031531 75%)}
     /* One cover-sized artwork plane keeps the supplied logo, caption and gold frame aligned. */
     .eot-reference-stage{position:absolute;left:50%;top:50%;width:100%;height:100%;transform:translate(-50%,-50%);overflow:hidden;pointer-events:none}
-    .eot-reference-art{position:absolute;left:50%;top:50%;width:var(--eot-art-width,100%);height:auto;aspect-ratio:852/1846;transform:translate(-50%,-50%)}
+    .eot-reference-art{position:absolute;left:50%;top:50%;width:var(--eot-art-width,100%);height:auto;aspect-ratio:853/1844;transform:translate(-50%,-50%)}
     .eot-reference-art>img{display:block;width:100%;height:100%;pointer-events:none}
-    .eot-startup-track{position:absolute;left:15.15%;top:72.77%;width:69.7%;height:2.8%;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
+    .eot-startup-track{position:absolute;left:14.6542%;top:71.6377%;width:70.9261%;height:2.2777%;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
     #eotLoadingFill{display:block;height:100%;width:calc(var(--progress,0)*100%);border-radius:999px;background:repeating-linear-gradient(130deg,transparent 0 13px,#b8ffff44 14px 25px),linear-gradient(#91ffff,#00c2ff 25%,#0877f9 65%,#15d6ff);box-shadow:0 0 10px #16e2ff,inset 0 1px 2px #fff;position:relative}
     #eotLoadingFill::after{content:'';position:absolute;right:0;top:5%;height:90%;width:3px;background:#ffffcc;box-shadow:0 0 8px 2px #e5fcff}
     .eot-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -43,7 +43,7 @@
     const el=document.createElement('div');
     el.id='eotStartupSplash';
     // Use the reference unchanged; only the fill inside its gold loading frame is live.
-    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade"><div class="eot-reference-art"><img src="./assets/splash-reference-v255.png" width="852" height="1846" alt="" fetchpriority="high"><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div><div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
+    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade"><div class="eot-reference-art"><img src="./assets/splash-refined-v260.png" width="853" height="1844" alt="" fetchpriority="high"><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div><div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
     document.body.appendChild(el);
     fitViewport();
   }
@@ -79,7 +79,7 @@
     // Portrait phones retain full bleed. Wide windows show the complete artwork
     // at a height-limited size, so the logo and loading bar cannot be cropped.
     const portrait=width/height<=.65;
-    const artWidth=portrait?Math.max(width,height*852/1846):Math.min(width,height*852/1846);
+    const artWidth=portrait?Math.max(width,height*853/1844):Math.min(width,height*853/1844);
     const renderedWidth=portrait?Math.ceil(artWidth):Math.floor(artWidth);
     el.style.setProperty('--eot-art-width',renderedWidth+'px');
     if(standalone){
@@ -87,10 +87,10 @@
       // rectangles are full height. Paint the same artwork on the root canvas:
       // it extends into the safe area rather than revealing the old solid color.
       // Use identical pixel coordinates, so this is one continuous composition.
-      const artHeight=renderedWidth*1846/852;
+      const artHeight=renderedWidth*1844/853;
       document.documentElement.classList.add('eot-splash-surface');
       canvasStyle.textContent=`
-        html.eot-splash-surface{min-height:100vh!important;background:#031531 url("./assets/splash-reference-v255.png") no-repeat ${(width-renderedWidth)/2}px ${(height-artHeight)/2}px / ${renderedWidth}px ${artHeight}px!important}
+        html.eot-splash-surface{min-height:100vh!important;background:#031531 url("./assets/splash-refined-v260.png") no-repeat ${(width-renderedWidth)/2}px ${(height-artHeight)/2}px / ${renderedWidth}px ${artHeight}px!important}
         html.eot-splash-surface body,html.eot-splash-surface body.eot-design-v1{background:transparent!important}
         html.eot-booting.eot-splash-surface,html.eot-booting.eot-splash-surface body{min-height:100vh!important;overflow:visible!important;overscroll-behavior:none!important;touch-action:none!important}
       `;
