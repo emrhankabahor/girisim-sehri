@@ -18,17 +18,13 @@
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting,html.eot-booting body,html.eot-booting body.eot-design-v1{background:#040c1b!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;bottom:calc(-1 * env(safe-area-inset-bottom,0px));min-height:100vh;min-height:100lvh;z-index:2147483646;overflow:hidden;isolation:isolate;background:#050e1c;color:#ecdfc1;font-family:system-ui,sans-serif;opacity:1;transition:opacity .35s ease}
+    #eotStartupSplash{position:fixed;inset:0;height:100%;height:100dvh;min-height:0;z-index:2147483646;overflow:hidden;isolation:isolate;background:#050e1c;color:#ecdfc1;font-family:system-ui,sans-serif;opacity:1;transition:opacity .35s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     #eotStartupSplash{background:#031531}
     /* One cover-sized artwork plane keeps the supplied logo, caption and gold frame aligned. */
     .eot-reference-stage{position:absolute;left:50%;top:50%;width:100%;height:100%;transform:translate(-50%,-50%);overflow:hidden;pointer-events:none}
-    .eot-reference-art{position:absolute;left:50%;top:50%;width:max(100%,46.153846vh);height:auto;aspect-ratio:852/1846;transform:translate(-50%,-50%)}
-    @supports(height:100cqh){
-      #eotStartupSplash{container-type:size}
-      .eot-reference-art{width:max(100cqw,46.153846cqh)}
-    }
+    .eot-reference-art{position:absolute;left:50%;top:50%;width:var(--eot-art-width,100%);height:auto;aspect-ratio:852/1846;transform:translate(-50%,-50%)}
     .eot-reference-art>img{display:block;width:100%;height:100%;pointer-events:none}
     .eot-startup-track{position:absolute;left:15.15%;top:72.77%;width:69.7%;height:2.8%;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
     #eotLoadingFill{display:block;height:100%;width:calc(var(--progress,0)*100%);border-radius:999px;background:repeating-linear-gradient(130deg,transparent 0 13px,#b8ffff44 14px 25px),linear-gradient(#91ffff,#00c2ff 25%,#0877f9 65%,#15d6ff);box-shadow:0 0 10px #16e2ff,inset 0 1px 2px #fff;position:relative}
@@ -46,6 +42,36 @@
     // Use the reference unchanged; only the fill inside its gold loading frame is live.
     el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade"><div class="eot-reference-art"><img src="./assets/splash-reference-v255.png" width="852" height="1846" alt="" fetchpriority="high"><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div><div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
     document.body.appendChild(el);
+    fitViewport();
+  }
+
+  // Safari toolbar changes affect the visible viewport independently of 100vh.
+  // Measure that viewport; do not add a second safe-area strip below it.
+  function fitViewport(){
+    if(finishing||removed)return;
+    const el=document.getElementById('eotStartupSplash');
+    if(!el)return;
+    const viewport=window.visualViewport;
+    const width=viewport?viewport.width:window.innerWidth;
+    const height=viewport?viewport.height:window.innerHeight;
+    if(!(width>0&&height>0))return;
+    el.style.left=(viewport?viewport.offsetLeft:0)+'px';
+    el.style.top=(viewport?viewport.offsetTop:0)+'px';
+    el.style.width=width+'px';el.style.height=height+'px';
+    el.style.right='auto';el.style.bottom='auto';
+    el.style.setProperty('--eot-art-width',Math.ceil(Math.max(width,height*852/1846))+'px');
+  }
+  window.addEventListener('resize',fitViewport);
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',fitViewport);
+    window.visualViewport.addEventListener('scroll',fitViewport);
+  }
+  function stopViewportTracking(){
+    window.removeEventListener('resize',fitViewport);
+    if(window.visualViewport){
+      window.visualViewport.removeEventListener('resize',fitViewport);
+      window.visualViewport.removeEventListener('scroll',fitViewport);
+    }
   }
 
   function removeSnapshotCover(){
@@ -69,6 +95,7 @@
   function finish(){
     if(removed||finishing)return;
     finishing=true;
+    stopViewportTracking();
     paint(100);
     setTimeout(()=>{
       const el=document.getElementById('eotStartupSplash');
