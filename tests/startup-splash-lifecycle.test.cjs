@@ -4,10 +4,10 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../startup-splash.js'),'utf8');
-function setup(viewport){
+function setup(viewport,options={}){
  const elements=new Map();
  function target(){const events={};return {addEventListener(n,f){(events[n]??=[]).push(f)},removeEventListener(n,f){events[n]=(events[n]||[]).filter(x=>x!==f)},emit(n){for(const f of events[n]||[])f()}}}
- const window=Object.assign(target(),{innerWidth:390,innerHeight:664,visualViewport:viewport?Object.assign(target(),viewport):undefined}),document=Object.assign(target(),{visibilityState:'visible',head:{appendChild(e){elements.set(e.id,e)}},body:{appendChild(e){elements.set(e.id,e)}},documentElement:{classList:{add(){},remove(){}}},getElementById:id=>elements.get(id),createElement(){return {getBoundingClientRect(){return {width:414,height:896}},querySelectorAll(){return []},style:{setProperty(n,v){this[n]=v}},classList:{add(){}},remove(){elements.delete(this.id)}}}});
+ const window=Object.assign(target(),{navigator:{standalone:!!options.iosStandalone},matchMedia:()=>({matches:!!options.displayStandalone}),innerWidth:390,innerHeight:664,visualViewport:viewport?Object.assign(target(),viewport):undefined}),document=Object.assign(target(),{visibilityState:'visible',head:{appendChild(e){elements.set(e.id,e)}},body:{appendChild(e){elements.set(e.id,e)}},documentElement:{classList:{add(){},remove(){}}},getElementById:id=>elements.get(id),createElement(){return {getBoundingClientRect(){const canvas=options.canvas||{width:414,height:896};return {width:this.style.width?.endsWith('px')?parseFloat(this.style.width):canvas.width,height:this.style.height?.endsWith('px')?parseFloat(this.style.height):canvas.height}},querySelectorAll(){return []},style:{setProperty(n,v){this[n]=v}},classList:{add(){}},remove(){elements.delete(this.id)}}}});
  vm.runInNewContext(source,{window,document,location:{search:''},URLSearchParams,performance:{now:()=>1},requestAnimationFrame(){},setTimeout(){}});
  return {window,document,elements};
 }
@@ -61,4 +61,20 @@ test('desktop and landscape fit the entire artwork inside the visible height',()
  h.window.visualViewport.width=390;h.window.visualViewport.height=844;
  h.window.visualViewport.emit('resize');
  assert(Number.parseInt(splash.style['--eot-art-width'])>=390);
+});
+
+for(const mode of ['iosStandalone','displayStandalone'])test(mode+' covers home-indicator area when VisualViewport excludes it',()=>{
+ const canvas={width:414,height:896};
+ const h=setup({width:414,height:862,offsetLeft:0,offsetTop:0},{[mode]:true,canvas});
+ const splash=h.elements.get('eotStartupSplash');
+ assert.equal(splash.getBoundingClientRect().height,896);
+ assert.equal(splash.style.top,'0px');
+ assert(Number.parseInt(splash.style['--eot-art-width'])*1846/852>=896);
+ // Safari can report a nonzero offset or change its safe viewport on resume.
+ h.window.visualViewport.offsetTop=34;h.window.visualViewport.height=828;
+ h.window.visualViewport.emit('resize');
+ assert.equal(splash.style.height,'100vh');assert.equal(splash.style.top,'0px');
+ // Rotation uses the newly measured CSS canvas, not cached screen dimensions.
+ canvas.width=896;canvas.height=414;h.window.emit('orientationchange');
+ assert(Number.parseInt(splash.style['--eot-art-width'])*1846/852<=414);
 });

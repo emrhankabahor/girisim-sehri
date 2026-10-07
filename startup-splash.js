@@ -45,20 +45,34 @@
     fitViewport();
   }
 
-  // Safari toolbar changes affect the visible viewport independently of 100vh.
-  // Measure that viewport; do not add a second safe-area strip below it.
+  // Installed iOS apps can report visualViewport.height without the bottom
+  // safe area (WebKit #254868). In standalone, 100vh is the full cover canvas.
+  // Ordinary Safari still needs VisualViewport to follow its toolbar/keyboard.
   function fitViewport(){
     if(finishing||removed)return;
     const el=document.getElementById('eotStartupSplash');
     if(!el)return;
+    const standalone=!!(window.navigator&&window.navigator.standalone)||
+      !!(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||
+      !!(window.matchMedia&&window.matchMedia('(display-mode: fullscreen)').matches);
     const viewport=window.visualViewport;
-    const width=viewport?viewport.width:window.innerWidth;
-    const height=viewport?viewport.height:window.innerHeight;
+    let width,height;
+    if(standalone){
+      el.style.left='0px';el.style.top='0px';
+      el.style.width='100vw';el.style.height='100vh';
+      el.style.right='auto';el.style.bottom='auto';
+      const box=el.getBoundingClientRect();
+      width=box.width;height=box.height;
+    }else{
+      width=viewport?viewport.width:window.innerWidth;
+      height=viewport?viewport.height:window.innerHeight;
+      if(!(width>0&&height>0))return;
+      el.style.left=(viewport?viewport.offsetLeft:0)+'px';
+      el.style.top=(viewport?viewport.offsetTop:0)+'px';
+      el.style.width=width+'px';el.style.height=height+'px';
+      el.style.right='auto';el.style.bottom='auto';
+    }
     if(!(width>0&&height>0))return;
-    el.style.left=(viewport?viewport.offsetLeft:0)+'px';
-    el.style.top=(viewport?viewport.offsetTop:0)+'px';
-    el.style.width=width+'px';el.style.height=height+'px';
-    el.style.right='auto';el.style.bottom='auto';
     // Portrait phones retain full bleed. Wide windows show the complete artwork
     // at a height-limited size, so the logo and loading bar cannot be cropped.
     const portrait=width/height<=.65;
@@ -66,12 +80,14 @@
     el.style.setProperty('--eot-art-width',(portrait?Math.ceil(artWidth):Math.floor(artWidth))+'px');
   }
   window.addEventListener('resize',fitViewport);
+  window.addEventListener('orientationchange',fitViewport);
   if(window.visualViewport){
     window.visualViewport.addEventListener('resize',fitViewport);
     window.visualViewport.addEventListener('scroll',fitViewport);
   }
   function stopViewportTracking(){
     window.removeEventListener('resize',fitViewport);
+    window.removeEventListener('orientationchange',fitViewport);
     if(window.visualViewport){
       window.visualViewport.removeEventListener('resize',fitViewport);
       window.visualViewport.removeEventListener('scroll',fitViewport);
