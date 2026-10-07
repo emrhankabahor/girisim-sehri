@@ -7,7 +7,7 @@ const source=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
 function setup(offline=false){
  const old={version:'old'},fresh={status:200,version:'new',clone(){return this}},entries=new Map([['https://game.test/startup-splash.js?v=11',old]]);let fetches=0;
  const cache={async match(req,options){const key=typeof req==='string'?req:req.url;return options?.ignoreSearch?old:entries.get(key)},async put(key,value){entries.set(key,value)}};
- const context={self:{addEventListener(){}},URL,Response,caches:{open:async()=>cache},fetch:async()=>{fetches++;if(offline)throw new Error('offline');return fresh}};
+ const context={self:{addEventListener(){}},URL,Response,AbortController,setTimeout,clearTimeout,caches:{open:async()=>cache},fetch:async()=>{fetches++;if(offline)throw new Error('offline');return fresh}};
  vm.createContext(context);vm.runInContext(source,context);
  return {load:url=>context.cacheFirst({url}),get fetches(){return fetches},old,fresh};
 }
@@ -21,16 +21,15 @@ function navigationSetup({cached=true,offline=false}={}){
  const pending=new Promise(resolve=>{release=resolve});
  const writes=[],background=[];
  const cache={match:async()=>cached?old:undefined,put:async(key,value)=>writes.push([key,await value.text()])};
- const context={self:{addEventListener(){},registration:{scope:'https://game.test/game/'}},URL,Response,caches:{open:async()=>cache},fetch:async()=>{await pending;if(offline)throw Error('offline');return fresh}};
+ const context={self:{addEventListener(){},registration:{scope:'https://game.test/game/'}},URL,Response,AbortController,setTimeout,clearTimeout,caches:{open:async()=>cache},fetch:async()=>{await pending;if(offline)throw Error('offline');return fresh}};
  vm.createContext(context);vm.runInContext(source,context);
  return {load:(query='')=>context.navigationResponse({url:'https://game.test/game/'+query},{waitUntil:p=>background.push(p)}),release,background,writes};
 }
-test('installed launch paints cached HTML while network is still pending',async()=>{
- const h=navigationSetup();
- const response=await h.load();
- assert.equal(await response.text(),'cached shell');
- assert.equal(h.writes.length,0);
- h.release();await Promise.all(h.background);
+test('online installed launch does not flash cached splash before fresh HTML',async()=>{
+ const h=navigationSetup();let completed=false;
+ const request=h.load().then(r=>{completed=true;return r});
+ await new Promise(r=>setImmediate(r));assert.equal(completed,false);
+ h.release();assert.equal(await (await request).text(),'fresh shell');
  assert.deepEqual(h.writes,[['./index.html','fresh shell']]);
 });
 test('forced version recovery waits for fresh HTML',async()=>{
@@ -41,8 +40,8 @@ test('forced version recovery waits for fresh HTML',async()=>{
 });
 test('offline installed launch keeps cached HTML and handles background failure',async()=>{
  const h=navigationSetup({offline:true});
- assert.equal(await (await h.load()).text(),'cached shell');
- h.release();await Promise.all(h.background);
+ const request=h.load();h.release();
+ assert.equal(await (await request).text(),'cached shell');
  assert.equal(h.writes.length,0);
 });
 test('first visit without cached shell uses network',async()=>{

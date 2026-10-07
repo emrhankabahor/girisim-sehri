@@ -57,18 +57,19 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
     html.eot-booting,html.eot-booting body{overflow:hidden!important;overscroll-behavior:none!important}
     html.eot-booting,html.eot-booting body,html.eot-booting body.eot-design-v1{background:#040c1b!important}
     html.eot-booting #app-root{visibility:hidden!important}
-    #eotStartupSplash{position:fixed;inset:0;min-height:100vh;min-height:100lvh;z-index:2147483646;overflow:hidden;isolation:isolate;background:#050e1c;color:#ecdfc1;font-family:system-ui,sans-serif;opacity:1;transition:opacity .35s ease}
+    #eotStartupSplash{position:fixed;inset:0;bottom:calc(-1 * env(safe-area-inset-bottom,0px));min-height:100vh;min-height:100lvh;z-index:2147483646;overflow:hidden;isolation:isolate;background:#050e1c;color:#ecdfc1;font-family:system-ui,sans-serif;opacity:1;transition:opacity .35s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
     #eotStartupSplash{background:#031531}
     .eot-reference-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;overflow:hidden}
     .eot-art-slice{display:block;width:100%;min-height:0;overflow:hidden;pointer-events:none}
-    .eot-art-top{flex:160 1 0}
-    .eot-art-bottom{flex:286 1 0}
-    .eot-art-core{position:relative;flex:none;width:100%;height:126.157407vw;max-height:70.963542vh}
+    .eot-art-top{flex:180 1 0}
+    .eot-art-bottom{flex:306 1 0}
+    .eot-art-core{position:relative;flex:none;width:100%;height:126.036132vw;max-height:70.933014vh}
     .eot-art-core>svg{display:block;width:100%;height:100%}
-    .eot-reference-stage{width:min(100%,56.25vh);margin:auto}
-    .eot-startup-track{position:absolute;left:14.05%;top:89.54%;width:71.9%;height:4.65%;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
+    .eot-reference-stage{width:min(100%,56.2799vh);margin:auto}
+    .eot-startup-track{position:absolute;left:12%;top:91%;width:76%;height:4.5%;border:3px solid #ffd36b;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
+    .eot-splash-caption{position:absolute;top:82%;left:0;right:0;text-align:center;color:#fff0b5;font:850 clamp(22px,5vw,32px) system-ui;text-shadow:0 2px #a56516}
     #eotLoadingFill{display:block;height:100%;width:calc(var(--progress,0)*100%);border-radius:999px;background:repeating-linear-gradient(130deg,transparent 0 13px,#b8ffff44 14px 25px),linear-gradient(#91ffff,#00c2ff 25%,#0877f9 65%,#15d6ff);box-shadow:0 0 10px #16e2ff,inset 0 1px 2px #fff;position:relative}
     #eotLoadingFill::after{content:'';position:absolute;right:0;top:5%;height:90%;width:3px;background:#ffffcc;box-shadow:0 0 8px 2px #e5fcff}
     .eot-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -84,8 +85,8 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
     // Let CSS cover the complete viewport, including the iOS home-indicator area.
     // screen.height can differ from the CSS viewport under display zoom or rotation.
     // Stretch only the empty upper/lower art; the central design keeps its aspect ratio.
-    const slice=(y,h,cls)=>'<svg class="eot-art-slice '+cls+'" viewBox="0 '+y+' 864 '+h+'" preserveAspectRatio="none" aria-hidden="true"><image href="./assets/splash-reference-v249.jpg" width="864" height="1536"/></svg>';
-    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade">${slice(0,160,'eot-art-top')}<div class="eot-art-core">${slice(160,1090,'')}<div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div>${slice(1250,286,'eot-art-bottom')}<div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
+    const slice=(y,h,cls)=>'<svg class="eot-art-slice '+cls+'" viewBox="0 '+y+' 941 '+h+'" preserveAspectRatio="none" aria-hidden="true"><image href="./assets/splash-brand-v250.jpg" width="941" height="1672"/></svg>';
+    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade">${slice(0,180,'eot-art-top')}<div class="eot-art-core">${slice(180,1186,'')}<div class="eot-splash-caption" aria-hidden="true">Yükleniyor…</div><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div>${slice(1366,306,'eot-art-bottom')}<div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
     document.body.appendChild(el);
   }
 
@@ -113,6 +114,12 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
     paint(100);
     setTimeout(()=>{
       const el=document.getElementById('eotStartupSplash');
+      // Freeze the splash geometry before restoring scrollbars and page layout.
+      if(el){
+        const box=el.getBoundingClientRect();
+        el.style.width=box.width+'px';el.style.height=box.height+'px';
+        el.style.minHeight='0';el.style.right='auto';el.style.bottom='auto';
+      }
       // Restore page layout while the cover is still opaque; fade only after paint.
       document.documentElement.classList.remove('eot-booting');
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
@@ -162,6 +169,6 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
 <script defer src="company-boot-gate.js?v=2"></script>
 <script defer src="company-onboarding.js?v=15"></script>
 <script defer src="investment-visibility.js?v=205"></script>
-<script defer src="bootstrap.js?v=253"></script>
+<script defer src="bootstrap.js?v=254"></script>
 </body>
 </html>

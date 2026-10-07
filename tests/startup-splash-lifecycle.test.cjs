@@ -7,7 +7,7 @@ const source=fs.readFileSync(path.join(__dirname,'../startup-splash.js'),'utf8')
 function setup(){
  const elements=new Map();
  function target(){const events={};return {addEventListener(n,f){(events[n]??=[]).push(f)},emit(n){for(const f of events[n]||[])f()}}}
- const window=target(),document=Object.assign(target(),{visibilityState:'visible',head:{appendChild(e){elements.set(e.id,e)}},body:{appendChild(e){elements.set(e.id,e)}},documentElement:{classList:{add(){},remove(){}}},getElementById:id=>elements.get(id),createElement(){return {querySelectorAll(){return []},style:{},classList:{add(){}},remove(){elements.delete(this.id)}}}});
+ const window=target(),document=Object.assign(target(),{visibilityState:'visible',head:{appendChild(e){elements.set(e.id,e)}},body:{appendChild(e){elements.set(e.id,e)}},documentElement:{classList:{add(){},remove(){}}},getElementById:id=>elements.get(id),createElement(){return {getBoundingClientRect(){return {width:414,height:896}},querySelectorAll(){return []},style:{},classList:{add(){}},remove(){elements.delete(this.id)}}}});
  vm.runInNewContext(source,{window,document,location:{search:''},URLSearchParams,performance:{now:()=>1},requestAnimationFrame(){},setTimeout(){}});
  return {window,document,elements};
 }
