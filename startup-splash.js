@@ -21,15 +21,15 @@
     #eotStartupSplash{position:fixed;inset:0;min-height:100vh;min-height:100lvh;z-index:2147483646;overflow:hidden;isolation:isolate;background:#050e1c;color:#ecdfc1;font-family:system-ui,sans-serif;opacity:1;transition:opacity .35s ease}
     #eotStartupSplash *{box-sizing:border-box}
     #eotStartupSplash.eot-splash-out{opacity:0;pointer-events:none}
-    #eotStartupSplash{background:radial-gradient(ellipse at 50% 0%,#06418a 0%,#032455 36%,#02132f 70%,#010b22 100%)}
-    .eot-reference-stage{position:absolute;inset:0;overflow:hidden}
-    /* Mask the actual image bounds, not the letterboxed viewport-sized img box. */
-    .eot-reference-art{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block;width:min(100%,56.2799vh);height:auto;aspect-ratio:941/1672;mask-image:linear-gradient(transparent 0%,#000 14%,#000 82%,transparent 100%);pointer-events:none}
-    .eot-loading-ui{position:absolute;left:50%;top:79%;transform:translateX(-50%);width:min(76vw,420px);text-align:center}
-    #eotSplashPhase{display:block;color:#fff1bb;font-size:clamp(23px,5.2vw,32px);font-weight:850;text-shadow:0 2px 1px #a16410,0 4px 6px #00102d;margin-bottom:22px}
-    .eot-track-frame{padding:5px;border-radius:999px;background:linear-gradient(#fff1bb,#bd7619 35%,#fff0b2 58%,#a76a16 86%,#ffdd77);box-shadow:0 0 15px #edb43466,0 3px 12px #00102d}
-    .eot-startup-track{height:24px;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
-    @media(orientation:landscape){.eot-loading-ui{top:auto;bottom:6%;width:min(45vw,350px)}#eotSplashPhase{font-size:20px;margin-bottom:12px}}
+    #eotStartupSplash{background:#031531}
+    .eot-reference-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+    .eot-art-slice{display:block;width:100%;min-height:0;overflow:hidden;pointer-events:none}
+    .eot-art-top{flex:160 1 0}
+    .eot-art-bottom{flex:286 1 0}
+    .eot-art-core{position:relative;flex:none;width:100%;height:126.157407vw;max-height:70.963542vh}
+    .eot-art-core>svg{display:block;width:100%;height:100%}
+    .eot-reference-stage{width:min(100%,56.25vh);margin:auto}
+    .eot-startup-track{position:absolute;left:14.05%;top:89.54%;width:71.9%;height:4.65%;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
     #eotLoadingFill{display:block;height:100%;width:calc(var(--progress,0)*100%);border-radius:999px;background:repeating-linear-gradient(130deg,transparent 0 13px,#b8ffff44 14px 25px),linear-gradient(#91ffff,#00c2ff 25%,#0877f9 65%,#15d6ff);box-shadow:0 0 10px #16e2ff,inset 0 1px 2px #fff;position:relative}
     #eotLoadingFill::after{content:'';position:absolute;right:0;top:5%;height:90%;width:3px;background:#ffffcc;box-shadow:0 0 8px 2px #e5fcff}
     .eot-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -44,7 +44,9 @@
     el.id='eotStartupSplash';
     // Let CSS cover the complete viewport, including the iOS home-indicator area.
     // screen.height can differ from the CSS viewport under display zoom or rotation.
-    el.innerHTML=`<div class="eot-reference-stage"><img class="eot-reference-art" src="./assets/splash-brand-v250.jpg" alt="Empire of Trade" width="941" height="1672" fetchpriority="high"><div class="eot-loading-ui" role="status"><span id="eotSplashPhase">Yükleniyor…</span><div class="eot-track-frame"><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div><span class="eot-sr-only" id="eotSplashPercent">%0</span></div></div>`;
+    // Stretch only the empty upper/lower art; the central design keeps its aspect ratio.
+    const slice=(y,h,cls)=>'<svg class="eot-art-slice '+cls+'" viewBox="0 '+y+' 864 '+h+'" preserveAspectRatio="none" aria-hidden="true"><image href="./assets/splash-reference-v249.jpg" width="864" height="1536"/></svg>';
+    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade">${slice(0,160,'eot-art-top')}<div class="eot-art-core">${slice(160,1090,'')}<div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div>${slice(1250,286,'eot-art-bottom')}<div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
     document.body.appendChild(el);
   }
 
