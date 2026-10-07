@@ -5,11 +5,11 @@ const fs=require('node:fs');
 const path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../startup-splash.js'),'utf8');
 function setup(viewport,options={}){
- const elements=new Map();
+ const elements=new Map(),classes=new Set(),timers=[],frames=[];
  function target(){const events={};return {addEventListener(n,f){(events[n]??=[]).push(f)},removeEventListener(n,f){events[n]=(events[n]||[]).filter(x=>x!==f)},emit(n){for(const f of events[n]||[])f()}}}
- const window=Object.assign(target(),{navigator:{standalone:!!options.iosStandalone},matchMedia:()=>({matches:!!options.displayStandalone}),innerWidth:390,innerHeight:664,visualViewport:viewport?Object.assign(target(),viewport):undefined}),document=Object.assign(target(),{visibilityState:'visible',head:{appendChild(e){elements.set(e.id,e)}},body:{appendChild(e){elements.set(e.id,e)}},documentElement:{classList:{add(){},remove(){}}},getElementById:id=>elements.get(id),createElement(){return {getBoundingClientRect(){const canvas=options.canvas||{width:414,height:896};return {width:this.style.width?.endsWith('px')?parseFloat(this.style.width):canvas.width,height:this.style.height?.endsWith('px')?parseFloat(this.style.height):canvas.height}},querySelectorAll(){return []},style:{setProperty(n,v){this[n]=v}},classList:{add(){}},remove(){elements.delete(this.id)}}}});
- vm.runInNewContext(source,{window,document,location:{search:''},URLSearchParams,performance:{now:()=>1},requestAnimationFrame(){},setTimeout(){}});
- return {window,document,elements};
+ const window=Object.assign(target(),{navigator:{standalone:!!options.iosStandalone},matchMedia:()=>({matches:!!options.displayStandalone}),innerWidth:390,innerHeight:664,visualViewport:viewport?Object.assign(target(),viewport):undefined}),document=Object.assign(target(),{visibilityState:'visible',head:{appendChild(e){elements.set(e.id,e)}},body:{appendChild(e){elements.set(e.id,e)}},documentElement:{classList:{add(n){classes.add(n)},remove(n){classes.delete(n)}}},getElementById:id=>elements.get(id),createElement(){return {getBoundingClientRect(){const canvas=options.canvas||{width:414,height:896};return {width:this.style.width?.endsWith('px')?parseFloat(this.style.width):canvas.width,height:this.style.height?.endsWith('px')?parseFloat(this.style.height):canvas.height}},setAttribute(){},querySelectorAll(){return []},style:{setProperty(n,v){this[n]=v}},classList:{add(){}},remove(){elements.delete(this.id)}}}});
+ vm.runInNewContext(source,{window,document,location:{search:''},URLSearchParams,performance:{now:()=>1},requestAnimationFrame(f){frames.push(f)},setTimeout(f){timers.push(f)}});
+ return {window,document,elements,classes,finish(){window.EOTStartupSplash.failOpen();for(let i=0;i<20&&(timers.length||frames.length);i++){while(timers.length)timers.shift()();const batch=frames.splice(0);batch.forEach(f=>f())}}};
 }
 test('backgrounding does not add a second loading screen',()=>{
  const h=setup();assert(h.elements.has('eotStartupSplash'));
@@ -77,4 +77,17 @@ for(const mode of ['iosStandalone','displayStandalone'])test(mode+' covers home-
  // Rotation uses the newly measured CSS canvas, not cached screen dimensions.
  canvas.width=896;canvas.height=414;h.window.emit('orientationchange');
  assert(Number.parseInt(splash.style['--eot-art-width'])*1846/852<=414);
+});
+
+test('standalone canvas paint is removed after splash fade and never reappears on resume',()=>{
+ const h=setup({width:414,height:862,offsetLeft:0,offsetTop:0},{iosStandalone:true});
+ assert(h.classes.has('eot-splash-surface'));
+ assert(h.elements.get('eot-startup-canvas-style').textContent.includes('splash-reference-v255.png'));
+ h.finish();
+ assert(!h.elements.has('eotStartupSplash'));
+ assert(!h.elements.has('eot-startup-canvas-style'));
+ assert(!h.classes.has('eot-splash-surface'));
+ assert(!h.classes.has('eot-booting'));
+ h.window.emit('pageshow');h.window.emit('resize');
+ assert(!h.classes.has('eot-splash-surface'));
 });

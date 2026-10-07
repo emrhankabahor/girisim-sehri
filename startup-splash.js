@@ -33,6 +33,9 @@
     @media(prefers-reduced-motion:reduce){#eotStartupSplash,#eotStartupSplash *,#eotStartupSplash *::before{animation:none!important;transition:none!important}}
   `;
   document.head.appendChild(style);
+  const canvasStyle=document.createElement('style');
+  canvasStyle.id='eot-startup-canvas-style';
+  document.head.appendChild(canvasStyle);
   document.documentElement.classList.add('eot-booting');
 
   function mount(){
@@ -77,7 +80,22 @@
     // at a height-limited size, so the logo and loading bar cannot be cropped.
     const portrait=width/height<=.65;
     const artWidth=portrait?Math.max(width,height*852/1846):Math.min(width,height*852/1846);
-    el.style.setProperty('--eot-art-width',(portrait?Math.ceil(artWidth):Math.floor(artWidth))+'px');
+    const renderedWidth=portrait?Math.ceil(artWidth):Math.floor(artWidth);
+    el.style.setProperty('--eot-art-width',renderedWidth+'px');
+    if(standalone){
+      // iOS can clip fixed layers above the home-indicator area even when their
+      // rectangles are full height. Paint the same artwork on the root canvas:
+      // it extends into the safe area rather than revealing the old solid color.
+      // Use identical pixel coordinates, so this is one continuous composition.
+      const artHeight=renderedWidth*1846/852;
+      document.documentElement.classList.add('eot-splash-surface');
+      canvasStyle.textContent=`
+        html.eot-splash-surface{min-height:100vh!important;background:#031531 url("./assets/splash-reference-v255.png") no-repeat ${(width-renderedWidth)/2}px ${(height-artHeight)/2}px / ${renderedWidth}px ${artHeight}px!important}
+        html.eot-splash-surface body,html.eot-splash-surface body.eot-design-v1{background:transparent!important}
+        html.eot-booting.eot-splash-surface,html.eot-booting.eot-splash-surface body{min-height:100vh!important;overflow:visible!important;overscroll-behavior:none!important;touch-action:none!important}
+      `;
+    }
+
   }
   window.addEventListener('resize',fitViewport);
   window.addEventListener('orientationchange',fitViewport);
@@ -129,7 +147,7 @@
       document.documentElement.classList.remove('eot-booting');
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
         if(el){el.style.pointerEvents='none';el.setAttribute('aria-hidden','true');el.classList.add('eot-splash-out');}
-        setTimeout(()=>{el&&el.remove();style.remove();removed=true},460);
+        setTimeout(()=>{el&&el.remove();style.remove();canvasStyle.remove();document.documentElement.classList.remove('eot-splash-surface');removed=true},460);
       }));
     },230);
   }
