@@ -67,16 +67,16 @@ function buildOverlay(){
   ov.className='eot-company-setup';
   ov.innerHTML=`<div class="eot-setup-shell">
     <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-192.png" width="96" height="96" alt="Empire of Trade"><div><b>EMPIRE OF TRADE</b><small>TİCARET YOLCULUĞUN BAŞLIYOR</small></div></div>
-    <section class="eot-setup-card">
-      <span class="eot-setup-eyebrow">YENİ KARİYER</span><h1>Şirketini kur.</h1><p class="eot-setup-intro">Şirketine bir isim ver, merkezini seç ve ticarete başla.</p>
-      <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="organization" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">🎲</button></div></div>
+    <section class="eot-setup-card" aria-labelledby="eotSetupTitle">
+      <div class="eot-setup-heading"><div><span class="eot-setup-eyebrow">YENİ KARİYER</span><h1 id="eotSetupTitle">Şirketini kur<span class="eot-gold-dot">.</span></h1></div><span class="eot-setup-emblem" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 27h22M8 27V12l8-5 8 5v15M13 27v-6h6v6M12 14h1m6 0h1m-8 4h1m6 0h1M16 7V3h6l-2 2 2 2h-6"/></svg></span></div><p class="eot-setup-intro">Şirketine bir isim ver, merkezini seç ve ticarete başla.</p>
+      <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="organization" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3c4 0 6 10 10 10h3m-3-3 3 3-3 3M4 17h3c1.7 0 3-1.8 4.2-4M14 8c1-1 2-1 3-1h3m-3-3 3 3-3 3"/></svg></button></div></div>
       <div class="eot-field"><label for="eotCompanyTitle">Şirket Ünvanı</label><select id="eotCompanyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
       <div class="eot-field"><label for="eotCompanyCeo">CEO Adı Soyadı</label><input id="eotCompanyCeo" type="text" inputmode="text" enterkeyhint="done" maxlength="40" autocomplete="name" placeholder="Adınız ve soyadınız"></div>
       <div class="eot-setup-location"><div class="eot-field"><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry"><option>Türkiye</option></select></div>
       <div class="eot-field"><label for="eotCompanyCity">Şehir</label><select id="eotCompanyCity">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
       <div class="eot-terms">Kayıt olarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> kabul ediyorum.</div>
       <div id="eotCompanySetupError" class="eot-setup-error" role="status" aria-live="polite"></div>
-      <button class="eot-company-submit" id="eotCompanySubmit">Şirketini Kur</button>
+      <button class="eot-company-submit" id="eotCompanySubmit"><span>Şirketini Kur</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
     </section>
     <button class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button>
     <div class="eot-version">Empire of Trade • Yeni Kariyer</div>
