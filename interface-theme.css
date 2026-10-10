@@ -246,54 +246,54 @@ body.eot-design-v1 .topbar .eot-brand small{
  transform-origin:center center;
 }
 
-/* Company onboarding: compact safe-area layout with keyboard/zoom scroll fallback. */
-body.eot-design-v1 .eot-company-setup{
- box-sizing:border-box;height:100%;height:100dvh;bottom:auto;overflow-x:hidden;overflow-y:auto;
- padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);
- background:radial-gradient(ellipse at 50% 0,#195aae55,transparent 55%),#06152f!important;
- overscroll-behavior:contain;scroll-padding:20px;
-}
-body.eot-design-v1 .eot-company-setup *{box-sizing:border-box}
-body.eot-design-v1 .eot-setup-shell{width:min(100%,440px);flex-shrink:0;margin:auto 0}
-body.eot-design-v1 .eot-setup-brand{margin:0 0 16px;text-align:center}
-body.eot-design-v1 .eot-setup-logo{display:block;width:96px;height:96px;object-fit:contain;margin:0 auto;border-radius:22px;background:none;box-shadow:0 0 0 1px #ffd34f66,0 10px 30px #0004}
-body.eot-design-v1 .eot-setup-brand b{font-family:EOTBrand,"Arial Black",sans-serif;font-size:20px;line-height:1.3;letter-spacing:0;margin-top:10px;color:#fff6df;text-shadow:0 1px #d69c24}
-body.eot-design-v1 .eot-setup-brand small{font-size:8px;letter-spacing:.14em;line-height:1.5;color:#ffd34f;margin-top:5px}
-body.eot-design-v1 .eot-setup-card{padding:18px!important;border-radius:22px!important;background:linear-gradient(145deg,#123565,#0a2145)!important;border:1px solid #4277af!important;box-shadow:0 16px 40px #0003}
-body.eot-design-v1 .eot-setup-card h1{font-size:24px;line-height:1.25;margin:0 0 12px;padding-bottom:12px;border-bottom-color:#ffd34f33}
-body.eot-design-v1 .eot-field{min-width:0;margin:10px 0}
-body.eot-design-v1 .eot-field label{font-size:11px;line-height:1.4;margin:0 0 5px;color:#c4d7ee}
-body.eot-design-v1 .eot-field :is(input,select){min-width:0;max-width:100%;height:46px;padding:0 12px;color:#fff8ed;border:1px solid #426b9a!important;font-size:16px!important}
-body.eot-design-v1 .eot-name-input{padding-right:54px!important}
-body.eot-design-v1 .eot-random-name{top:1px;right:1px;width:44px;height:44px;border-radius:11px;background:#19497c;border-color:transparent;box-shadow:none;font-size:21px}
-body.eot-design-v1 .eot-setup-location{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
-body.eot-design-v1 .eot-terms{margin:8px 0 0;font-size:10px;line-height:1.5;color:#b9cbe1}
-body.eot-design-v1 .eot-setup-error{min-height:0;margin:0;line-height:1.4}
-body.eot-design-v1 .eot-setup-error:not(:empty){margin-top:8px}
-body.eot-design-v1 :is(.eot-company-submit,.eot-existing-login){height:48px;margin-top:12px;font-size:13px!important;box-shadow:none}
-body.eot-design-v1 .eot-company-submit{background:linear-gradient(115deg,#ffe387,#ffc438)!important;color:#142443!important;border:1px solid #ffe999!important}
-body.eot-design-v1 .eot-existing-login{background:#103365!important;border:1px solid #3f70a8!important;color:#dcedff!important}
-body.eot-design-v1 .eot-version{align-self:center;margin-top:10px;padding:0;font-size:9px;line-height:1.4;color:#90a9ca}
-@media(max-height:740px){
- body.eot-design-v1 .eot-company-setup{padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
- body.eot-design-v1 .eot-setup-logo{width:64px;height:64px;border-radius:16px}
- body.eot-design-v1 .eot-setup-brand{margin-bottom:10px}
- body.eot-design-v1 .eot-setup-brand b{font-size:17px;margin-top:7px}
- body.eot-design-v1 .eot-setup-card{padding:14px!important}
- body.eot-design-v1 .eot-setup-card h1{font-size:21px;margin-bottom:8px;padding-bottom:8px}
- body.eot-design-v1 .eot-field{margin:7px 0}
-}
-
-/* Company setup is a normal document while editing, not a fixed nested scroller.
-   This keeps native text focus and the iOS keyboard in the same scroll viewport. */
-body.eot-setting-up{overflow:auto!important;min-height:100svh}
-body.eot-setting-up #app-root{display:none!important}
-body.eot-setting-up .eot-company-setup.show{
- position:relative!important;inset:auto!important;z-index:100!important;
- width:100%;height:auto!important;min-height:100svh;
+/* Company setup owns the document while editing: native iOS focus and scrolling.
+   The nav is reparented to body by bottom-nav-lock, so hide it explicitly here. */
+html.eot-company-surface{background:#06152f!important;min-height:100%;min-height:100dvh}
+body.eot-setting-up{margin:0!important;padding:0!important;overflow:auto!important;min-height:100vh;min-height:100dvh;background:#06152f!important}
+body.eot-setting-up #app-root,body.eot-setting-up .bottom-nav{display:none!important}
+body.eot-setting-up #eotCompanySetup.show{
+ position:relative!important;inset:auto!important;z-index:100!important;box-sizing:border-box;
+ width:100%;height:auto!important;min-height:100vh;min-height:100dvh;
+ padding:calc(env(safe-area-inset-top,0px) + 24px) 20px calc(env(safe-area-inset-bottom,0px) + 20px);
  overflow:visible!important;touch-action:auto;overscroll-behavior:auto;
+ background:radial-gradient(ellipse 520px 400px at 50% 0,#16457c88,transparent),#06152f!important;
 }
-body.eot-setting-up .eot-setup-shell{margin:0 auto!important}
-body.eot-setting-up .eot-field :is(input,select){touch-action:auto;scroll-margin-block:28px}
-body.eot-setting-up .eot-field input{-webkit-appearance:none;appearance:none;-webkit-user-select:text;user-select:text}
-body.eot-setting-up .eot-field input:focus{border-color:#7edcff!important;outline:2px solid #43b9ed44;outline-offset:1px}
+#eotCompanySetup *{box-sizing:border-box}
+#eotCompanySetup .eot-setup-shell{width:min(100%,440px);flex-shrink:0;margin:auto!important}
+#eotCompanySetup .eot-setup-brand{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin:0 0 24px;padding:0 6px}
+#eotCompanySetup .eot-setup-logo{display:block;flex:none;width:72px;height:72px;object-fit:contain;margin:0;border-radius:19px;background:none;box-shadow:0 0 0 1px #ffd34f50,0 8px 24px #0003}
+#eotCompanySetup .eot-setup-brand b{font-family:EOTBrand,"Arial Black",sans-serif;font-size:18px;line-height:1.35;letter-spacing:.02em;margin:0;color:#fff4d3;text-shadow:none}
+#eotCompanySetup .eot-setup-brand small{font-size:10px;letter-spacing:.12em;line-height:1.5;color:#d5b568;margin-top:5px}
+#eotCompanySetup .eot-setup-card{position:relative;width:100%;padding:24px!important;border-radius:24px!important;background:linear-gradient(150deg,#122f55,#0b203e)!important;border:1px solid #31527a!important;box-shadow:0 20px 50px #0003,inset 0 1px #ffffff0a}
+#eotCompanySetup .eot-setup-eyebrow{display:block;color:#e5c578;font-size:10px;letter-spacing:.18em;font-weight:800;margin-bottom:8px}
+#eotCompanySetup .eot-setup-card h1{text-align:left;font-size:29px;line-height:1.2;letter-spacing:-.03em;margin:0;padding:0;border:0}
+#eotCompanySetup .eot-setup-intro{font-size:12px;line-height:1.6;color:#a8bdd6;margin:8px 0 22px}
+#eotCompanySetup .eot-field{min-width:0;margin:14px 0}
+#eotCompanySetup .eot-field label{font-size:12px;font-weight:650;line-height:1.4;margin:0 0 7px;color:#c7d8eb}
+#eotCompanySetup .eot-field :is(input,select){width:100%;min-width:0;max-width:100%;height:50px;margin:0;padding:0 13px;background:#071a34!important;color:#fff8ed;border:1px solid #345579!important;border-radius:12px;font-size:16px!important;font-weight:500;touch-action:auto;scroll-margin-block:28px;color-scheme:dark}
+#eotCompanySetup .eot-field input{-webkit-appearance:none;appearance:none;-webkit-user-select:text;user-select:text}
+#eotCompanySetup .eot-field input::placeholder{color:#829ab7;opacity:1}
+#eotCompanySetup .eot-field :is(input,select):focus{border-color:#e7c46d!important;outline:2px solid #e7c46d30;outline-offset:2px}
+#eotCompanySetup .eot-name-input{padding-right:56px!important}
+#eotCompanySetup .eot-random-name{top:3px;right:3px;width:44px;height:44px;margin:0;padding:0;border-radius:10px;background:#18395c;border:1px solid #3d5b7c;box-shadow:none;font-size:22px}
+#eotCompanySetup .eot-setup-location{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+#eotCompanySetup .eot-terms{margin:12px 0 0;font-size:10px;line-height:1.6;color:#9fb3cd}
+#eotCompanySetup .eot-setup-error{min-height:0;margin:0;line-height:1.5}
+#eotCompanySetup .eot-setup-error:not(:empty){margin-top:12px}
+#eotCompanySetup :is(.eot-company-submit,.eot-existing-login){width:100%!important;min-height:50px;height:auto;padding:13px 12px;margin-top:18px;border-radius:12px!important;font-size:15px!important;line-height:1.4;box-shadow:none;touch-action:manipulation}
+#eotCompanySetup .eot-company-submit{background:linear-gradient(110deg,#ffe59a,#f6bf42)!important;color:#102342!important;border:1px solid #ffe5a0!important}
+#eotCompanySetup .eot-existing-login{background:transparent!important;border:1px solid #395678!important;color:#d6e3f3!important;font-size:13px!important}
+#eotCompanySetup .eot-version{align-self:center;margin-top:16px;padding:0;font-size:10px;line-height:1.5;color:#8099b8}
+@media(max-height:760px){
+ body.eot-setting-up #eotCompanySetup.show{padding-top:calc(env(safe-area-inset-top,0px) + 14px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}
+ #eotCompanySetup .eot-setup-brand{margin-bottom:16px}
+ #eotCompanySetup .eot-setup-logo{width:56px;height:56px;border-radius:15px}
+ #eotCompanySetup .eot-setup-card{padding:18px!important}
+ #eotCompanySetup .eot-setup-intro{margin-bottom:14px}
+ #eotCompanySetup .eot-field{margin:10px 0}
+}
+@media(max-width:360px){
+ body.eot-setting-up #eotCompanySetup.show{padding-left:12px;padding-right:12px}
+ #eotCompanySetup .eot-setup-brand b{font-size:15px}
+ #eotCompanySetup .eot-setup-card{padding:18px!important}
+}

@@ -66,12 +66,12 @@ function buildOverlay(){
   ov.id='eotCompanySetup';
   ov.className='eot-company-setup';
   ov.innerHTML=`<div class="eot-setup-shell">
-    <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-192.png" width="96" height="96" alt="Empire of Trade"><b>EMPIRE OF TRADE</b><small>İMPARATORLUĞUN BURADA BAŞLIYOR</small></div>
+    <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-192.png" width="96" height="96" alt="Empire of Trade"><div><b>EMPIRE OF TRADE</b><small>TİCARET YOLCULUĞUN BAŞLIYOR</small></div></div>
     <section class="eot-setup-card">
-      <h1>Şirketini Kur</h1>
+      <span class="eot-setup-eyebrow">YENİ KARİYER</span><h1>Şirketini kur.</h1><p class="eot-setup-intro">Şirketine bir isim ver, merkezini seç ve ticarete başla.</p>
       <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="organization" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">🎲</button></div></div>
       <div class="eot-field"><label for="eotCompanyTitle">Şirket Ünvanı</label><select id="eotCompanyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
-      <div class="eot-field"><label for="eotCompanyCeo">Şirket CEO Adı</label><input id="eotCompanyCeo" type="text" inputmode="text" enterkeyhint="done" maxlength="40" autocomplete="name" placeholder="Adınız ve soyadınız"></div>
+      <div class="eot-field"><label for="eotCompanyCeo">CEO Adı Soyadı</label><input id="eotCompanyCeo" type="text" inputmode="text" enterkeyhint="done" maxlength="40" autocomplete="name" placeholder="Adınız ve soyadınız"></div>
       <div class="eot-setup-location"><div class="eot-field"><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry"><option>Türkiye</option></select></div>
       <div class="eot-field"><label for="eotCompanyCity">Şehir</label><select id="eotCompanyCity">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
       <div class="eot-terms">Kayıt olarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> kabul ediyorum.</div>
@@ -94,12 +94,14 @@ function showSetup(force){
   if(!force&&hasCompany())return false;
   document.getElementById('eotCompanySetup').classList.add('show');
   document.body.classList.add('eot-setting-up');
+  document.documentElement?.classList.add('eot-company-surface');
   document.body.style.overflow='';
   return true;
 }
 function hideSetup(){
   document.getElementById('eotCompanySetup')?.classList.remove('show');
   document.body.classList.remove('eot-setting-up');
+  document.documentElement?.classList.remove('eot-company-surface');
   document.body.style.overflow='';
 }
 function openExistingAccount(){
