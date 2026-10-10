@@ -13,7 +13,7 @@ function ensureStyle(){
   const s=document.createElement('style');
   s.id='eot-company-onboarding-style';
   s.textContent=`
-  .eot-company-setup{position:fixed;inset:0;z-index:2147483600;display:none;overflow:auto;background:
+  .eot-company-setup{position:fixed;inset:0;z-index:2147483600;display:none;overflow:hidden;background:
     radial-gradient(circle at 50% 10%,rgba(68,137,190,.18),transparent 28%),
     linear-gradient(180deg,#071521 0%,#08131f 52%,#07111b 100%);
     padding:max(24px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inset-bottom));font-family:inherit;color:#f7fbff}
@@ -66,9 +66,9 @@ function buildOverlay(){
   ov.id='eotCompanySetup';
   ov.className='eot-company-setup';
   ov.innerHTML=`<div class="eot-setup-shell">
-    <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-512.png" width="96" height="96" alt="Empire of Trade"><div><b>EMPIRE OF TRADE</b><small>TİCARET YOLCULUĞUN BAŞLIYOR</small></div></div>
+    <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-512.png" width="96" height="96" alt="Empire of Trade"><div class="eot-setup-brand-text"><b>EMPIRE <span>OF</span> TRADE</b><small>EKONOMİ VE TİCARET SİMÜLASYONU</small></div><span class="eot-setup-brand-mark">01 / 01</span></div>
     <section class="eot-setup-card" aria-labelledby="eotSetupTitle">
-      <div class="eot-setup-heading"><div><span class="eot-setup-eyebrow">YENİ KARİYER</span><h1 id="eotSetupTitle">Şirketini kur<span class="eot-gold-dot">.</span></h1></div><span class="eot-setup-emblem" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 27h22M8 27V12l8-5 8 5v15M13 27v-6h6v6M12 14h1m6 0h1m-8 4h1m6 0h1M16 7V3h6l-2 2 2 2h-6"/></svg></span></div><p class="eot-setup-intro">Şirketine bir isim ver, merkezini seç ve ticarete başla.</p>
+      <div class="eot-setup-heading"><div><span class="eot-setup-eyebrow"><i aria-hidden="true"></i> YENİ KARİYER • KURULUŞ</span><h1 id="eotSetupTitle">Şirketini kur<span class="eot-gold-dot">.</span></h1><p class="eot-setup-intro">İlk adımı at, ticaret imparatorluğunun temelini oluştur.</p></div><span class="eot-setup-emblem" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 27h22M8 27V12l8-5 8 5v15M13 27v-6h6v6M12 14h1m6 0h1m-8 4h1m6 0h1M16 7V3h6l-2 2 2 2h-6"/></svg></span></div>
       <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="organization" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3c4 0 6 10 10 10h3m-3-3 3 3-3 3M4 17h3c1.7 0 3-1.8 4.2-4M14 8c1-1 2-1 3-1h3m-3-3 3 3-3 3"/></svg></button></div></div>
       <div class="eot-field"><label for="eotCompanyTitle">Şirket Ünvanı</label><select id="eotCompanyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
       <div class="eot-field"><label for="eotCompanyCeo">CEO Adı Soyadı</label><input id="eotCompanyCeo" type="text" inputmode="text" enterkeyhint="done" maxlength="40" autocomplete="name" placeholder="Adınız ve soyadınız"></div>
@@ -79,13 +79,14 @@ function buildOverlay(){
       <button class="eot-company-submit" id="eotCompanySubmit"><span>Şirketini Kur</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
     </section>
     <button class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button>
-    <div class="eot-version">Empire of Trade • Yeni Kariyer</div>
+    <div class="eot-version"><span>EMPIRE OF TRADE</span><span>HER İMPARATORLUK BİR FİKİRLE BAŞLAR</span></div>
   </div>`;
   document.body.appendChild(ov);
   // Track only the visible viewport. Keep keyboard panning inside the form.
   window.visualViewport?.addEventListener('resize',fitSetupViewport);
   window.visualViewport?.addEventListener('scroll',fitSetupViewport);
   window.addEventListener('resize',fitSetupViewport);
+  window.addEventListener('orientationchange',fitSetupViewport);
   ov.addEventListener('focusin',fitSetupViewport);
   ov.addEventListener('focusout',()=>requestAnimationFrame(fitSetupViewport));
   ov.querySelector('#eotCompanyCity').value='İstanbul';
@@ -99,14 +100,35 @@ function fitSetupViewport(){
   const ov=document.getElementById('eotCompanySetup');
   if(!ov?.classList.contains('show'))return;
   const vv=window.visualViewport;
-  const height=vv?vv.height:window.innerHeight;
-  if(!height)return;
-  ov.style.setProperty('--eot-setup-height',height+'px');
-  ov.style.setProperty('--eot-setup-top',(vv?vv.offsetTop:0)+'px');
+  const height=vv?.height||window.innerHeight;
   const editing=ov.contains(document.activeElement)&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
-  const keyboard=editing&&height<window.innerHeight*.8;
+  // Keep the regular page at full viewport height, including iOS standalone
+  // safe areas. Only use visualViewport pixels when a keyboard is actually up.
+  const keyboard=!!(editing&&vv&&window.innerHeight-height>Math.max(100,window.innerHeight*.15));
   ov.classList.toggle('eot-setup-keyboard',keyboard);
-  if(keyboard)requestAnimationFrame(()=>document.activeElement?.scrollIntoView({block:'nearest',inline:'nearest'}));
+  if(keyboard){
+    ov.style.setProperty('--eot-keyboard-height',height+'px');
+    ov.style.setProperty('--eot-keyboard-top',vv.offsetTop+'px');
+  }else{
+    ov.style.removeProperty('--eot-keyboard-height');
+    ov.style.removeProperty('--eot-keyboard-top');
+  }
+  requestAnimationFrame(()=>{
+    if(!ov.classList.contains('show'))return;
+    const card=ov.querySelector('.eot-setup-card');
+    if(!card)return;
+    ov.classList.remove('eot-setup-overflow');
+    // On very small screens or large accessibility text, allow only the
+    // card to scroll rather than cutting off controls.
+    if(!keyboard&&card.scrollHeight>card.clientHeight+2)
+      ov.classList.add('eot-setup-overflow');
+    if(keyboard&&ov.contains(document.activeElement)){
+      const input=document.activeElement;
+      const bounds=input.getBoundingClientRect(),frame=card.getBoundingClientRect();
+      if(bounds.bottom>frame.bottom-12)card.scrollTop+=bounds.bottom-frame.bottom+12;
+      else if(bounds.top<frame.top+12)card.scrollTop-=frame.top+12-bounds.top;
+    }
+  });
 }
 function showSetup(force){
   buildOverlay();
@@ -119,7 +141,7 @@ function showSetup(force){
   return true;
 }
 function hideSetup(){
-  document.getElementById('eotCompanySetup')?.classList.remove('show');
+  document.getElementById('eotCompanySetup')?.classList.remove('show','eot-setup-keyboard','eot-setup-overflow');
   document.body.classList.remove('eot-setting-up');
   document.documentElement?.classList.remove('eot-company-surface');
   document.body.style.overflow='';
