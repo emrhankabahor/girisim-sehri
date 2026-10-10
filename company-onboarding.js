@@ -101,6 +101,11 @@ function fitSetupViewport(){
   if(!ov?.classList.contains('show'))return;
   const vv=window.visualViewport;
   const height=vv?.height||window.innerHeight;
+  if(!height)return;
+  // Legacy diagnostic variables are maintained, but only keyboard-specific
+  // values size the overlay; normal mode always uses the full CSS viewport.
+  ov.style.setProperty('--eot-setup-height',height+'px');
+  ov.style.setProperty('--eot-setup-top',(vv?.offsetTop||0)+'px');
   const editing=ov.contains(document.activeElement)&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
   // Keep the regular page at full viewport height, including iOS standalone
   // safe areas. Only use visualViewport pixels when a keyboard is actually up.
@@ -110,8 +115,8 @@ function fitSetupViewport(){
     ov.style.setProperty('--eot-keyboard-height',height+'px');
     ov.style.setProperty('--eot-keyboard-top',vv.offsetTop+'px');
   }else{
-    ov.style.removeProperty('--eot-keyboard-height');
-    ov.style.removeProperty('--eot-keyboard-top');
+    ov.style.setProperty('--eot-keyboard-height','');
+    ov.style.setProperty('--eot-keyboard-top','');
   }
   requestAnimationFrame(()=>{
     if(!ov.classList.contains('show'))return;
