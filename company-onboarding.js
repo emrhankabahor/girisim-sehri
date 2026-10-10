@@ -66,7 +66,7 @@ function buildOverlay(){
   ov.id='eotCompanySetup';
   ov.className='eot-company-setup';
   ov.innerHTML=`<div class="eot-setup-shell">
-    <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-192.png" width="96" height="96" alt="Empire of Trade"><div><b>EMPIRE OF TRADE</b><small>TİCARET YOLCULUĞUN BAŞLIYOR</small></div></div>
+    <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-512.png" width="96" height="96" alt="Empire of Trade"><div><b>EMPIRE OF TRADE</b><small>TİCARET YOLCULUĞUN BAŞLIYOR</small></div></div>
     <section class="eot-setup-card" aria-labelledby="eotSetupTitle">
       <div class="eot-setup-heading"><div><span class="eot-setup-eyebrow">YENİ KARİYER</span><h1 id="eotSetupTitle">Şirketini kur<span class="eot-gold-dot">.</span></h1></div><span class="eot-setup-emblem" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 27h22M8 27V12l8-5 8 5v15M13 27v-6h6v6M12 14h1m6 0h1m-8 4h1m6 0h1M16 7V3h6l-2 2 2 2h-6"/></svg></span></div><p class="eot-setup-intro">Şirketine bir isim ver, merkezini seç ve ticarete başla.</p>
       <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="organization" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3c4 0 6 10 10 10h3m-3-3 3 3-3 3M4 17h3c1.7 0 3-1.8 4.2-4M14 8c1-1 2-1 3-1h3m-3-3 3 3-3 3"/></svg></button></div></div>
@@ -82,12 +82,31 @@ function buildOverlay(){
     <div class="eot-version">Empire of Trade • Yeni Kariyer</div>
   </div>`;
   document.body.appendChild(ov);
+  // Track only the visible viewport. Keep keyboard panning inside the form.
+  window.visualViewport?.addEventListener('resize',fitSetupViewport);
+  window.visualViewport?.addEventListener('scroll',fitSetupViewport);
+  window.addEventListener('resize',fitSetupViewport);
+  ov.addEventListener('focusin',fitSetupViewport);
+  ov.addEventListener('focusout',()=>requestAnimationFrame(fitSetupViewport));
   ov.querySelector('#eotCompanyCity').value='İstanbul';
   ov.querySelector('#eotCompanyName').value=randomCompanyName();
   try{const u=typeof currentAccount==='function'?currentAccount():null;ov.querySelector('#eotCompanyCeo').value=String(u?.ceoName||'')}catch(e){}
   ov.querySelector('#eotRandomCompanyName').onclick=()=>{ov.querySelector('#eotCompanyName').value=randomCompanyName()};
   ov.querySelector('#eotCompanySubmit').onclick=createCompany;
   ov.querySelector('#eotExistingLogin').onclick=openExistingAccount;
+}
+function fitSetupViewport(){
+  const ov=document.getElementById('eotCompanySetup');
+  if(!ov?.classList.contains('show'))return;
+  const vv=window.visualViewport;
+  const height=vv?vv.height:window.innerHeight;
+  if(!height)return;
+  ov.style.setProperty('--eot-setup-height',height+'px');
+  ov.style.setProperty('--eot-setup-top',(vv?vv.offsetTop:0)+'px');
+  const editing=ov.contains(document.activeElement)&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+  const keyboard=editing&&height<window.innerHeight*.8;
+  ov.classList.toggle('eot-setup-keyboard',keyboard);
+  if(keyboard)requestAnimationFrame(()=>document.activeElement?.scrollIntoView({block:'nearest',inline:'nearest'}));
 }
 function showSetup(force){
   buildOverlay();
@@ -96,6 +115,7 @@ function showSetup(force){
   document.body.classList.add('eot-setting-up');
   document.documentElement?.classList.add('eot-company-surface');
   document.body.style.overflow='';
+  fitSetupViewport();
   return true;
 }
 function hideSetup(){
