@@ -101,10 +101,15 @@ function fitSetupViewport(){
   const vv=window.visualViewport;
   const height=vv?vv.height:window.innerHeight;
   if(!height)return;
-  ov.style.setProperty('--eot-setup-height',height+'px');
-  ov.style.setProperty('--eot-setup-top',(vv?vv.offsetTop:0)+'px');
   const editing=ov.contains(document.activeElement)&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
   const keyboard=editing&&height<window.innerHeight*.8;
+  const standalone=!!window.navigator?.standalone||
+    !!window.matchMedia?.('(display-mode: standalone)').matches||
+    !!window.matchMedia?.('(display-mode: fullscreen)').matches;
+  // Installed iOS can exclude the bottom safe area from VisualViewport.
+  // Use the full CSS canvas until the keyboard requires the smaller viewport.
+  ov.style.setProperty('--eot-setup-height',standalone&&!keyboard?'100vh':height+'px');
+  ov.style.setProperty('--eot-setup-top',standalone&&!keyboard?'0px':(vv?vv.offsetTop:0)+'px');
   ov.classList.toggle('eot-setup-keyboard',keyboard);
   if(keyboard)requestAnimationFrame(()=>document.activeElement?.scrollIntoView({block:'nearest',inline:'nearest'}));
 }

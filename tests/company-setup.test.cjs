@@ -56,3 +56,19 @@ test('setup tracks keyboard viewport and stops adjusting when closed',()=>{
  h.context.window.visualViewport={height:896,offsetTop:0};h.api.fitSetupViewport();assert(!classes.has('eot-setup-keyboard'));
  classes.delete('show');h.context.window.visualViewport.height=300;h.api.fitSetupViewport();assert.equal(styles['--eot-setup-height'],'896px');
 });
+
+test('installed setup uses full CSS height, while keyboard uses visual viewport',()=>{
+ const h=setup(), styles={}, classes=new Set(['show']);
+ const input={tagName:'INPUT',scrollIntoView(){}};
+ h.context.document.activeElement=input;
+ h.context.window.innerHeight=896;
+ h.context.window.navigator={standalone:true};
+ h.context.window.visualViewport={height:852,offsetTop:0};
+ h.fields.eotCompanySetup={style:{setProperty(k,v){styles[k]=v}},contains:e=>e===input,classList:{contains:k=>classes.has(k),toggle(k,v){v?classes.add(k):classes.delete(k)}}};
+ h.api.fitSetupViewport();assert.equal(styles['--eot-setup-height'],'100vh');assert.equal(styles['--eot-setup-top'],'0px');
+ h.context.window.visualViewport={height:460,offsetTop:44};h.api.fitSetupViewport();
+ assert.equal(styles['--eot-setup-height'],'460px');assert.equal(styles['--eot-setup-top'],'44px');assert(classes.has('eot-setup-keyboard'));
+ h.context.window.visualViewport={height:852,offsetTop:0};h.api.fitSetupViewport();
+ assert.equal(styles['--eot-setup-height'],'100vh');assert(!classes.has('eot-setup-keyboard'));
+ h.context.window.navigator.standalone=false;h.context.window.matchMedia=()=>({matches:true});h.api.fitSetupViewport();assert.equal(styles['--eot-setup-height'],'100vh');
+});
