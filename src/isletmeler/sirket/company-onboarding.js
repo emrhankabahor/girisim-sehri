@@ -82,10 +82,11 @@ function buildOverlay(){
     <div class="eot-version">Empire of Trade • Yeni Kariyer</div>
   </div>`;
   document.body.appendChild(ov);
-  // Track only the visible viewport. Keep keyboard panning inside the form.
+  // Keyboard overlays a stable canvas; viewport events only compensate Safari panning.
   window.visualViewport?.addEventListener('resize',scheduleSetupViewport);
-  // Let Safari pan the native document during text focus; do not follow its scroll.
+  window.visualViewport?.addEventListener('scroll',scheduleSetupViewport);
   window.addEventListener('resize',scheduleSetupViewport);
+  installSetupTouchFocus(ov);
   ov.addEventListener('focusin',scheduleSetupViewport);
   ov.addEventListener('focusout',scheduleSetupViewport);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
@@ -102,28 +103,50 @@ function scheduleSetupViewport(){
   setupViewportFrame=true;
   requestAnimationFrame(()=>{setupViewportFrame=false;fitSetupViewport()});
 }
+// Focus inside the original touch gesture, not a synthesized click or a timer.
+// Already-focused fields retain native caret positioning and selection handles.
+function installSetupTouchFocus(ov){
+  let start=null;
+  ov.addEventListener('touchstart',event=>{
+    const touch=event.touches[0];
+    start=event.touches.length===1&&touch?{target:event.target,x:touch.clientX,y:touch.clientY}:null;
+  },{passive:true});
+  ov.addEventListener('touchmove',event=>{
+    const touch=event.touches[0];
+    if(!touch||event.touches.length!==1||!start||Math.abs(touch.clientX-start.x)>8||Math.abs(touch.clientY-start.y)>8)start=null;
+  },{passive:true});
+  ov.addEventListener('touchcancel',()=>{start=null},{passive:true});
+  ov.addEventListener('touchend',event=>{
+    const tap=start;start=null;
+    if(!tap||event.touches.length||tap.target!==event.target)return;
+    const input=event.target;
+    if(input.tagName!=='INPUT'||input.type!=='text'||input.disabled||input.readOnly||document.activeElement===input)return;
+    input.focus({preventScroll:true});
+    // Cancel the second, synthetic focus only after the native focus succeeded.
+    if(document.activeElement===input&&event.cancelable)event.preventDefault();
+  },{passive:false});
+}
 function fitSetupViewport(){
   const ov=document.getElementById('eotCompanySetup');
   if(!ov?.classList.contains('show'))return;
   const vv=window.visualViewport;
   const height=vv?vv.height:window.innerHeight;
+  const width=window.innerWidth;
   if(!height)return;
-  const editing=ov.contains(document.activeElement)&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
-  const keyboard=editing&&height<window.innerHeight*.8;
+  const last=setupViewportLayout;
+  const rotated=last&&Math.abs(width-last.width)>80;
+  // Retain the unoccluded height through focus, keyboard animation and blur.
+  // Blur precedes keyboard dismissal on iOS, so a smaller viewport is not a
+  // new canvas size even when the input has already lost focus.
+  const locked=last&&!rotated;
   const standalone=!!window.navigator?.standalone||
     !!window.matchMedia?.('(display-mode: standalone)').matches||
     !!window.matchMedia?.('(display-mode: fullscreen)').matches;
-  // Installed iOS can exclude the bottom safe area from VisualViewport.
-  // Use the full CSS canvas until the keyboard requires the smaller viewport.
-  const nextHeight=standalone&&!keyboard?'100vh':height+'px';
-  const nextTop=standalone&&!keyboard?'0px':(vv?vv.offsetTop:0)+'px';
-  const last=setupViewportLayout;
+  const nextHeight=locked?last.height:(standalone?window.innerHeight:height)+'px';
+  const nextTop=(vv?vv.offsetTop:0)+'px';
   if(!last||last.height!==nextHeight)ov.style.setProperty('--eot-setup-height',nextHeight);
   if(!last||last.top!==nextTop)ov.style.setProperty('--eot-setup-top',nextTop);
-  if(!last||last.keyboard!==keyboard)ov.classList.toggle('eot-setup-keyboard',keyboard);
-  setupViewportLayout={height:nextHeight,top:nextTop,keyboard};
-  // Safari owns focus scrolling. scrollIntoView here generates viewport scroll
-  // events during keyboard animation, feeding back into this same layout update.
+  setupViewportLayout={height:nextHeight,top:nextTop,width};
 }
 function showSetup(force){
   buildOverlay();
@@ -136,6 +159,7 @@ function showSetup(force){
   return true;
 }
 function hideSetup(){
+  setupViewportLayout=null;
   document.getElementById('eotCompanySetup')?.classList.remove('show');
   document.body.classList.remove('eot-setting-up');
   document.documentElement?.classList.remove('eot-company-surface');
