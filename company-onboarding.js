@@ -83,17 +83,24 @@ function buildOverlay(){
   </div>`;
   document.body.appendChild(ov);
   // Track only the visible viewport. Keep keyboard panning inside the form.
-  window.visualViewport?.addEventListener('resize',fitSetupViewport);
-  window.visualViewport?.addEventListener('scroll',fitSetupViewport);
-  window.addEventListener('resize',fitSetupViewport);
-  ov.addEventListener('focusin',fitSetupViewport);
-  ov.addEventListener('focusout',()=>requestAnimationFrame(fitSetupViewport));
+  window.visualViewport?.addEventListener('resize',scheduleSetupViewport);
+  window.visualViewport?.addEventListener('scroll',scheduleSetupViewport);
+  window.addEventListener('resize',scheduleSetupViewport);
+  ov.addEventListener('focusin',scheduleSetupViewport);
+  ov.addEventListener('focusout',scheduleSetupViewport);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
   ov.querySelector('#eotCompanyName').value=randomCompanyName();
   try{const u=typeof currentAccount==='function'?currentAccount():null;ov.querySelector('#eotCompanyCeo').value=String(u?.ceoName||'')}catch(e){}
   ov.querySelector('#eotRandomCompanyName').onclick=()=>{ov.querySelector('#eotCompanyName').value=randomCompanyName()};
   ov.querySelector('#eotCompanySubmit').onclick=createCompany;
   ov.querySelector('#eotExistingLogin').onclick=openExistingAccount;
+}
+let setupViewportFrame=false;
+let setupViewportLayout=null;
+function scheduleSetupViewport(){
+  if(setupViewportFrame)return;
+  setupViewportFrame=true;
+  requestAnimationFrame(()=>{setupViewportFrame=false;fitSetupViewport()});
 }
 function fitSetupViewport(){
   const ov=document.getElementById('eotCompanySetup');
@@ -108,10 +115,15 @@ function fitSetupViewport(){
     !!window.matchMedia?.('(display-mode: fullscreen)').matches;
   // Installed iOS can exclude the bottom safe area from VisualViewport.
   // Use the full CSS canvas until the keyboard requires the smaller viewport.
-  ov.style.setProperty('--eot-setup-height',standalone&&!keyboard?'100vh':height+'px');
-  ov.style.setProperty('--eot-setup-top',standalone&&!keyboard?'0px':(vv?vv.offsetTop:0)+'px');
-  ov.classList.toggle('eot-setup-keyboard',keyboard);
-  if(keyboard)requestAnimationFrame(()=>document.activeElement?.scrollIntoView({block:'nearest',inline:'nearest'}));
+  const nextHeight=standalone&&!keyboard?'100vh':height+'px';
+  const nextTop=standalone&&!keyboard?'0px':(vv?vv.offsetTop:0)+'px';
+  const last=setupViewportLayout;
+  if(!last||last.height!==nextHeight)ov.style.setProperty('--eot-setup-height',nextHeight);
+  if(!last||last.top!==nextTop)ov.style.setProperty('--eot-setup-top',nextTop);
+  if(!last||last.keyboard!==keyboard)ov.classList.toggle('eot-setup-keyboard',keyboard);
+  setupViewportLayout={height:nextHeight,top:nextTop,keyboard};
+  // Safari owns focus scrolling. scrollIntoView here generates viewport scroll
+  // events during keyboard animation, feeding back into this same layout update.
 }
 function showSetup(force){
   buildOverlay();

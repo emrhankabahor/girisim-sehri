@@ -10,7 +10,7 @@ function setup(){
  const data=new Map();
  const context={window:{addEventListener(){},scrollTo(){},EOTReleaseCompanyBootGate(){released++}},document:{readyState:'loading',addEventListener(){},getElementById:id=>fields[id],body:{style:{},classList:{add(){},remove(){}}}},localStorage:{getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)},sim:{companies:[],companyProfile:{established:false},cash:12345},currentAccount:()=>null,simSave(){saved.push(JSON.parse(JSON.stringify(context.sim)))},location:{hash:''},setTimeout(){},requestAnimationFrame(){}};
  vm.createContext(context);
- vm.runInContext(source.replace(/\}\)\(\);\s*$/, 'window.testSetup={createCompany,openExistingAccount,fitSetupViewport};})();'),context);
+ vm.runInContext(source.replace(/\}\)\(\);\s*$/, 'window.testSetup={createCompany,openExistingAccount,fitSetupViewport,scheduleSetupViewport};})();'),context);
  return {context,fields,data,saved,api:context.window.testSetup,state:()=>({hidden,released,opened}),enableLogin(){fields.accountOverlay={};context.showAccountOverlay=()=>opened++;context.setAccountMode=()=>{}}};
 }
 test('invalid company or CEO never changes career or saves partial CEO',()=>{
@@ -71,4 +71,18 @@ test('installed setup uses full CSS height, while keyboard uses visual viewport'
  h.context.window.visualViewport={height:852,offsetTop:0};h.api.fitSetupViewport();
  assert.equal(styles['--eot-setup-height'],'100vh');assert(!classes.has('eot-setup-keyboard'));
  h.context.window.navigator.standalone=false;h.context.window.matchMedia=()=>({matches:true});h.api.fitSetupViewport();assert.equal(styles['--eot-setup-height'],'100vh');
+});
+
+test('keyboard event bursts coalesce without forced scrolling or repeated layout writes',()=>{
+ const h=setup(),frames=[],classes=new Set(['show']);let writes=0,scrolls=0,toggles=0;
+ const input={tagName:'INPUT',scrollIntoView(){scrolls++}};
+ h.context.document.activeElement=input;h.context.window.innerHeight=896;
+ h.context.window.visualViewport={height:460,offsetTop:44};
+ h.context.requestAnimationFrame=fn=>frames.push(fn);
+ h.fields.eotCompanySetup={contains:e=>e===input,style:{setProperty(){writes++}},classList:{contains:k=>classes.has(k),toggle(k,v){toggles++;v?classes.add(k):classes.delete(k)}}};
+ for(let i=0;i<50;i++)h.api.scheduleSetupViewport();
+ assert.equal(frames.length,1);assert.equal(writes,0,'focus event must not synchronously relayout');
+ frames.shift()();assert.equal(writes,2);assert.equal(toggles,1);assert.equal(scrolls,0);assert.equal(frames.length,0);
+ h.api.scheduleSetupViewport();frames.shift()();assert.equal(writes,2);assert.equal(toggles,1);
+ h.api.scheduleSetupViewport();classes.delete('show');frames.shift()();assert.equal(writes,2);
 });
