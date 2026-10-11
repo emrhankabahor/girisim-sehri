@@ -86,3 +86,14 @@ test('keyboard event bursts coalesce without forced scrolling or repeated layout
  h.api.scheduleSetupViewport();frames.shift()();assert.equal(writes,2);assert.equal(toggles,1);
  h.api.scheduleSetupViewport();classes.delete('show');frames.shift()();assert.equal(writes,2);
 });
+
+test('company setup suppresses periodic repaint without stopping economic ticks',()=>{
+ const app=fs.readFileSync(require('node:path').join(__dirname,'../app.js'),'utf8');
+ const timers=new Map(),calls=[];let visible=true;
+ const c={document:{body:{classList:{contains:()=>visible}}},setInterval(fn,ms){timers.set(ms,fn)}};
+ for(const name of ['movePrices','updateOps','renderFinanceExtras','renderGameExtras','renderEconomy','renderSimulation','render'])c[name]=()=>calls.push(name);
+ vm.runInNewContext(app.slice(app.indexOf('function companySetupVisible()'),app.indexOf('renderAccountState();',app.indexOf('function companySetupVisible()'))),c);
+ timers.forEach(fn=>fn());assert.deepEqual(calls,['movePrices','updateOps']);
+ calls.length=0;visible=false;timers.forEach(fn=>fn());
+ assert.deepEqual(calls,['movePrices','renderFinanceExtras','renderGameExtras','updateOps','renderEconomy','renderSimulation','render','renderFinanceExtras','renderGameExtras']);
+});

@@ -1152,8 +1152,12 @@ const COMPANY_SECTOR_INFO={
 /* EOT_PART app.js-tail */
 
 repairLegacyCareerBeforeRender();sanitizeGameState();syncSelectedCompanyToProfile();render();renderFinanceExtras();renderGameExtras();save();saveDeposits();saveOwned();
-setInterval(()=>{movePrices();renderFinanceExtras();renderGameExtras()},5000);setInterval(()=>{updateOps();renderEconomy();renderSimulation()},1000);
-setInterval(()=>{render();renderFinanceExtras();renderGameExtras()},30000);
+// Keep economic ticks running; hidden game screens need no periodic repaint
+// while the native company form is receiving keyboard input.
+function companySetupVisible(){return document.body.classList.contains('eot-setting-up')}
+setInterval(()=>{movePrices();if(!companySetupVisible()){renderFinanceExtras();renderGameExtras()}},5000);
+setInterval(()=>{updateOps();if(!companySetupVisible()){renderEconomy();renderSimulation()}},1000);
+setInterval(()=>{if(!companySetupVisible()){render();renderFinanceExtras();renderGameExtras()}},30000);
 
 
 renderAccountState();

@@ -84,7 +84,7 @@ function buildOverlay(){
   document.body.appendChild(ov);
   // Track only the visible viewport. Keep keyboard panning inside the form.
   window.visualViewport?.addEventListener('resize',scheduleSetupViewport);
-  window.visualViewport?.addEventListener('scroll',scheduleSetupViewport);
+  // Let Safari pan the native document during text focus; do not follow its scroll.
   window.addEventListener('resize',scheduleSetupViewport);
   ov.addEventListener('focusin',scheduleSetupViewport);
   ov.addEventListener('focusout',scheduleSetupViewport);
