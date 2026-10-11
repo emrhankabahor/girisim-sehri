@@ -8,52 +8,6 @@ function setupKey(){return'eot_company_setup_'+currentId()}
 function pendingKey(){return'eot_company_setup_pending_'+currentId()}
 function hasCompany(){try{return!!(sim&&((sim.companyProfile&&sim.companyProfile.established===true&&String(sim.companyProfile.name||'').trim())||(Array.isArray(sim.companies)&&sim.companies.some(c=>c&&c.isMainCompany&&c.established!==false&&String(c.name||'').trim()))))}catch(e){return false}}
 function persist(){try{if(typeof simSave==='function')simSave();if(typeof save==='function')save();if(typeof saveOwned==='function')saveOwned();const id=currentId();if(id!=='guest'&&typeof saveAccountCareer==='function')saveAccountCareer(id)}catch(e){}}
-function ensureStyle(){
-  if(document.getElementById('eot-company-onboarding-style'))return;
-  const s=document.createElement('style');
-  s.id='eot-company-onboarding-style';
-  s.textContent=`
-  .eot-company-setup{position:fixed;inset:0;z-index:2147483600;display:none;overflow:auto;background:
-    radial-gradient(circle at 50% 10%,rgba(68,137,190,.18),transparent 28%),
-    linear-gradient(180deg,#071521 0%,#08131f 52%,#07111b 100%);
-    padding:max(24px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inset-bottom));font-family:inherit;color:#f7fbff}
-  .eot-company-setup.show{display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
-  .eot-setup-shell{width:min(100%,560px);margin:auto 0;display:flex;flex-direction:column;align-items:center}
-  .eot-setup-brand{text-align:center;margin:8px 0 22px}
-  .eot-setup-logo{width:94px;height:94px;margin:auto;border-radius:25px;background:url('./assets/logo-v221-192.png') center/cover no-repeat;box-shadow:0 12px 34px rgba(0,0,0,.38),0 0 30px rgba(46,144,255,.2)}
-  .eot-setup-brand b{display:block;font-size:25px;letter-spacing:.08em;margin-top:14px}
-  .eot-setup-brand small{display:block;color:#63d8ee;letter-spacing:.30em;font-size:9px;font-weight:900;margin-top:5px}
-  .eot-setup-card{width:100%;background:linear-gradient(180deg,rgba(14,35,59,.98),rgba(8,25,43,.98));border:1px solid rgba(139,188,232,.30);border-radius:31px;padding:26px 22px 24px;box-shadow:0 20px 50px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.03)}
-  .eot-setup-card h1{text-align:center;font-size:29px;margin:0 0 18px;padding-bottom:18px;border-bottom:1px solid rgba(150,192,228,.15)}
-  .eot-field{margin:15px 0}
-  .eot-field label{display:block;font-weight:850;font-size:13px;margin:0 0 8px 3px}
-  .eot-input-wrap{position:relative}
-  .eot-field input,.eot-field select{width:100%;height:58px;border-radius:16px;border:1px solid rgba(145,190,230,.38);background:linear-gradient(180deg,#0b2035,#08192a);color:#fff;padding:0 16px;font-size:16px!important;font-weight:750;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
-  .eot-field select{appearance:auto}
-  #eotCompanySetup input{pointer-events:auto;touch-action:manipulation;-webkit-user-select:text;user-select:text;caret-color:#ffd34f}
-  #eotCompanySetup input:focus{border-color:#7edcff;box-shadow:0 0 0 3px #43b9ed26}
-  #eotCompanySetup input,#eotCompanySetup select{scroll-margin-block:24px}
-  .eot-name-input{padding-right:68px!important}
-  .eot-random-name{position:absolute;right:7px;top:7px;width:44px;height:44px;border:1px solid rgba(130,187,234,.25);border-radius:13px;background:linear-gradient(145deg,#2f7ed0,#1e5f9e);font-size:23px;display:grid;place-items:center;color:white;box-shadow:0 7px 18px rgba(0,0,0,.25)}
-  .eot-terms{margin:15px 6px 2px;text-align:center;color:#b6c5d4;font-size:10px;line-height:1.4}
-  .eot-terms span{text-decoration:underline;color:#e6eef6}
-  .eot-company-submit,.eot-existing-login{width:100%;height:58px;border:0;border-radius:17px;color:#fff;font-size:17px;font-weight:900}
-  .eot-company-submit{margin-top:18px;background:linear-gradient(135deg,#2bc768,#65d74f);box-shadow:0 10px 24px rgba(41,199,105,.22)}
-  .eot-existing-login{margin-top:24px;background:linear-gradient(135deg,#176dc5,#3a94ea);box-shadow:0 12px 28px rgba(29,111,206,.22)}
-  .eot-setup-error{min-height:18px;text-align:center;color:#ff9baa;font-size:12px;margin-top:5px}
-  .eot-version{margin-top:18px;color:#7f93a6;font-size:10px;font-weight:800;align-self:flex-start;padding-left:2px}
-  @media(max-width:430px){
-    .eot-company-setup.show{justify-content:flex-start}
-    .eot-setup-shell{margin:0}
-    .eot-setup-logo{width:82px;height:82px}
-    .eot-setup-brand b{font-size:22px}
-    .eot-setup-card{padding:22px 18px}
-    .eot-setup-card h1{font-size:27px}
-    .eot-field input,.eot-field select{height:54px}
-    .eot-random-name{width:40px;height:40px}
-  }`;
-  document.head.appendChild(s)
-}
 function randomCompanyName(){
   const base=RANDOM_NAMES[Math.floor(Math.random()*RANDOM_NAMES.length)];
   const suffix=Math.floor(10000+Math.random()*90000);
@@ -61,92 +15,32 @@ function randomCompanyName(){
 }
 function buildOverlay(){
   if(document.getElementById('eotCompanySetup'))return;
-  ensureStyle();
   const ov=document.createElement('div');
   ov.id='eotCompanySetup';
   ov.className='eot-company-setup';
-  ov.innerHTML=`<div class="eot-setup-shell">
-    <div class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-512.png" width="96" height="96" alt="Empire of Trade"><div><b>EMPIRE OF TRADE</b><small>TİCARET YOLCULUĞUN BAŞLIYOR</small></div></div>
-    <section class="eot-setup-card" aria-labelledby="eotSetupTitle">
-      <div class="eot-setup-heading"><div><span class="eot-setup-eyebrow">YENİ KARİYER</span><h1 id="eotSetupTitle">Şirketini kur<span class="eot-gold-dot">.</span></h1></div><span class="eot-setup-emblem" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 27h22M8 27V12l8-5 8 5v15M13 27v-6h6v6M12 14h1m6 0h1m-8 4h1m6 0h1M16 7V3h6l-2 2 2 2h-6"/></svg></span></div><p class="eot-setup-intro">Şirketine bir isim ver, merkezini seç ve ticarete başla.</p>
-      <div class="eot-field"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input class="eot-name-input" id="eotCompanyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="organization" maxlength="32"><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3c4 0 6 10 10 10h3m-3-3 3 3-3 3M4 17h3c1.7 0 3-1.8 4.2-4M14 8c1-1 2-1 3-1h3m-3-3 3 3-3 3"/></svg></button></div></div>
-      <div class="eot-field"><label for="eotCompanyTitle">Şirket Ünvanı</label><select id="eotCompanyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
-      <div class="eot-field"><label for="eotCompanyCeo">CEO Adı Soyadı</label><input id="eotCompanyCeo" type="text" inputmode="text" enterkeyhint="done" maxlength="40" autocomplete="name" placeholder="Adınız ve soyadınız"></div>
-      <div class="eot-setup-location"><div class="eot-field"><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry"><option>Türkiye</option></select></div>
-      <div class="eot-field"><label for="eotCompanyCity">Şehir</label><select id="eotCompanyCity">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
-      <div class="eot-terms">Kayıt olarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> kabul ediyorum.</div>
+  ov.innerHTML=`<main class="eot-setup-shell">
+    <header class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-512.png" width="64" height="64" alt="Empire of Trade"><div><b>EMPIRE OF TRADE</b><small>YENİ KARİYER</small></div></header>
+    <form id="eotCompanyForm" class="eot-setup-card" aria-labelledby="eotSetupTitle" novalidate>
+      <div class="eot-setup-heading"><span class="eot-setup-eyebrow">İLK ADIM</span><h1 id="eotSetupTitle">Şirketini kur<span>.</span></h1><p>Ticaret yolculuğuna kendi şirketinle başla.</p></div>
+      <div class="eot-field"><label for="eotCompanyName">Şirket adı</label><div class="eot-input-wrap"><input id="eotCompanyName" name="companyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="off" autocorrect="off" spellcheck="false" minlength="3" maxlength="32" required><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">↻</button></div></div>
+      <div class="eot-field"><label for="eotCompanyCeo">CEO adı soyadı</label><input id="eotCompanyCeo" name="ceoName" type="text" inputmode="text" enterkeyhint="done" autocomplete="name" minlength="2" maxlength="40" placeholder="Adınız ve soyadınız" required></div>
+      <div class="eot-field"><label for="eotCompanyTitle">Şirket ünvanı</label><select id="eotCompanyTitle" name="companyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
+      <div class="eot-setup-location"><div class="eot-field"><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry" name="country"><option>Türkiye</option></select></div><div class="eot-field"><label for="eotCompanyCity">Şehir</label><select id="eotCompanyCity" name="city">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
+      <p class="eot-terms">Kayıt olarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> kabul ediyorum.</p>
       <div id="eotCompanySetupError" class="eot-setup-error" role="status" aria-live="polite"></div>
-      <button class="eot-company-submit" id="eotCompanySubmit"><span>Şirketini Kur</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
-    </section>
-    <button class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button>
-    <div class="eot-version">Empire of Trade • Yeni Kariyer</div>
-  </div>`;
+      <button type="submit" class="eot-company-submit" id="eotCompanySubmit">Şirketini Kur <span aria-hidden="true">→</span></button>
+    </form>
+    <button type="button" class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button>
+    <footer class="eot-version">Empire of Trade · v270</footer>
+  </main>`;
   document.body.appendChild(ov);
-  // Keyboard overlays a stable canvas; viewport events only compensate Safari panning.
-  window.visualViewport?.addEventListener('resize',scheduleSetupViewport);
-  window.visualViewport?.addEventListener('scroll',scheduleSetupViewport);
-  window.addEventListener('resize',scheduleSetupViewport);
-  installSetupTouchFocus(ov);
-  ov.addEventListener('focusin',scheduleSetupViewport);
-  ov.addEventListener('focusout',scheduleSetupViewport);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
   ov.querySelector('#eotCompanyName').value=randomCompanyName();
   try{const u=typeof currentAccount==='function'?currentAccount():null;ov.querySelector('#eotCompanyCeo').value=String(u?.ceoName||'')}catch(e){}
   ov.querySelector('#eotRandomCompanyName').onclick=()=>{ov.querySelector('#eotCompanyName').value=randomCompanyName()};
-  ov.querySelector('#eotCompanySubmit').onclick=createCompany;
+  // Only form submission is intercepted. Native taps, focus and selection pass through.
+  ov.querySelector('#eotCompanyForm').addEventListener('submit',event=>{event.preventDefault();createCompany()});
   ov.querySelector('#eotExistingLogin').onclick=openExistingAccount;
-}
-let setupViewportFrame=false;
-let setupViewportLayout=null;
-function scheduleSetupViewport(){
-  if(setupViewportFrame)return;
-  setupViewportFrame=true;
-  requestAnimationFrame(()=>{setupViewportFrame=false;fitSetupViewport()});
-}
-// Focus inside the original touch gesture, not a synthesized click or a timer.
-// Already-focused fields retain native caret positioning and selection handles.
-function installSetupTouchFocus(ov){
-  let start=null;
-  ov.addEventListener('touchstart',event=>{
-    const touch=event.touches[0];
-    start=event.touches.length===1&&touch?{target:event.target,x:touch.clientX,y:touch.clientY}:null;
-  },{passive:true});
-  ov.addEventListener('touchmove',event=>{
-    const touch=event.touches[0];
-    if(!touch||event.touches.length!==1||!start||Math.abs(touch.clientX-start.x)>8||Math.abs(touch.clientY-start.y)>8)start=null;
-  },{passive:true});
-  ov.addEventListener('touchcancel',()=>{start=null},{passive:true});
-  ov.addEventListener('touchend',event=>{
-    const tap=start;start=null;
-    if(!tap||event.touches.length||tap.target!==event.target)return;
-    const input=event.target;
-    if(input.tagName!=='INPUT'||input.type!=='text'||input.disabled||input.readOnly||document.activeElement===input)return;
-    input.focus({preventScroll:true});
-    // Cancel the second, synthetic focus only after the native focus succeeded.
-    if(document.activeElement===input&&event.cancelable)event.preventDefault();
-  },{passive:false});
-}
-function fitSetupViewport(){
-  const ov=document.getElementById('eotCompanySetup');
-  if(!ov?.classList.contains('show'))return;
-  const vv=window.visualViewport;
-  const height=vv?vv.height:window.innerHeight;
-  const width=window.innerWidth;
-  if(!height)return;
-  const last=setupViewportLayout;
-  const rotated=last&&Math.abs(width-last.width)>80;
-  // Retain the unoccluded height through focus, keyboard animation and blur.
-  // Blur precedes keyboard dismissal on iOS, so a smaller viewport is not a
-  // new canvas size even when the input has already lost focus.
-  const locked=last&&!rotated;
-  const standalone=!!window.navigator?.standalone||
-    !!window.matchMedia?.('(display-mode: standalone)').matches||
-    !!window.matchMedia?.('(display-mode: fullscreen)').matches;
-  const nextHeight=locked?last.height:(standalone?window.innerHeight:height)+'px';
-  const nextTop=(vv?vv.offsetTop:0)+'px';
-  if(!last||last.height!==nextHeight)ov.style.setProperty('--eot-setup-height',nextHeight);
-  if(!last||last.top!==nextTop)ov.style.setProperty('--eot-setup-top',nextTop);
-  setupViewportLayout={height:nextHeight,top:nextTop,width};
 }
 function showSetup(force){
   buildOverlay();
@@ -155,11 +49,9 @@ function showSetup(force){
   document.body.classList.add('eot-setting-up');
   document.documentElement?.classList.add('eot-company-surface');
   document.body.style.overflow='';
-  fitSetupViewport();
   return true;
 }
 function hideSetup(){
-  setupViewportLayout=null;
   document.getElementById('eotCompanySetup')?.classList.remove('show');
   document.body.classList.remove('eot-setting-up');
   document.documentElement?.classList.remove('eot-company-surface');
