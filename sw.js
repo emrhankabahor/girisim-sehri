@@ -1,9 +1,9 @@
-const CACHE_NAME='empire-of-trade-v316';
+const CACHE_NAME='empire-of-trade-v317';
 // Only critical startup files gate installation. Optional game assets are cached
 // on demand, so a slow or failed secondary download cannot block the launch shell.
 const CORE=[
- './index.html','./bootstrap.js?v=270',
- './styles.css?v=188','./interface-theme.css?v=270',
+ './index.html','./bootstrap.js?v=271',
+ './styles.css?v=188','./interface-theme.css?v=271',
  './assets/logo-v221-192.png','./assets/logo-v221-512.png'
 ];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE)));self.skipWaiting();});
