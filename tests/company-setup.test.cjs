@@ -76,12 +76,12 @@ test('company setup suppresses periodic repaint without stopping economic ticks'
 test('iOS company canvas fills the home-indicator area without scrolling the page',()=>{
  const css=fs.readFileSync(require('node:path').join(__dirname,'../interface-theme.css'),'utf8');
  const mobile=css.slice(css.indexOf('/* Company creation:'));
- assert.match(mobile,/html\\.eot-company-surface\\{[^}]*min-height:100vh!important/);
- assert.match(mobile,/body\\.eot-setting-up\\{position:fixed!important;inset:0!important/);
- assert.match(mobile,/body\\.eot-setting-up #eotCompanySetup\\.show\\{display:block;position:fixed!important;inset:0!important/);
- assert.match(mobile,/#eotCompanySetup\\.show\\{[^}]*height:100vh!important/);
- assert.doesNotMatch(mobile,/height:100svh/);
- assert.match(mobile,/#eotCompanySetup \\.eot-setup-shell\\{[^}]*max-height:100%/);
- assert.match(mobile,/#eotCompanySetup \\.eot-setup-shell\\{[^}]*overflow-y:auto/);
- assert.match(mobile,/@media\\(max-width:899px\\)\\{[\\s\\S]*?#eotCompanySetup\\.show\\{padding-left:18px;padding-right:18px;background:transparent!important/);
+ assert(mobile.includes('html.eot-company-surface{height:100%!important;min-height:100vh!important'));
+ assert(mobile.includes('body.eot-setting-up{position:fixed!important;inset:0!important'));
+ assert(mobile.includes('body.eot-setting-up #eotCompanySetup.show{display:block;position:fixed!important;inset:0!important'));
+ assert(mobile.includes('width:100%!important;height:100vh!important;min-height:0!important;box-sizing:border-box;overflow:hidden!important'));
+ assert(!mobile.includes('height:100svh'));
+ assert(mobile.includes('#eotCompanySetup .eot-setup-shell{width:min(100%,420px);height:100%;min-height:0;max-height:100%'));
+ assert(mobile.includes('overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain'));
+ assert(mobile.includes('body.eot-setting-up #eotCompanySetup.show{padding-left:18px;padding-right:18px;background:transparent!important'));
 });
