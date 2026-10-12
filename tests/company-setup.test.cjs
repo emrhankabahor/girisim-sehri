@@ -175,3 +175,23 @@ test('v282 company creation button contains only centered text',()=>{
  assert(css.includes('text-align:center!important'));
  assert(sheet.includes('company-background-v280.avif'));
 });
+
+test('v283 uses the exact supplied JPEG without compressing or duplicating the logo',()=>{
+ const fs=require('node:fs');
+ const path=require('node:path');
+ const image=fs.readFileSync(path.join(__dirname,'../assets/company-background-v283.jpg'));
+ assert.equal(image.length,478093,'original JPEG byte count');
+ assert.equal(image[0],0xff);
+ assert.equal(image[1],0xd8);
+ assert.equal(image[image.length-2],0xff);
+ assert.equal(image[image.length-1],0xd9);
+ const css=fs.readFileSync(path.join(__dirname,'../interface-theme.css'),'utf8');
+ const last=css.slice(css.indexOf('/* v283:'));
+ assert(last.includes("background-image:url('./assets/company-background-v283.jpg')!important"));
+ assert(last.includes('background-size:cover!important'));
+ const worker=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
+ assert(worker.includes("'./assets/company-background-v283.jpg'"));
+ const markup=source.slice(source.indexOf('ov.innerHTML='),source.indexOf('document.body.appendChild(ov)'));
+ assert(!markup.includes('logo-v221-512.png'));
+ assert(markup.includes('id="eotCompanySubmit"'));
+});

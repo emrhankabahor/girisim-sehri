@@ -685,3 +685,18 @@ body.eot-setting-up #eotCompanySetup .eot-existing-login{
  #eotCompanySetup .eot-setup-shell{width:min(100%,520px)!important;max-width:520px!important}
  #eotCompanySetup .eot-setup-brand{height:min(22vh,225px)!important}
 }
+
+/* v283: user-provided original 711x1536 JPEG, byte-for-byte unchanged.
+   Preserve its natural proportions; never resize or recompress the asset.
+   'cover' fills iPhone screens without stretching the logo and skyline. */
+body.eot-setting-up #eotCompanySetup.show{
+  background-color:#06183a!important;
+  background-image:url('./assets/company-background-v283.jpg')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+}
+body.eot-setting-up #eotCompanySetup.show::before,
+body.eot-setting-up #eotCompanySetup.show::after{
+  content:none!important;display:none!important;
+}
