@@ -10,7 +10,7 @@ function setup(){
  const data=new Map();
  const context={window:{addEventListener(){},scrollTo(){},EOTReleaseCompanyBootGate(){released++}},document:{readyState:'loading',addEventListener(){},getElementById:id=>fields[id],body:{style:{},classList:{add(){},remove(){}}}},localStorage:{getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)},sim:{companies:[],companyProfile:{established:false},cash:12345},currentAccount:()=>null,simSave(){saved.push(JSON.parse(JSON.stringify(context.sim)))},location:{hash:''},setTimeout(){},requestAnimationFrame(){}};
  vm.createContext(context);
- vm.runInContext(source.replace(/\}\)\(\);\s*$/, 'window.testSetup={createCompany,openExistingAccount,buildOverlay};})();'),context);
+ vm.runInContext(source.replace(/\}\)\(\);\s*$/, 'window.testSetup={createCompany,openExistingAccount,buildOverlay,chooseSector};})();'),context);
  return {context,fields,data,saved,api:context.window.testSetup,state:()=>({hidden,released,opened}),enableLogin(){fields.accountOverlay={};context.showAccountOverlay=()=>opened++;context.setAccountMode=()=>{}}};
 }
 test('invalid company or CEO never changes career or saves partial CEO',()=>{
@@ -73,15 +73,21 @@ test('company setup suppresses periodic repaint without stopping economic ticks'
  assert.deepEqual(calls,['movePrices','renderFinanceExtras','renderGameExtras','updateOps','renderEconomy','renderSimulation','render','renderFinanceExtras','renderGameExtras']);
 });
 
-test('iOS company canvas fills the home-indicator area without scrolling the page',()=>{
- const css=fs.readFileSync(require('node:path').join(__dirname,'../interface-theme.css'),'utf8');
- const mobile=css.slice(css.indexOf('/* Company creation:'));
- assert(mobile.includes('html.eot-company-surface{height:100%!important;min-height:100vh!important'));
- assert(mobile.includes('body.eot-setting-up{position:fixed!important;inset:0!important'));
- assert(mobile.includes('body.eot-setting-up #eotCompanySetup.show{display:block;position:fixed!important;inset:0!important'));
- assert(mobile.includes('width:100%!important;height:100vh!important;min-height:0!important;box-sizing:border-box;overflow:hidden!important'));
- assert(!mobile.includes('height:100svh'));
- assert(mobile.includes('#eotCompanySetup .eot-setup-shell{width:min(100%,420px);height:100%;min-height:0;max-height:100%'));
- assert(mobile.includes('overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain'));
- assert(mobile.includes('body.eot-setting-up #eotCompanySetup.show{padding-left:18px;padding-right:18px;background:transparent!important'));
+test('full-bleed gold company form stays fixed on iOS and uses native inputs',()=>{
+ const sheet=fs.readFileSync(require('node:path').join(__dirname,'../interface-theme.css'),'utf8');
+ const part=sheet.slice(sheet.indexOf('/* Empire of Trade v277'));
+ assert(part.includes('body.eot-setting-up #eotCompanySetup.show{'));
+ assert(part.includes('position:fixed!important;inset:0!important'));
+ assert(part.includes('height:100vh!important'));
+ assert(part.includes('overflow:hidden!important'));
+ assert(part.includes('.eot-sector-grid'));
+ assert(part.includes('overflow-y:auto'));
+ assert(!part.includes('100svh'));
+});
+test('sector choice is validated and saved with the main company',()=>{
+ const h=setup();
+ assert(h.context.window.testSetup.chooseSector('Otomotiv'));
+ assert(!h.context.window.testSetup.chooseSector('Kumar'));
+ assert.equal(h.api.createCompany(),true);
+ assert.equal(h.context.sim.companies[0].sector,'Otomotiv');
 });

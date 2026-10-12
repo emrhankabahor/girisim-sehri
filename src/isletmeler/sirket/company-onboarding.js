@@ -1,6 +1,14 @@
 /* Empire of Trade • Yeni oyun şirket kuruluş akışı */
 (function(){'use strict';if(window.__eotCompanyOnboardingLoaded)return;window.__eotCompanyOnboardingLoaded=true;
 const TITLES=['Anonim Şirketi (A.Ş.)','Limited Şirketi (Ltd. Şti.)','Holding A.Ş.','Yatırım Holding A.Ş.','Sanayi ve Ticaret A.Ş.','Dış Ticaret A.Ş.','Gayrimenkul Yatırım A.Ş.','Teknoloji A.Ş.','Enerji A.Ş.','İnşaat A.Ş.','Lojistik A.Ş.','Otomotiv A.Ş.'];
+const SECTOR_CHOICES=[
+  {key:'İnşaat',label:'İnşaat',icon:'🏗️'},
+  {key:'Otomotiv',label:'Galeri',icon:'🚘'},
+  {key:'Gayrimenkul',label:'Gayrimenkul',icon:'🏘️'},
+  {key:'Üretim',label:'Fabrika',icon:'🏭'},
+  {key:'Perakende',label:'Mağaza',icon:'🏪'}
+];
+let chosenSector='İnşaat';
 const RANDOM_NAMES=['Atlas Ticaret','Nova Trade','Kuzey Holding','Mavi Çizgi','Vektor Grup','Artemis Ticaret','Mira Global','Zenith İş','Lidera','Nexora'];
 const CITIES=['Adana','Adıyaman','Afyonkarahisar','Ağrı','Amasya','Ankara','Antalya','Artvin','Aydın','Balıkesir','Bilecik','Bingöl','Bitlis','Bolu','Burdur','Bursa','Çanakkale','Çankırı','Çorum','Denizli','Diyarbakır','Edirne','Elazığ','Erzincan','Erzurum','Eskişehir','Gaziantep','Giresun','Gümüşhane','Hakkâri','Hatay','Isparta','Mersin','İstanbul','İzmir','Kars','Kastamonu','Kayseri','Kırklareli','Kırşehir','Kocaeli','Konya','Kütahya','Malatya','Manisa','Kahramanmaraş','Mardin','Muğla','Muş','Nevşehir','Niğde','Ordu','Rize','Sakarya','Samsun','Siirt','Sinop','Sivas','Tekirdağ','Tokat','Trabzon','Tunceli','Şanlıurfa','Uşak','Van','Yozgat','Zonguldak','Aksaray','Bayburt','Karaman','Kırıkkale','Batman','Şırnak','Bartın','Ardahan','Iğdır','Yalova','Karabük','Kilis','Osmaniye','Düzce'];
 function currentId(){try{const u=typeof currentAccount==='function'?currentAccount():null;return u&&u.id?String(u.id):'guest'}catch(e){return'guest'}}
@@ -19,19 +27,35 @@ function buildOverlay(){
   ov.id='eotCompanySetup';
   ov.className='eot-company-setup';
   ov.innerHTML=`<main class="eot-setup-shell">
-    <header class="eot-setup-brand"><img class="eot-setup-logo" src="./assets/logo-v221-512.png" width="64" height="64" alt="Empire of Trade"><div><b>EMPIRE OF TRADE</b><small>YENİ KARİYER</small></div></header>
+    <header class="eot-setup-brand">
+      <img class="eot-setup-logo" src="./assets/logo-v221-512.png" width="96" height="96" alt="Empire of Trade">
+      <div class="eot-setup-brand-caption">KENDİ TİCARET İMPARATORLUĞUNU KUR</div>
+    </header>
+    <div class="eot-setup-banner"><span class="eot-banner-star" aria-hidden="true">◆</span><h1 id="eotSetupTitle">Şirket Kur</h1><span class="eot-banner-star" aria-hidden="true">◆</span></div>
     <form id="eotCompanyForm" class="eot-setup-card" aria-labelledby="eotSetupTitle" novalidate>
-      <div class="eot-setup-heading"><span class="eot-setup-eyebrow">İLK ADIM</span><h1 id="eotSetupTitle">Şirketini kur<span>.</span></h1><p>Ticaret yolculuğuna kendi şirketinle başla.</p></div>
-      <div class="eot-field"><label for="eotCompanyName">Şirket adı</label><div class="eot-input-wrap"><input id="eotCompanyName" name="companyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="off" autocorrect="off" spellcheck="false" minlength="3" maxlength="32" required><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">↻</button></div></div>
-      <div class="eot-field"><label for="eotCompanyCeo">CEO adı soyadı</label><input id="eotCompanyCeo" name="ceoName" type="text" inputmode="text" enterkeyhint="done" autocomplete="name" minlength="2" maxlength="40" placeholder="Adınız ve soyadınız" required></div>
-      <div class="eot-field"><label for="eotCompanyTitle">Şirket ünvanı</label><select id="eotCompanyTitle" name="companyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div>
-      <div class="eot-setup-location"><div class="eot-field"><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry" name="country"><option>Türkiye</option></select></div><div class="eot-field"><label for="eotCompanyCity">Şehir</label><select id="eotCompanyCity" name="city">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
-      <p class="eot-terms">Kayıt olarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> kabul ediyorum.</p>
+      <div class="eot-form-fields">
+        <div class="eot-field eot-framed-field"><span class="eot-field-icon" aria-hidden="true">▥</span><div class="eot-field-content"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input id="eotCompanyName" name="companyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="off" autocorrect="off" spellcheck="false" minlength="3" maxlength="32" placeholder="Şirket adını gir..." required><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">↻</button></div></div></div>
+        <div class="eot-field eot-framed-field"><span class="eot-field-icon" aria-hidden="true">♟</span><div class="eot-field-content"><label for="eotCompanyCeo">CEO Adı Soyadı</label><input id="eotCompanyCeo" name="ceoName" type="text" inputmode="text" enterkeyhint="done" autocomplete="name" minlength="2" maxlength="40" placeholder="Adınız ve soyadınız" required></div></div>
+        <div class="eot-field eot-framed-field"><span class="eot-field-icon" aria-hidden="true">▤</span><div class="eot-field-content"><label for="eotCompanyTitle">Şirket Türü</label><select id="eotCompanyTitle" name="companyTitle">${TITLES.map(x=>`<option>${x}</option>`).join('')}</select></div></div>
+        <div class="eot-field eot-framed-field eot-location-field"><span class="eot-field-icon" aria-hidden="true">⌖</span><div class="eot-field-content eot-setup-location"><div><label for="eotCompanyCountry">Ülke</label><select id="eotCompanyCountry" name="country"><option>Türkiye</option></select></div><div><label for="eotCompanyCity">Başlangıç Şehri</label><select id="eotCompanyCity" name="city">${CITIES.map(x=>`<option>${x}</option>`).join('')}</select></div></div></div>
+      </div>
+      <fieldset class="eot-sector-panel">
+        <legend><span aria-hidden="true">⚙</span> Sektör</legend>
+        <p>Şirketinin ana faaliyet alanını seç.</p>
+        <div class="eot-sector-grid" id="eotSectorChoices" role="group" aria-label="Faaliyet sektörü">
+          ${SECTOR_CHOICES.map((item,i)=>`<button type="button" class="eot-sector-choice${i===0?' is-selected':''}" data-eot-sector="${item.key}" aria-pressed="${i===0?'true':'false'}"><span class="eot-sector-icon" aria-hidden="true">${item.icon}</span><span class="eot-sector-label">${item.label}</span></button>`).join('')}
+        </div>
+      </fieldset>
+      <div class="eot-setup-finance">
+        <div class="eot-finance-block"><span class="eot-finance-icon" aria-hidden="true">▣</span><div><small>Başlangıç Sermayesi</small><strong id="eotSetupCapital">₺0</strong><span>Şirket hesabı açılış bakiyesi</span></div></div>
+        <div class="eot-finance-block"><span class="eot-credit-icon" aria-hidden="true">★</span><div><small>Kredi Notu</small><strong id="eotSetupCredit">— / 100</strong><span>Mevcut finansal puanın</span></div></div>
+      </div>
+      <p class="eot-terms">Şirket kurarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> şartlarını kabul edersin.</p>
       <div id="eotCompanySetupError" class="eot-setup-error" role="status" aria-live="polite"></div>
-      <button type="submit" class="eot-company-submit" id="eotCompanySubmit">Şirketini Kur <span aria-hidden="true">→</span></button>
+      <button type="submit" class="eot-company-submit" id="eotCompanySubmit"><span aria-hidden="true">▥</span> Şirketi Kur <span aria-hidden="true">➜</span></button>
     </form>
-    <button type="button" class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button>
-    <footer class="eot-version">Empire of Trade · v276</footer>
+    <div class="eot-setup-bottom-actions"><button type="button" class="eot-setup-back" id="eotSetupBack" aria-label="Giriş ekranına dön">‹ <span>Geri</span></button><button type="button" class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button></div>
+    <footer class="eot-version">EMPIRE OF TRADE · v277</footer>
   </main>`;
   document.body.appendChild(ov);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
@@ -41,6 +65,34 @@ function buildOverlay(){
   // Only form submission is intercepted. Native taps, focus and selection pass through.
   ov.querySelector('#eotCompanyForm').addEventListener('submit',event=>{event.preventDefault();createCompany()});
   ov.querySelector('#eotExistingLogin').onclick=openExistingAccount;
+  const back=ov.querySelector('#eotSetupBack');
+  if(back)back.onclick=openExistingAccount;
+  // Sector buttons are independent buttons: input and native keyboard events
+  // are not intercepted, as required for iOS first-tap focus.
+  ov.querySelectorAll?.('[data-eot-sector]').forEach(button=>{
+    button.addEventListener('click',()=>chooseSector(button.dataset.eotSector));
+  });
+  updateSetupFinancePreview();
+}
+function chooseSector(sector){
+  if(!SECTOR_CHOICES.some(item=>item.key===sector))return false;
+  chosenSector=sector;
+  document.getElementById('eotCompanySetup')?.querySelectorAll?.('[data-eot-sector]').forEach(button=>{
+    const selected=button.dataset.eotSector===sector;
+    button.classList.toggle('is-selected',selected);
+    button.setAttribute('aria-pressed',String(selected));
+  });
+  return true;
+}
+function updateSetupFinancePreview(){
+  const el=document.getElementById('eotSetupCredit');
+  if(!el)return;
+  let score=null;
+  try{
+    if(typeof creditScore==='number'&&Number.isFinite(creditScore))
+      score=Math.max(0,Math.min(100,Math.round(creditScore)));
+  }catch(e){}
+  el.textContent=score==null?'— / 100':score+' / 100';
 }
 function showSetup(force){
   buildOverlay();
@@ -49,6 +101,7 @@ function showSetup(force){
   document.body.classList.add('eot-setting-up');
   document.documentElement?.classList.add('eot-company-surface');
   document.body.style.overflow='';
+  updateSetupFinancePreview();
   return true;
 }
 function hideSetup(){
@@ -80,8 +133,9 @@ function createCompany(){
   if(name.length<3||name.length>32){if(err)err.textContent='Şirket adı 3–32 karakter olmalı.';return false}
   if(ceo.length<2||ceo.length>40){if(err)err.textContent='CEO adı 2–40 karakter olmalı.';return false}
   if(!TITLES.includes(title)||!CITIES.includes(city)){if(err)err.textContent='Geçerli bir şirket ünvanı ve şehir seç.';return false}
+  if(!SECTOR_CHOICES.some(item=>item.key===chosenSector)){if(err)err.textContent='Geçerli bir faaliyet sektörü seç.';return false}
   try{
-    const id='company_main_'+Date.now(),company={id,established:true,name,ceoName:ceo,legalType:title,sector:'Genel Ticaret',city,headquarters:{country:'Türkiye',city},capital:0,companyCash:0,brand:0,employees:[],monthlyHistory:[],currentMonth:{revenue:0,expense:0,tax:0},establishedAt:Date.now(),isMainCompany:true};
+    const id='company_main_'+Date.now(),company={id,established:true,name,ceoName:ceo,legalType:title,sector:chosenSector,city,headquarters:{country:'Türkiye',city},capital:0,companyCash:0,brand:0,employees:[],monthlyHistory:[],currentMonth:{revenue:0,expense:0,tax:0},establishedAt:Date.now(),isMainCompany:true};
     if(!Array.isArray(sim.companies))sim.companies=[];
     sim.companies=sim.companies.filter(c=>!c?.isMainCompany);sim.companies.unshift(company);
     sim.selectedCompanyId=id;sim.companyName=name;sim.companyProfile={...(sim.companyProfile||{}),...company};
@@ -98,7 +152,7 @@ function createCompany(){
   }catch(e){if(err)err.textContent='Şirket kurulamadı.';return false}
 }
 
-function startNewGame(){if(!confirm('Yeni oyun başlatmak mevcut kariyerini sıfırlar. Devam etmek istiyor musun?'))return;if(!confirm('Bu işlem tüm kariyeri sıfırlayacak. Emin misin?'))return;try{const id=currentId(),fresh=freshCareerState();applyCareerState(fresh);localStorage.removeItem(setupKey());localStorage.setItem(pendingKey(),'1');if(id!=='guest')localStorage.setItem('gs_account_career_'+id,JSON.stringify(fresh));localStorage.setItem('gs140_state',JSON.stringify(fresh));persist();showSetup(true)}catch(e){if(typeof toast==='function')toast('Yeni oyun başlatılamadı')}}
+function startNewGame(){if(!confirm('Yeni oyun başlatmak mevcut kariyerini sıfırlar. Devam etmek istiyor musun?'))return;if(!confirm('Bu işlem tüm kariyeri sıfırlayacak. Emin misin?'))return;try{const id=currentId(),fresh=freshCareerState();chosenSector='İnşaat';chooseSector(chosenSector);applyCareerState(fresh);localStorage.removeItem(setupKey());localStorage.setItem(pendingKey(),'1');if(id!=='guest')localStorage.setItem('gs_account_career_'+id,JSON.stringify(fresh));localStorage.setItem('gs140_state',JSON.stringify(fresh));persist();showSetup(true)}catch(e){if(typeof toast==='function')toast('Yeni oyun başlatılamadı')}}
 function mountNewGameButton(){const p=document.getElementById('profile');if(!p||document.getElementById('eotNewGameCard'))return;const card=document.createElement('section');card.id='eotNewGameCard';card.className='eot-new-game-card';card.innerHTML='<h3>Yeni Oyun</h3><p>Kariyerini sıfırdan başlatır.</p><button class="eot-new-game-btn">Yeni Oyun Başlat</button>';card.querySelector('button').onclick=startNewGame;p.appendChild(card)}
 function installNewAccountHook(){
   if(typeof window.enterGameAfterAccount!=='function'||window.enterGameAfterAccount.__eotCompanyPendingHook)return false;
