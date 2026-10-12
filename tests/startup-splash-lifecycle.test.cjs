@@ -91,3 +91,14 @@ test('standalone canvas paint is removed after splash fade and never reappears o
  h.window.emit('pageshow');h.window.emit('resize');
  assert(!h.classes.has('eot-splash-surface'));
 });
+
+test('official fallback logo is present while the large image is missing',()=>{
+ const h=setup();
+ const markup=h.elements.get('eotStartupSplash').innerHTML;
+ assert(markup.includes('class="eot-splash-backup"'));
+ assert(markup.includes('assets/logo-v221-512.png'));
+ assert(markup.includes('id="eotSplashArtwork"'));
+ assert(source.includes('.eot-reference-art.eot-art-loaded .eot-splash-backup{display:none}'));
+ const worker=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
+ assert(worker.includes("'./assets/splash-refined-v260.png'"));
+});

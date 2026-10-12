@@ -64,8 +64,14 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
     /* One cover-sized artwork plane keeps the supplied logo, caption and gold frame aligned. */
     .eot-reference-stage{position:absolute;left:50%;top:50%;width:100%;height:100%;transform:translate(-50%,-50%);overflow:hidden;pointer-events:none}
     .eot-reference-art{position:absolute;left:50%;top:50%;width:var(--eot-art-width,100%);height:auto;aspect-ratio:853/1844;transform:translate(-50%,-50%)}
-    .eot-reference-art>img{display:block;width:100%;height:100%;pointer-events:none}
-    .eot-startup-track{position:absolute;left:14.6542%;top:71.6377%;width:70.9261%;height:2.2777%;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
+    .eot-reference-art>.eot-reference-image{display:block;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .15s ease}
+    .eot-reference-art.eot-art-loaded>.eot-reference-image{opacity:1}
+    /* Display the official logo while the full-sized illustration is unavailable. */
+    .eot-splash-backup{position:absolute;z-index:1;left:50%;top:39%;width:82%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center;gap:14px}
+    .eot-splash-backup img{display:block;width:54%;height:auto;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 12px 28px rgba(0,0,0,.5))}
+    .eot-splash-backup strong{display:block;color:#f2d293;font-size:clamp(13px,4vw,21px);font-weight:900;line-height:1.2;letter-spacing:.11em;text-shadow:0 3px 14px #0009}
+    .eot-reference-art.eot-art-loaded .eot-splash-backup{display:none}
+    .eot-startup-track{z-index:2;position:absolute;left:14.6542%;top:71.6377%;width:70.9261%;height:2.2777%;border-radius:999px;overflow:hidden;background:linear-gradient(#020d25,#031c4e 75%,#005280);box-shadow:inset 0 1px 2px #80dfff;isolation:isolate}
     #eotLoadingFill{display:block;height:100%;width:calc(var(--progress,0)*100%);border-radius:999px;background:repeating-linear-gradient(130deg,transparent 0 13px,#b8ffff44 14px 25px),linear-gradient(#91ffff,#00c2ff 25%,#0877f9 65%,#15d6ff);box-shadow:0 0 10px #16e2ff,inset 0 1px 2px #fff;position:relative}
     #eotLoadingFill::after{content:'';position:absolute;right:0;top:5%;height:90%;width:3px;background:#ffffcc;box-shadow:0 0 8px 2px #e5fcff}
     .eot-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -82,8 +88,16 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
     const el=document.createElement('div');
     el.id='eotStartupSplash';
     // Use the reference unchanged; only the fill inside its gold loading frame is live.
-    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade"><div class="eot-reference-art"><img src="./assets/splash-refined-v260.png" width="853" height="1844" alt="" fetchpriority="high"><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div><div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
+    el.innerHTML=`<div class="eot-reference-stage" role="img" aria-label="Empire of Trade"><div class="eot-reference-art"><img class="eot-reference-image" id="eotSplashArtwork" src="./assets/splash-refined-v260.png" width="853" height="1844" alt="" loading="eager" fetchpriority="high"><div class="eot-splash-backup" aria-hidden="true"><img src="./assets/logo-v221-512.png" width="512" height="512" alt=""><strong>EMPIRE OF TRADE</strong></div><div class="eot-startup-track" aria-hidden="true"><i id="eotLoadingFill"></i></div></div><div class="eot-sr-only" role="status"><span id="eotSplashPhase">Yükleniyor…</span><span id="eotSplashPercent">%0</span></div></div>`;
     document.body.appendChild(el);
+    const artwork=el.querySelector?.('#eotSplashArtwork');
+    const artPlane=el.querySelector?.('.eot-reference-art');
+    if(artwork&&artPlane){
+      const reveal=()=>{if(artwork.naturalWidth>0)artPlane.classList.add('eot-art-loaded')};
+      artwork.addEventListener('load',reveal,{once:true});
+      // Cached resources may finish loading before the event listener exists.
+      if(artwork.complete)reveal();
+    }
     fitViewport();
   }
 
@@ -231,6 +245,6 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
 <script defer src="company-boot-gate.js?v=2"></script>
 <script defer src="company-onboarding.js?v=274"></script>
 <script defer src="investment-visibility.js?v=205"></script>
-<script defer src="bootstrap.js?v=274"></script>
+<script defer src="bootstrap.js?v=275"></script>
 </body>
 </html>
