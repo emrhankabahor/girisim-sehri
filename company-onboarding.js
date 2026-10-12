@@ -31,7 +31,7 @@ function buildOverlay(){
       <button type="submit" class="eot-company-submit" id="eotCompanySubmit">Şirketini Kur <span aria-hidden="true">→</span></button>
     </form>
     <button type="button" class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button>
-    <footer class="eot-version">Empire of Trade · v272</footer>
+    <footer class="eot-version">Empire of Trade · v273</footer>
   </main>`;
   document.body.appendChild(ov);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
