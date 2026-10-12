@@ -140,3 +140,22 @@ test('full user-provided picture is the only company background, and logo is not
  const worker=fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8');
  assert(worker.includes("'./assets/company-background-v280.avif'"));
 });
+
+test('v281 removes the decorative company title without removing company creation',()=>{
+ const markup=source.slice(source.indexOf('ov.innerHTML='),source.indexOf('document.body.appendChild(ov)'));
+ assert(!markup.includes('eot-setup-banner'));
+ assert(!markup.includes('id="eotSetupTitle"'));
+ assert(markup.includes('aria-label="Şirket oluşturma formu"'));
+ assert(markup.includes('id="eotCompanySubmit"'));
+ assert(markup.includes('type="submit"'));
+ assert(markup.includes('id="eotExistingLogin"'));
+});
+test('v281 keeps setup fixed except for focused native keyboard inputs',()=>{
+ const style=fs.readFileSync(require('node:path').join(__dirname,'../interface-theme.css'),'utf8');
+ const css=style.slice(style.indexOf('/* v281'));
+ assert(css.includes('overflow:hidden!important'));
+ assert(css.includes('#eotCompanySetup .eot-setup-shell:focus-within'));
+ assert(css.includes('overflow-x:hidden!important;overflow-y:auto!important'));
+ assert(css.includes('touch-action:pan-y'));
+ assert(style.includes('company-background-v280.avif'));
+});

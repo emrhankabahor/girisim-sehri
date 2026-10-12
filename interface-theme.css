@@ -593,3 +593,48 @@ body.eot-setting-up #eotCompanySetup.show::after{content:none!important;display:
  }
  #eotCompanySetup .eot-setup-brand{height:min(25vh,240px)}
 }
+
+/* v281 — fixed company form, preserving native keyboard behavior. */
+body.eot-setting-up #eotCompanySetup.show{
+  position:fixed!important;inset:0!important;overflow:hidden!important;
+  overscroll-behavior:none!important;
+}
+#eotCompanySetup .eot-setup-shell{
+  width:min(100%,450px)!important;height:100%!important;
+  min-height:0!important;max-height:100%!important;
+  display:flex!important;flex-direction:column!important;
+  justify-content:center!important;align-items:stretch!important;
+  gap:clamp(5px,1vh,11px)!important;
+  overflow:hidden!important;overscroll-behavior:none!important;
+  -webkit-overflow-scrolling:auto!important;touch-action:manipulation;
+}
+#eotCompanySetup .eot-setup-brand{
+  height:clamp(114px,24vh,220px)!important;flex:0 0 auto!important;
+}
+#eotCompanySetup .eot-setup-card,
+#eotCompanySetup .eot-setup-bottom-actions,
+#eotCompanySetup .eot-version{
+  flex:0 0 auto!important;
+}
+/* Focused native inputs remain reachable if iOS displays the keyboard. */
+#eotCompanySetup .eot-setup-shell:focus-within{
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y;justify-content:safe center!important;
+}
+@media(max-height:760px){
+  #eotCompanySetup .eot-setup-brand{height:clamp(95px,18vh,152px)!important}
+  #eotCompanySetup .eot-setup-shell{gap:5px!important}
+}
+@media(max-height:620px){
+  #eotCompanySetup .eot-setup-brand{height:clamp(68px,13vh,104px)!important}
+  #eotCompanySetup .eot-setup-shell{gap:3px!important}
+  #eotCompanySetup .eot-framed-field{min-height:43px!important;padding:4px 7px!important}
+  body.eot-setting-up #eotCompanySetup .eot-company-submit{height:42px!important;min-height:42px!important}
+  body.eot-setting-up #eotCompanySetup .eot-existing-login{height:35px!important;min-height:35px!important}
+}
+@media(min-width:900px){
+  #eotCompanySetup .eot-setup-shell{width:min(100%,520px)!important}
+  #eotCompanySetup .eot-setup-brand{height:min(23vh,230px)!important}
+}

@@ -20,8 +20,8 @@ function buildOverlay(){
   ov.className='eot-company-setup';
   ov.innerHTML=`<main class="eot-setup-shell">
     <div class="eot-setup-brand" aria-hidden="true"></div>
-    <div class="eot-setup-banner"><span class="eot-banner-star" aria-hidden="true">◆</span><h1 id="eotSetupTitle">Şirket Kur</h1><span class="eot-banner-star" aria-hidden="true">◆</span></div>
-    <form id="eotCompanyForm" class="eot-setup-card" aria-labelledby="eotSetupTitle" novalidate>
+    
+    <form id="eotCompanyForm" class="eot-setup-card" aria-label="Şirket oluşturma formu" novalidate>
       <div class="eot-form-fields">
         <div class="eot-field eot-framed-field"><span class="eot-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"><path d="M3 21h18M6 21V5l7-2v18M13 21V9l6-2v14M9 7v2m0 3v2m0 3v2m7-7v2m0 3v2"/></svg></span><div class="eot-field-content"><label for="eotCompanyName">Şirket Adı</label><div class="eot-input-wrap"><input id="eotCompanyName" name="companyName" type="text" inputmode="text" enterkeyhint="next" autocomplete="off" autocorrect="off" spellcheck="false" minlength="3" maxlength="32" placeholder="Şirket adını gir..." required><button type="button" class="eot-random-name" id="eotRandomCompanyName" aria-label="Rastgele şirket adı">↻</button></div></div></div>
         <div class="eot-field eot-framed-field"><span class="eot-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"><circle cx="12" cy="8" r="3.3"/><path d="M5.5 21v-2.5c0-4.2 2.7-6.2 6.5-6.2s6.5 2 6.5 6.2V21M9 17l3 2 3-2"/></svg></span><div class="eot-field-content"><label for="eotCompanyCeo">CEO Adı Soyadı</label><input id="eotCompanyCeo" name="ceoName" type="text" inputmode="text" enterkeyhint="done" autocomplete="name" minlength="2" maxlength="40" placeholder="Adınız ve soyadınız" required></div></div>
@@ -33,7 +33,7 @@ function buildOverlay(){
       <button type="submit" class="eot-company-submit" id="eotCompanySubmit"><span class="eot-submit-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"><path d="M3 21h18M6 21V5l7-2v18M13 21V9l6-2v14M9 7v2m0 3v2m0 3v2m7-7v2m0 3v2"/></svg></span> Şirketi Kur <span class="eot-submit-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span></button>
     </form>
     <div class="eot-setup-bottom-actions"><button type="button" class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button></div>
-    <footer class="eot-version">EMPIRE OF TRADE · v280</footer>
+    <footer class="eot-version">EMPIRE OF TRADE · v281</footer>
   </main>`;
   document.body.appendChild(ov);
   ov.querySelector('#eotCompanyCity').value='İstanbul';
