@@ -138,7 +138,7 @@ test('full user-provided picture is the only company background, and logo is not
  const file=fs.statSync(require('node:path').join(__dirname,'../assets/company-background-v280.avif'));
  assert(file.size>20000);
  const worker=fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8');
- assert(worker.includes("'./assets/company-background-v280.avif'"));
+ assert(worker.includes("'./assets/company-background-v283.jpg'"));
 });
 
 test('v281 removes the decorative company title without removing company creation',()=>{
