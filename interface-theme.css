@@ -248,7 +248,8 @@ body.eot-design-v1 .topbar .eot-brand small{
 
 /* Company creation: fixed full-viewport layout with one continuous city background.
    iOS standalone 100svh can exclude the home-indicator region, leaving an empty strip.
-   Keep native inputs and scroll only the inner shell if space is insufficient. */
+   Keep native inputs and scroll only the inner shell if space is insufficient.
+   Do not restore the legacy page-level scroll container. */
 html.eot-company-surface{height:100%!important;min-height:100vh!important;overflow:hidden!important;scroll-behavior:auto!important;overscroll-behavior:none;background:linear-gradient(180deg,#04152e38 0%,#071a3070 30%,#061326d9 100%),url('./assets/opening-city-v218.webp') center top/cover no-repeat,#07182c!important}
 body.eot-setting-up{position:fixed!important;inset:0!important;width:100%!important;height:100vh!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;overscroll-behavior:none!important;background:transparent!important}
 body.eot-setting-up #app-root,body.eot-setting-up .bottom-nav{display:none!important}
