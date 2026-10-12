@@ -315,7 +315,7 @@ body.eot-setting-up #eotCompanySetup.show{display:block;position:relative;z-inde
 /* Mobile composition: a city canvas and centered crest, using the unchanged
    native form. Decorations are backgrounds, never layers covering controls. */
 @media(max-width:899px){
- body.eot-setting-up #eotCompanySetup.show{padding-left:18px;padding-right:18px;background:linear-gradient(180deg,#04152e38 0%,#071a3070 30%,#061326d9 100%),url('./assets/opening-city-v218.webp') center top/cover no-repeat,#07182c}
+ body.eot-setting-up #eotCompanySetup.show{padding-left:18px;padding-right:18px;background:linear-gradient(180deg,#04152e38 0%,#071a3070 30%,#061326d9 100%),url('./assets/opening-city-v218.webp') center top/cover no-repeat,#07182c!important}
  #eotCompanySetup .eot-setup-shell{gap:10px}
  #eotCompanySetup .eot-setup-brand{flex-direction:column;gap:9px;padding:0 0 3px;text-align:center}
  #eotCompanySetup .eot-setup-logo{width:76px;height:76px;border-radius:20px;box-shadow:0 10px 30px #0006,0 0 0 1px #e2c37880}
