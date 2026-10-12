@@ -118,7 +118,7 @@ test('native company fields use consistent inline vector icons instead of font s
  const excerpt=source.slice(source.indexOf('ov.innerHTML='),source.indexOf('document.body.appendChild(ov)'));
  for(const s of ['eotCompanyName','eotCompanyCeo','eotCompanyTitle','eotCompanyCity'])
    assert(excerpt.includes('id="'+s+'"'));
- assert((excerpt.match(/<svg viewBox=/g)||[]).length>=6);
+ assert((excerpt.match(/<svg viewBox=/g)||[]).length>=4);
  assert(!excerpt.includes('aria-hidden="true">♟'));
  assert(!excerpt.includes('aria-hidden="true">⌖'));
 });
@@ -158,4 +158,20 @@ test('v281 keeps setup fixed except for focused native keyboard inputs',()=>{
  assert(css.includes('overflow-x:hidden!important;overflow-y:auto!important'));
  assert(css.includes('touch-action:pan-y'));
  assert(style.includes('company-background-v280.avif'));
+});
+
+test('v282 company creation button contains only centered text',()=>{
+ const markup=source.slice(source.indexOf('ov.innerHTML='),source.indexOf('document.body.appendChild(ov)'));
+ const start=markup.indexOf('<button type="submit" class="eot-company-submit" id="eotCompanySubmit">');
+ assert(start>=0,'submit button remains');
+ const inner=markup.slice(start).split('</button>')[0].split('id="eotCompanySubmit">')[1];
+ assert.equal(inner,'Şirketi Kur');
+ assert(!inner.includes('<svg'));
+ assert(!inner.includes('eot-submit-arrow'));
+ const sheet=fs.readFileSync(require('node:path').join(__dirname,'../interface-theme.css'),'utf8');
+ const css=sheet.slice(sheet.indexOf('/* v282'));
+ assert(css.includes('width:min(100%,440px)!important'));
+ assert(css.includes('justify-content:center!important'));
+ assert(css.includes('text-align:center!important'));
+ assert(sheet.includes('company-background-v280.avif'));
 });

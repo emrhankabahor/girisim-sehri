@@ -30,10 +30,10 @@ function buildOverlay(){
       </div>
       <p class="eot-terms">Şirket kurarak <span>Kullanıcı Sözleşmesi</span> ve <span>Gizlilik Sözleşmesi</span> şartlarını kabul edersin.</p>
       <div id="eotCompanySetupError" class="eot-setup-error" role="status" aria-live="polite"></div>
-      <button type="submit" class="eot-company-submit" id="eotCompanySubmit"><span class="eot-submit-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"><path d="M3 21h18M6 21V5l7-2v18M13 21V9l6-2v14M9 7v2m0 3v2m0 3v2m7-7v2m0 3v2"/></svg></span> Şirketi Kur <span class="eot-submit-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span></button>
+      <button type="submit" class="eot-company-submit" id="eotCompanySubmit">Şirketi Kur</button>
     </form>
     <div class="eot-setup-bottom-actions"><button type="button" class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button></div>
-    <footer class="eot-version">EMPIRE OF TRADE · v281</footer>
+    <footer class="eot-version">EMPIRE OF TRADE · v282</footer>
   </main>`;
   document.body.appendChild(ov);
   ov.querySelector('#eotCompanyCity').value='İstanbul';

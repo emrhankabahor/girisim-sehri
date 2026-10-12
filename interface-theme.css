@@ -638,3 +638,50 @@ body.eot-setting-up #eotCompanySetup.show{
   #eotCompanySetup .eot-setup-shell{width:min(100%,520px)!important}
   #eotCompanySetup .eot-setup-brand{height:min(23vh,230px)!important}
 }
+
+/* v282 — Text-only submit and centered, even-width company form. */
+#eotCompanySetup .eot-setup-shell{
+ width:min(100%,440px)!important;max-width:440px!important;
+ margin:0 auto!important;padding-inline:0!important;
+ display:flex!important;flex-direction:column!important;
+ align-items:stretch!important;justify-content:center!important;
+ gap:clamp(6px,1vh,11px)!important;
+}
+#eotCompanySetup .eot-setup-brand{
+ height:clamp(105px,20vh,184px)!important;
+}
+#eotCompanySetup .eot-setup-card,
+#eotCompanySetup .eot-form-fields,
+#eotCompanySetup .eot-setup-bottom-actions{
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ margin-inline:0!important;
+}
+#eotCompanySetup .eot-framed-field{
+ width:100%!important;min-width:0!important;
+ padding-left:10px!important;padding-right:10px!important;
+}
+#eotCompanySetup .eot-form-fields{gap:clamp(7px,1vh,11px)!important}
+#eotCompanySetup .eot-setup-card{gap:clamp(7px,.9vh,10px)!important}
+body.eot-setting-up #eotCompanySetup .eot-company-submit{
+ width:100%!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:0!important;text-align:center!important;
+ padding-left:12px!important;padding-right:12px!important;
+}
+body.eot-setting-up #eotCompanySetup .eot-existing-login{
+ width:100%!important;text-align:center!important;
+}
+@media(max-height:760px){
+ #eotCompanySetup .eot-setup-brand{height:clamp(78px,16vh,124px)!important}
+ #eotCompanySetup .eot-setup-shell{gap:5px!important}
+ #eotCompanySetup .eot-form-fields{gap:6px!important}
+}
+@media(max-height:620px){
+ #eotCompanySetup .eot-setup-brand{height:clamp(46px,10vh,76px)!important}
+ #eotCompanySetup .eot-form-fields{gap:4px!important}
+ #eotCompanySetup .eot-setup-card{gap:4px!important}
+}
+@media(min-width:900px){
+ #eotCompanySetup .eot-setup-shell{width:min(100%,520px)!important;max-width:520px!important}
+ #eotCompanySetup .eot-setup-brand{height:min(22vh,225px)!important}
+}
