@@ -19,10 +19,7 @@ function buildOverlay(){
   ov.id='eotCompanySetup';
   ov.className='eot-company-setup';
   ov.innerHTML=`<main class="eot-setup-shell">
-    <header class="eot-setup-brand">
-      <img class="eot-setup-logo" src="./assets/logo-v221-512.png" width="96" height="96" alt="Empire of Trade">
-      <div class="eot-setup-brand-caption">KENDİ TİCARET İMPARATORLUĞUNU KUR</div>
-    </header>
+    <div class="eot-setup-brand" aria-hidden="true"></div>
     <div class="eot-setup-banner"><span class="eot-banner-star" aria-hidden="true">◆</span><h1 id="eotSetupTitle">Şirket Kur</h1><span class="eot-banner-star" aria-hidden="true">◆</span></div>
     <form id="eotCompanyForm" class="eot-setup-card" aria-labelledby="eotSetupTitle" novalidate>
       <div class="eot-form-fields">
@@ -36,7 +33,7 @@ function buildOverlay(){
       <button type="submit" class="eot-company-submit" id="eotCompanySubmit"><span class="eot-submit-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"><path d="M3 21h18M6 21V5l7-2v18M13 21V9l6-2v14M9 7v2m0 3v2m0 3v2m7-7v2m0 3v2"/></svg></span> Şirketi Kur <span class="eot-submit-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span></button>
     </form>
     <div class="eot-setup-bottom-actions"><button type="button" class="eot-existing-login" id="eotExistingLogin">Mevcut Hesaba Giriş Yap</button></div>
-    <footer class="eot-version">EMPIRE OF TRADE · v279</footer>
+    <footer class="eot-version">EMPIRE OF TRADE · v280</footer>
   </main>`;
   document.body.appendChild(ov);
   ov.querySelector('#eotCompanyCity').value='İstanbul';

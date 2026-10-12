@@ -122,3 +122,21 @@ test('native company fields use consistent inline vector icons instead of font s
  assert(!excerpt.includes('aria-hidden="true">♟'));
  assert(!excerpt.includes('aria-hidden="true">⌖'));
 });
+
+test('full user-provided picture is the only company background, and logo is not duplicated',()=>{
+ const sheet=fs.readFileSync(require('node:path').join(__dirname,'../interface-theme.css'),'utf8');
+ const rule=sheet.slice(sheet.indexOf('/* v280'));
+ assert(rule.includes("background-image:url('./assets/company-background-v280.avif')!important"));
+ assert(rule.includes('background-size:cover!important'));
+ assert(rule.includes('content:none!important;display:none!important'));
+ assert(!rule.includes('company-ref-stage-v279.webp'));
+ assert(!rule.includes('company-ref-skyline-v279.webp'));
+ const markup=source.slice(source.indexOf('ov.innerHTML='),source.indexOf('document.body.appendChild(ov)'));
+ assert(markup.includes('<div class="eot-setup-brand" aria-hidden="true"></div>'));
+ assert(!markup.includes('logo-v221-512.png'));
+ for(const field of ['eotCompanyName','eotCompanyCeo','eotCompanyTitle','eotCompanyCity','eotCompanySubmit'])assert(markup.includes('id="'+field+'"'));
+ const file=fs.statSync(require('node:path').join(__dirname,'../assets/company-background-v280.avif'));
+ assert(file.size>20000);
+ const worker=fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8');
+ assert(worker.includes("'./assets/company-background-v280.avif'"));
+});

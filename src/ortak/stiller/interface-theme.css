@@ -542,3 +542,54 @@ body.eot-setting-up #eotCompanySetup .eot-company-submit{
  }
  #eotCompanySetup .eot-setup-brand{height:min(25vh,252px)}
 }
+
+/* v280 — The exact player-supplied city/crown/water/stage illustration is the
+   single backdrop. The optimized AVIF derives directly from the provided
+   864×1536 photograph; no separate art-generation or stitched panels. */
+html.eot-company-surface{background:#051938!important}
+body.eot-setting-up #eotCompanySetup.show{
+ position:fixed!important;inset:0!important;width:100%!important;height:100vh!important;
+ overflow:hidden!important;overscroll-behavior:none!important;
+ background-color:#06183a!important;
+ background-image:url('./assets/company-background-v280.avif')!important;
+ background-position:center center!important;
+ background-size:cover!important;background-repeat:no-repeat!important;
+}
+body.eot-setting-up #eotCompanySetup.show::before,
+body.eot-setting-up #eotCompanySetup.show::after{content:none!important;display:none!important}
+#eotCompanySetup .eot-setup-shell{
+ justify-content:safe center;gap:clamp(6px,.9vh,10px);
+ overflow-x:hidden;overflow-y:auto;
+ align-items:stretch;
+}
+#eotCompanySetup .eot-setup-brand{
+ display:block!important;visibility:hidden!important;pointer-events:none!important;
+ width:100%;height:clamp(150px,26.5vh,248px);
+ flex:0 0 auto!important;min-height:0!important;
+ margin:0!important;padding:0!important;border:0!important;
+}
+#eotCompanySetup .eot-setup-banner{
+ min-height:clamp(44px,6vh,54px);
+ background:linear-gradient(180deg,#1d4386ee,#061b46f0 55%,#092a65f0)!important;
+}
+#eotCompanySetup .eot-framed-field{
+ background:linear-gradient(155deg,#10356cf3,#061b43f3 67%,#041630f4)!important;
+}
+#eotCompanySetup .eot-terms{
+ color:#e2ecf9;font-weight:650;text-shadow:0 2px 6px #000f
+}
+#eotCompanySetup .eot-version{color:#f4dfb8}
+@media(max-height:760px){
+ #eotCompanySetup .eot-setup-brand{height:clamp(112px,22vh,167px)}
+ #eotCompanySetup .eot-setup-shell{gap:5px}
+ #eotCompanySetup .eot-setup-banner{min-height:42px}
+ #eotCompanySetup .eot-framed-field{min-height:49px;padding:5px 9px!important}
+ #eotCompanySetup .eot-form-fields{gap:5px}
+}
+@media(min-width:900px){
+ body.eot-setting-up #eotCompanySetup.show{
+  background-size:auto 100%!important;
+  background-position:center center!important;
+ }
+ #eotCompanySetup .eot-setup-brand{height:min(25vh,240px)}
+}
