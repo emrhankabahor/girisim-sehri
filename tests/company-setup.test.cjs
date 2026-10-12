@@ -105,3 +105,20 @@ test('company canvas stays full-screen with native input and existing city asset
  assert(!section.includes('eot-finance-block'));
  assert(!section.includes('100svh'));
 });
+
+test('reference skyline is sourced from user screenshot and has no duplicate form artwork',()=>{
+ const t=fs.readFileSync(require('node:path').join(__dirname,'../interface-theme.css'),'utf8');
+ assert(t.includes('company-ref-skyline-v279.webp'));
+ assert(t.includes('company-ref-stage-v279.webp'));
+ for(const a of ['company-ref-skyline-v279.webp','company-ref-stage-v279.webp']){
+  assert(fs.statSync(require('node:path').join(__dirname,'../assets',a)).size>1000);
+ }
+});
+test('native company fields use consistent inline vector icons instead of font symbols',()=>{
+ const excerpt=source.slice(source.indexOf('ov.innerHTML='),source.indexOf('document.body.appendChild(ov)'));
+ for(const s of ['eotCompanyName','eotCompanyCeo','eotCompanyTitle','eotCompanyCity'])
+   assert(excerpt.includes('id="'+s+'"'));
+ assert((excerpt.match(/<svg viewBox=/g)||[]).length>=6);
+ assert(!excerpt.includes('aria-hidden="true">♟'));
+ assert(!excerpt.includes('aria-hidden="true">⌖'));
+});

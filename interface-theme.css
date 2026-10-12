@@ -448,3 +448,97 @@ body.eot-setting-up #eotCompanySetup .eot-existing-login{
  #eotCompanySetup .eot-setup-location{gap:6px}
  #eotCompanySetup label{font-size:10px}
 }
+
+/* v279 — screenshot-extracted reference city and gold ring stage.
+   Source: the player's supplied screenshot, cropped to exclude former form
+   fields and buttons. No new images were generated. */
+html.eot-company-surface{background:#061b46!important}
+body.eot-setting-up #eotCompanySetup.show{
+ isolation:isolate;
+ background:
+  radial-gradient(ellipse 100% 56% at 50% 10%,rgba(15,114,250,.36),transparent 75%),
+  linear-gradient(180deg,#1054ad 0%,#0b3c91 19%,#0a2b70 37%,#071f53 67%,#041438 85%,#04102c 100%)!important
+}
+body.eot-setting-up #eotCompanySetup.show::before{
+ content:'';pointer-events:none;position:absolute;z-index:0;
+ top:0!important;left:0;right:0;width:100%;
+ height:clamp(161px,23vh,250px);
+ background:url('./assets/company-ref-skyline-v279.webp') center top/100% 100% no-repeat;
+ opacity:1
+}
+body.eot-setting-up #eotCompanySetup.show::after{
+ content:'';pointer-events:none;position:absolute;z-index:0;
+ left:0;right:0;bottom:0;height:clamp(95px,17vh,164px);
+ background:
+  url('./assets/company-ref-stage-v279.webp') center bottom/100% 44% no-repeat,
+  radial-gradient(ellipse 90% 50% at 50% 100%,rgba(245,175,49,.29),transparent 78%),
+  repeating-radial-gradient(ellipse 72% 27% at 50% 124%,transparent 0 19px,rgba(249,193,57,.2) 20px 21px,transparent 23px 47px);
+}
+#eotCompanySetup .eot-setup-shell{
+ z-index:1;gap:clamp(6px,1.1vh,12px);
+ justify-content:safe center;overflow-x:hidden;overflow-y:auto
+}
+/* Image already contains the user's skyline and Empire of Trade logo. Keep
+   the semantic logo in markup but avoid rendering a second copy on top. */
+#eotCompanySetup .eot-setup-brand{
+ display:block!important;flex:0 0 auto!important;
+ width:100%;height:clamp(146px,21vh,222px);
+ min-height:0!important;margin:0!important;padding:0!important;
+ visibility:hidden!important;pointer-events:none!important
+}
+#eotCompanySetup .eot-setup-banner{
+ min-height:clamp(45px,6.5vh,57px);margin:0 8px;
+ border:2px solid #ffe19a!important;
+ background:linear-gradient(180deg,#23549b 0%,#04173b 58%,#0b306a 100%)!important;
+ box-shadow:inset 0 2px #fff9ddab,inset 0 -3px #ad7129,0 0 19px #ffcf627a,0 10px 24px #0008!important
+}
+#eotCompanySetup .eot-setup-banner h1{
+ font-size:clamp(25px,4.2vh,36px);
+ text-shadow:0 2px 0 #725022,0 4px 10px #000e
+}
+#eotCompanySetup .eot-framed-field{
+ padding:9px 10px!important;
+ background:linear-gradient(155deg,#123f80f7,#061d49f9 66%,#051533fb)!important;
+ border:1.5px solid #e8bf73!important;
+ box-shadow:inset 0 1px #fff0b88c,inset 0 -3px #d497468e,0 7px 19px #0009!important;
+}
+#eotCompanySetup .eot-field-icon{
+ display:grid;place-items:center;flex:0 0 42px!important;min-width:42px!important;
+ height:44px!important;border-right:1px solid #cfa3585f;
+ font-size:0!important;text-shadow:none!important;color:#ffe09a!important;
+ filter:drop-shadow(0 0 6px #eebf5340)
+}
+#eotCompanySetup .eot-field-icon svg{
+ display:block;width:29px;height:29px;
+ stroke:currentColor;stroke-width:1.7px;fill:none;overflow:visible
+}
+#eotCompanySetup .eot-submit-icon,
+#eotCompanySetup .eot-submit-arrow{
+ display:inline-flex;align-items:center;justify-content:center;
+ font-size:0;line-height:1
+}
+#eotCompanySetup .eot-company-submit svg{
+ width:23px;height:23px;stroke:currentColor;stroke-width:2.1px;fill:none
+}
+#eotCompanySetup .eot-submit-arrow{margin-left:auto}
+#eotCompanySetup .eot-submit-icon{margin-left:auto}
+body.eot-setting-up #eotCompanySetup .eot-company-submit{
+ color:#18233a!important;font-size:20px!important;
+ background:linear-gradient(165deg,#fff4bb,#ffda75 35%,#edab34 85%,#e08f1e)!important;
+ border:2px solid #ffe8a0!important;
+ box-shadow:inset 0 2px #fffbe1,inset 0 -4px #aa661f,0 0 24px #ffce4e9c,0 10px 20px #0009!important
+}
+@media(max-height:740px){
+ body.eot-setting-up #eotCompanySetup.show::before{height:clamp(132px,22vh,168px)}
+ #eotCompanySetup .eot-setup-brand{height:clamp(115px,19vh,158px)}
+ #eotCompanySetup .eot-framed-field{min-height:51px}
+ #eotCompanySetup .eot-field-icon{height:35px!important;flex-basis:34px!important;min-width:34px!important}
+ #eotCompanySetup .eot-field-icon svg{height:24px;width:24px}
+}
+@media(min-width:900px){
+ body.eot-setting-up #eotCompanySetup.show::before{
+  width:100%;height:min(27vh,285px);
+  background-size:min(100%,850px) 100%
+ }
+ #eotCompanySetup .eot-setup-brand{height:min(25vh,252px)}
+}
