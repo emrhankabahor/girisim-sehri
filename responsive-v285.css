@@ -1,0 +1,100 @@
+/* EOT v285 • Responsive Premium UI; presentation-only, no saved-state changes. */
+body.eot-design-v1:not(.eot-setting-up){--eot-ink:#fff8ed;--eot-sub:#b3c9e6;--eot-stroke:#7dafeb62;background:#051530!important;width:100%;max-width:100%;overflow-x:clip}
+body.eot-design-v1:not(.eot-setting-up) #app-root{max-width:100%;min-width:0;width:100%}
+body.eot-design-v1:not(.eot-setting-up) .app{box-sizing:border-box!important;width:min(100%,760px)!important;max-width:100%!important;min-width:0!important;min-height:100vh!important;min-height:100dvh!important;margin:0 auto!important;padding-inline:clamp(12px,3.8vw,25px)!important;padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#home,#market,#business,#finance,#profile){min-width:0;max-width:100%;width:100%;overflow-x:clip;box-sizing:border-box}
+body.eot-design-v1:not(.eot-setting-up) :is(.eot-wallet,.eot-business-grid,.eot-quick-grid,.menu-grid,.companies-summary,.finance-meta,.eot-profile-stats){max-width:100%;min-width:0}
+@media(max-width:680px) and (orientation:portrait){
+ body.eot-design-v1:not(.eot-setting-up) .app{padding-top:calc(max(44px,env(safe-area-inset-top,0px)) + 6px)!important;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}
+ body.eot-design-v1:not(.eot-setting-up) .topbar{position:relative!important;top:auto!important;min-height:54px!important;grid-template-columns:44px minmax(0,1fr) 44px!important;gap:8px!important;padding:2px 0 11px!important;margin:0 0 3px!important;backdrop-filter:none!important}
+ body.eot-design-v1:not(.eot-setting-up) .topbar .eot-app-logo{width:43px!important;height:43px!important}
+ body.eot-design-v1:not(.eot-setting-up) .topbar .eot-top-action{width:43px!important;height:43px!important}
+ body.eot-design-v1:not(.eot-setting-up) .topbar .eot-brand b{font-size:clamp(12px,3.65vw,17px)!important;line-height:1.15!important;white-space:normal!important;overflow-wrap:anywhere!important;letter-spacing:.03em!important}
+ body.eot-design-v1:not(.eot-setting-up) .topbar .eot-brand small{font-size:clamp(7px,1.95vw,9px)!important;letter-spacing:.12em!important;margin-top:2px!important}
+}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-wallet{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:4px 0 9px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-wallet-card{box-sizing:border-box!important;min-width:0;min-height:73px!important;padding:10px 8px!important;border-radius:17px!important;background:radial-gradient(circle at 100% 0,#54a5ec36,transparent 67%),linear-gradient(150deg,#1a487d,#0a2853)!important;box-shadow:inset 0 1px #d6efff47,inset 0 -3px #0006,0 8px 19px #0006!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-wallet-card span{font-size:clamp(8px,2.1vw,10px)!important;letter-spacing:.045em!important;gap:5px!important;line-height:1.25!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-wallet-card b{font-size:clamp(12px,3.6vw,19px)!important;line-height:1.15!important;margin-top:7px!important;letter-spacing:-.015em!important;white-space:normal!important;overflow-wrap:anywhere!important;font-variant-numeric:tabular-nums}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-account-alert{margin-bottom:10px!important;min-height:47px!important;padding:9px 11px!important;gap:9px!important;font-size:clamp(10px,2.75vw,12px)!important;line-height:1.35!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-account-alert a{min-height:35px!important;padding:8px 10px!important;flex-shrink:0!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-profile{padding:14px!important;border-radius:22px!important;background:radial-gradient(ellipse at 100% 0,#468fe02b,transparent 66%),linear-gradient(160deg,#1a4c87,#0a2859 80%)!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-profile-main{display:grid!important;grid-template-columns:55px minmax(0,1fr)!important;gap:8px 11px!important;align-items:center!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-avatar{width:55px!important;height:55px!important;border-radius:18px!important;font-size:26px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-identity{min-width:0;max-width:100%}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-identity small{font-size:9px!important;letter-spacing:.12em!important;line-height:1.2!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-company-name-row{display:flex!important;align-items:baseline!important;flex-wrap:wrap!important;gap:4px 6px!important;margin:2px 0!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-identity h2{font-size:clamp(17px,4.6vw,21px)!important;line-height:1.18!important;margin:2px 0!important;white-space:normal!important;overflow-wrap:anywhere!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-company-legal-inline{font-size:9px!important;padding:3px 6px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-identity p{font-size:11px!important;line-height:1.3!important;margin:2px 0!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-company-meta{gap:5px!important;margin-top:5px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-company-pill{min-height:20px!important;padding:3px 7px!important;font-size:9px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-tier{grid-column:1/-1!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:100%!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;padding:7px 12px!important;margin-top:1px!important;border-radius:13px!important;background:linear-gradient(140deg,#102a50,#061a3e)!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-tier span{font-size:10px!important;letter-spacing:.08em!important;font-weight:800!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-tier b{font-size:20px!important;line-height:1.2!important;margin:0!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-progress-label{margin-top:10px!important;font-size:10px!important;line-height:1.2!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-progress{height:10px!important;margin-top:5px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-profile-stats{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;margin-top:8px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-profile-stats>div{min-width:0!important;padding:8px!important;border-radius:13px!important;background:linear-gradient(150deg,#1e447aaa,#0b2651c9)!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-profile-stats span{font-size:clamp(8px,2.2vw,10px)!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-profile-stats b{font-size:clamp(12px,3.4vw,17px)!important;margin-top:3px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-section-head{margin:16px 2px 9px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-section-head h3{font-size:clamp(18px,5vw,24px)!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-section-head p{font-size:11px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-business-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;grid-auto-rows:auto!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-business{min-height:139px!important;padding:18px 9px 13px!important;border-radius:19px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-biz-icon{width:57px!important;height:57px!important;margin:10px auto 9px!important;border-radius:17px!important;box-shadow:inset 0 2px #fff6,inset 0 -5px #0007,0 10px 16px #0007!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-business b{font-size:clamp(13px,3.55vw,17px)!important;min-height:0!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-business small{font-size:10px!important;margin-top:3px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;grid-auto-rows:auto!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-quick{min-height:72px!important;padding:10px!important}
+body.eot-design-v1:not(.eot-setting-up) #home .eot-qicon{width:40px!important;height:40px!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .panel-head{margin:6px 0 15px!important;gap:10px!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .panel-title h2{font-size:clamp(24px,6.4vw,30px)!important;font-weight:900!important;line-height:1.2!important;color:#fff6e8!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .panel-title p{font-size:12px!important;color:#a9c3df!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .section-head{margin:17px 0 10px!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .menu-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;grid-auto-rows:auto!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .menu-card{min-height:152px!important;padding:13px!important;margin:0!important;border-radius:19px!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .menu-card .iconbox{width:52px!important;height:52px!important;font-size:26px!important;border-radius:17px!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .menu-card h4{font-size:clamp(13px,3.8vw,16px)!important;line-height:1.25!important;margin:11px 0 4px!important}
+body.eot-design-v1:not(.eot-setting-up) :is(#market,#business,#finance,#profile) .menu-card p{font-size:11px!important;line-height:1.4!important;margin:0 0 11px!important}
+body.eot-design-v1:not(.eot-setting-up) #market .market-feature-card{display:grid!important;grid-template-columns:45px minmax(0,1fr) auto!important;align-items:center!important;gap:12px!important;min-height:79px!important;padding:14px!important;margin-bottom:14px!important;border-color:#e4be7055!important;background:radial-gradient(ellipse at 100% 0,#fac25829,transparent 65%),linear-gradient(145deg,#254b7c,#0b2853)!important}
+body.eot-design-v1:not(.eot-setting-up) #market .market-feature-card>div:first-child{display:grid!important;place-items:center!important;width:44px!important;height:44px!important;border:1px solid #ffd98a80!important;border-radius:14px!important;background:linear-gradient(145deg,#326294,#112b59)!important;box-shadow:inset 0 2px #fff6,inset 0 -3px #0008,0 6px 13px #0006!important;font-size:24px!important}
+body.eot-design-v1:not(.eot-setting-up) #market .market-feature-card b{font-size:15px!important;color:#fff7e7!important}
+body.eot-design-v1:not(.eot-setting-up) #market .market-feature-card span{font-size:11px!important;color:#b5cbe6!important}
+body.eot-design-v1:not(.eot-setting-up) #business .companies-header-card{display:flex!important;gap:12px!important;align-items:center!important;padding:16px!important}
+body.eot-design-v1:not(.eot-setting-up) #business .companies-header-card>div{min-width:0!important;flex:1}
+body.eot-design-v1:not(.eot-setting-up) #business .companies-header-card h3{font-size:clamp(16px,4.5vw,22px)!important;overflow-wrap:anywhere}
+body.eot-design-v1:not(.eot-setting-up) #business .companies-header-card>a{flex-shrink:0!important;min-height:40px!important;padding:10px 12px!important;border-radius:12px!important;background:linear-gradient(145deg,#ffe8a2,#efbe48)!important;color:#102d4f!important;border:1px solid #f8e09b!important;box-shadow:inset 0 2px #fff9dd,0 6px 12px #0005!important;font-size:11px!important}
+body.eot-design-v1:not(.eot-setting-up) #business .companies-summary{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:10px 0 17px!important}
+body.eot-design-v1:not(.eot-setting-up) #business .companies-summary>div{padding:10px 8px!important;border-radius:13px!important}
+body.eot-design-v1:not(.eot-setting-up) #business .company-portfolio-card{padding:15px!important;border-radius:19px!important}
+body.eot-design-v1:not(.eot-setting-up) #finance .finance-hero{padding:19px 16px!important;margin-bottom:15px!important;border-radius:22px!important}
+body.eot-design-v1:not(.eot-setting-up) #finance .finance-meta{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin-top:14px!important}
+body.eot-design-v1:not(.eot-setting-up) #finance .finance-meta>div{min-width:0!important;padding:9px 7px!important}
+body.eot-design-v1:not(.eot-setting-up) #finance .finance-meta b{font-size:clamp(12px,3.4vw,16px)!important;overflow-wrap:anywhere}
+body.eot-design-v1:not(.eot-setting-up) #finance .finance-meta span{font-size:clamp(8px,2.2vw,10px)!important}
+body.eot-design-v1:not(.eot-setting-up) #profile .profile-card{display:grid!important;grid-template-columns:54px minmax(0,1fr)!important;gap:11px!important;align-items:center!important;padding:15px!important}
+body.eot-design-v1:not(.eot-setting-up) #profile .profile-card .avatar{display:grid!important;place-items:center!important;width:53px!important;height:53px!important;border-radius:16px!important;border:1px solid #a4d7ff77!important;background:linear-gradient(145deg,#295a8b,#0f2c57)!important;box-shadow:inset 0 2px #fff5,inset 0 -4px #0006,0 6px 12px #0005!important;color:#ffdb98!important}
+body.eot-design-v1:not(.eot-setting-up) #profile .profile-card strong{grid-column:1/-1!important;color:#ffdc81!important;overflow-wrap:anywhere;font-size:clamp(18px,4.5vw,22px)!important}
+body.eot-design-v1:not(.eot-setting-up) #profile .xp-panel{padding:14px!important;margin-top:10px!important}
+body.eot-design-v1:not(.eot-setting-up) #profile .summary-strip{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+/* Unbroken fixed bottom navigation above the iOS home indicator. */
+body.eot-design-v1:not(.eot-setting-up)>.bottom-nav{position:fixed!important;left:50%!important;right:auto!important;bottom:0!important;transform:translate3d(-50%,0,0)!important;box-sizing:border-box!important;width:min(calc(100% - 18px),540px)!important;height:calc(62px + env(safe-area-inset-bottom,0px))!important;min-height:0!important;margin:0!important;padding:5px 6px max(5px,env(safe-area-inset-bottom,0px))!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;align-items:stretch!important;gap:2px!important;border-radius:20px 20px 0 0!important;border:1px solid #8bb8ee77!important;background:linear-gradient(180deg,#13325e,#071a3c)!important;box-shadow:inset 0 2px #ffffff27,0 -8px 25px #0008!important;overflow:hidden!important;z-index:2147483000!important}
+body.eot-design-v1:not(.eot-setting-up)>.bottom-nav .nav-btn{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:100%!important;min-height:0!important;margin:0!important;padding:4px 1px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;border-radius:13px!important;font-size:clamp(8px,2.45vw,10px)!important;line-height:1.15!important}
+body.eot-design-v1:not(.eot-setting-up)>.bottom-nav .nav-btn .nav-ico{width:24px!important;height:24px!important;margin:0!important;display:grid!important;place-items:center!important}
+body.eot-design-v1:not(.eot-setting-up)>.bottom-nav .nav-btn .nav-ico svg{width:23px!important;height:23px!important}
+body.eot-design-v1:not(.eot-setting-up)>.bottom-nav .nav-btn.active{border-radius:14px!important;border:1px solid #fff0b0!important;background:linear-gradient(155deg,#fff0ae,#f6cb54)!important;box-shadow:inset 0 2px #fff9dd,inset 0 -3px #a87a37,0 3px 9px #0006!important}
+@media(max-width:380px){
+ body.eot-design-v1:not(.eot-setting-up) .app{padding-inline:11px!important}
+ body.eot-design-v1:not(.eot-setting-up) #home .eot-wallet{gap:6px!important}
+ body.eot-design-v1:not(.eot-setting-up) #home .eot-wallet-card{min-height:70px!important;padding:9px 7px!important}
+ body.eot-design-v1:not(.eot-setting-up) #home .eot-wallet-card b{font-size:clamp(11px,3.4vw,16px)!important}
+ body.eot-design-v1:not(.eot-setting-up) #home .eot-profile{padding:12px!important}
+ body.eot-design-v1:not(.eot-setting-up) #home .eot-profile-main{grid-template-columns:48px minmax(0,1fr)!important;gap:7px 9px!important}
+ body.eot-design-v1:not(.eot-setting-up) #home .eot-avatar{width:48px!important;height:48px!important}
+ body.eot-design-v1:not(.eot-setting-up) #home .eot-identity h2{font-size:16px!important}
+ body.eot-design-v1:not(.eot-setting-up)>.bottom-nav{width:calc(100% - 12px)!important}
+}
+@media(min-width:681px){body.eot-design-v1:not(.eot-setting-up) .app{padding-top:18px!important}}
+@media(prefers-reduced-motion:reduce){body.eot-design-v1:not(.eot-setting-up) :is(.eot-business,.eot-quick,.menu-card,.nav-btn){animation:none!important;transition:none!important}}
