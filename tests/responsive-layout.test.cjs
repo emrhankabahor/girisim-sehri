@@ -21,8 +21,8 @@ test('style is loaded and pre-cached while native setup stays intact',()=>{
  const index=fs.readFileSync(path.join(dir,'index.html'),'utf8');
  const sw=fs.readFileSync(path.join(dir,'sw.js'),'utf8');
  const company=fs.readFileSync(path.join(dir,'company-onboarding.js'),'utf8');
- assert(index.includes('responsive-v285.css?v=285'));
- assert(sw.includes("'./responsive-v285.css?v=285'"));
+ assert(index.includes('responsive-v285.css?v=286'));
+ assert(sw.includes("'./responsive-v285.css?v=286'"));
  assert(company.includes('id="eotCompanySubmit"'));
  assert(fs.readFileSync(path.join(dir,'interface-theme.css'),'utf8').includes('company-background-v283.jpg'));
 });
