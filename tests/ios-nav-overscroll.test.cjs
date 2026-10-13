@@ -26,5 +26,5 @@ test('navigation source mirrors and onboarding remain unchanged',()=>{
  const company=fs.readFileSync(path.join(root,'company-onboarding.js'),'utf8');
  assert(company.includes('id="eotCompanySubmit"'));
  const worker=fs.readFileSync(path.join(root,'sw.js'),'utf8');
- assert(worker.includes('responsive-v285.css?v=286'));
+ assert(worker.includes('responsive-v285.css?v=287'));
 });
