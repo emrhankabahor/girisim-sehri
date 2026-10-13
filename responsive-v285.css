@@ -292,3 +292,5 @@ body.eot-design-v1:not(.eot-setting-up) .topbar .eot-badge{
    font-size:12px!important;letter-spacing:.015em!important;
  }
 }
+
+/* v287 checks: updated iOS cache-version regression coverage. */
