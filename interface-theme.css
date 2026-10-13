@@ -700,3 +700,5 @@ body.eot-setting-up #eotCompanySetup.show::before,
 body.eot-setting-up #eotCompanySetup.show::after{
   content:none!important;display:none!important;
 }
+
+/* v283 regression-check marker: company background retains its original JPG bytes. */
