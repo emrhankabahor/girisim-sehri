@@ -1,0 +1,31 @@
+/* Empire of Trade v295 – approved common city background.
+   Visual-only: five main routes, never company onboarding or atlas/details. */
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app {
+  /* The reference is 710×1536, so width-matched top alignment avoids the
+     center-crop that otherwise hides the crown, skyline and river on iPhones. */
+  background-color:#020b28!important;
+  background-image:
+    linear-gradient(180deg,rgba(3,13,37,.06) 0%,rgba(3,13,37,.15) 25%,rgba(3,13,37,.27) 46%,rgba(2,9,28,.90) 100%),
+    url('./assets/menu-background-v295.jpg')!important;
+  background-position:center top,center top!important;
+  background-size:100% 100%,100% auto!important;
+  background-repeat:no-repeat,no-repeat!important;
+}
+/* Hero keeps its actions and dimensions; the photo already contains the logo. */
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app>.eot-v289-hero {
+  background:transparent!important;
+}
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .eot-v289-hero-logo {
+  visibility:hidden!important;
+}
+/* The header gradient over the reference photo must not duplicate the skyline. */
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .eot-v289-hero:after {
+  background:linear-gradient(0deg,rgba(2,12,38,.32),transparent)!important;
+}
+/* Wider displays retain the complete central poster, rather than zooming in
+   until the original Empire of Trade lettering is cut off. */
+@media(min-width:768px) {
+  body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app {
+    background-size:100% 100%,auto min(100vh,1536px)!important;
+  }
+}

@@ -45,3 +45,23 @@ test('v294: dense three-column market layout and live monthly cashflow',()=>{
  assert(css.includes('grid-template-columns:repeat(3,minmax(0,1fr))!important'));
  assert(css.includes('border-radius:50% / 44%'));
 });
+
+test('v295: approved image powers exactly the five premium menus and is offline cached',()=>{
+ const photoCss=get('menu-background-v295.css');
+ assert(fs.existsSync(path.join(root,'assets/menu-background-v295.jpg')));
+ assert(fs.statSync(path.join(root,'assets/menu-background-v295.jpg')).size>300000);
+ assert(html.includes('<link rel="stylesheet" href="menu-background-v295.css?v=295">'));
+ assert(html.includes('bootstrap.js?v=295'));
+ assert(photoCss.includes("url('./assets/menu-background-v295.jpg')"));
+ assert(photoCss.includes('body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app'));
+ assert(photoCss.includes('visibility:hidden'));
+ assert(!photoCss.includes('#city'));
+ assert(!photoCss.includes('#company_setup'));
+ assert(sw.includes("'./menu-background-v295.css?v=295'"));
+ assert(sw.includes("'./assets/menu-background-v295.jpg'"));
+ assert(sw.includes("bootstrap.js?v=295"));
+ assert.equal(sw,get('src/ortak/eklentiler/sw.js'));
+ assert(get('bootstrap.js').includes("const APP_VERSION='295'"));
+ assert(get('src/ortak/bootstrap.js').includes("const APP_VERSION='295'"));
+ assert.equal(JSON.parse(get('version.json')).version,'295');
+});
