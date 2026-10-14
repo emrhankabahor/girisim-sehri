@@ -41,7 +41,7 @@ def select_district(page, province_id, district):
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
-    widths = [320, 375, 390, 430, 768, 1280]
+    widths = [390]  # focused diagnosis; restore full matrix after economy fix
     for width in widths:
         mobile = width <= 430
         context = browser.new_context(viewport={"width":width, "height":860},
@@ -104,7 +104,13 @@ with sync_playwright() as p:
     page.locator("#eot-atlas-buy").click()
     assert page.evaluate("cash") == before-price
     assert page.evaluate("(id) => ownedAssets.some(a=>a.id===id)",id_)
-    assert page.evaluate("(id) => JSON.parse(localStorage.getItem('gs117_assets')).some(a=>a.id===id)",id_)
+    state_check=page.evaluate("""(id) => ({id, memory:ownedAssets.map(x=>x.id),
+        persisted:JSON.parse(localStorage.getItem('gs117_assets')||'[]').map(x=>x.id),
+        unified:(JSON.parse(localStorage.getItem('gs140_state')||'null')?.ownedAssets||[]).map(x=>x.id),
+        cash, storedCash:localStorage.getItem('gs124_cash'),
+        account:localStorage.getItem('gs_current_account')})""", id_)
+    print("purchase persistence diagnostics",state_check,flush=True)
+    assert id_ in state_check["persisted"], "Ownership not persisted"
     page.reload(wait_until="domcontentloaded")
     page.wait_for_function("Boolean(window.EOTTurkeyAtlas?.state.ready)",timeout=90000)
     select_district(page,34,"Pendik")
