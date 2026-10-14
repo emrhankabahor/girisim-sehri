@@ -6,6 +6,8 @@ on:
       - 'src/**'
       - '*.js'
       - '*.css'
+      - 'index.html'
+      - 'tests/*.test.cjs'
       - 'content-*.html'
       - 'tools/build_menu_sources.py'
       - 'tools/migrate_menu_sources.py'

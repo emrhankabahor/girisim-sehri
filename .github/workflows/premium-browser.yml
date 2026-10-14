@@ -5,6 +5,9 @@ on:
     paths:
       - 'premium-menus-v289.js'
       - 'premium-menus-v289.css'
+      - 'menu-background-v295.css'
+      - 'assets/menu-background-v295.jpg'
+      - 'index.html'
       - 'tools/test_premium_menus.py'
       - '.github/workflows/premium-browser.yml'
   workflow_dispatch:
