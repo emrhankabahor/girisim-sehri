@@ -51,6 +51,14 @@ with sync_playwright() as p:
         page = context.new_page()
         wait_for_game(page)
         assert page.locator("#eot-atlas-map [data-province-id]").count() == 81
+        label_check=page.evaluate("""() => {
+          const all=[...document.querySelectorAll('#eot-atlas-map [data-province-id]')];
+          return all.filter(g=>{
+            const p=g.querySelector('path'),t=g.querySelector('text');
+            return !p.isPointInFill(new DOMPoint(+t.getAttribute('x'),+t.getAttribute('y')));
+          }).map(g=>g.getAttribute('aria-label'));
+        }""")
+        assert not label_check, f"Labels outside own province boundaries at {width}: {label_check}"
         measurements=page.evaluate("""() => {
           const m=document.querySelector('#eot-atlas-map').getBoundingClientRect();
           const nav=document.querySelector('.bottom-nav').getBoundingClientRect();
@@ -69,6 +77,38 @@ with sync_playwright() as p:
         assert page.evaluate("EOTTurkeyAtlas.state.zoom") == 8
         page.locator("#eot-atlas-reset").click()
         assert page.evaluate("EOTTurkeyAtlas.state.zoom") == 1
+        if width == 390:
+            svg=page.locator("#eot-atlas-map")
+            bounds=svg.bounding_box()
+            cx,cy=bounds["x"]+bounds["width"]*.5,bounds["y"]+bounds["height"]*.5
+            cdp=context.new_cdp_session(page)
+            def fingers(spacing):
+                return [{"x":cx-spacing,"y":cy,"id":1},{"x":cx+spacing,"y":cy,"id":2}]
+            cdp.send("Input.dispatchTouchEvent",{"type":"touchStart","touchPoints":fingers(30)})
+            for distance in (34,43,55,70):
+                cdp.send("Input.dispatchTouchEvent",{"type":"touchMove","touchPoints":fingers(distance)})
+                page.wait_for_timeout(35)
+            cdp.send("Input.dispatchTouchEvent",{"type":"touchEnd","touchPoints":[]})
+            page.wait_for_timeout(250)
+            assert page.evaluate("EOTTurkeyAtlas.state.zoom")>1.1, "Two-finger pinch failed"
+            assert page.evaluate("EOTTurkeyAtlas.state.province") is None, "Pinch accidentally selected a province"
+            page.locator("#eot-atlas-reset").click()
+            assert page.evaluate("EOTTurkeyAtlas.state.zoom")==1
+        if width==1280:
+            svg=page.locator("#eot-atlas-map")
+            box=svg.bounding_box()
+            x,y=box["x"]+box["width"]/2,box["y"]+box["height"]/2
+            page.mouse.move(x,y)
+            page.mouse.wheel(0,-400)
+            page.wait_for_timeout(100)
+            assert page.evaluate("EOTTurkeyAtlas.state.zoom")>1, "Mouse wheel zoom failed"
+            before_view=svg.get_attribute("viewBox")
+            page.mouse.move(x,y)
+            page.mouse.down()
+            page.mouse.move(x+90,y+40,steps=5)
+            page.mouse.up()
+            assert svg.get_attribute("viewBox")!=before_view, "Desktop map drag failed"
+            page.locator("#eot-atlas-reset").click()
         search = page.locator("#eot-atlas-search")
         search.fill("ISTANBUL")
         assert page.locator('#eot-atlas-suggestions button').count() >= 1
