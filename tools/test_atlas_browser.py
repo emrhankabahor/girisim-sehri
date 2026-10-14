@@ -50,12 +50,17 @@ with sync_playwright() as p:
         page = context.new_page()
         wait_for_game(page)
         assert page.locator("#eot-atlas-map [data-province-id]").count() == 81
-        assert page.evaluate("""() => {
+        measurements=page.evaluate("""() => {
           const m=document.querySelector('#eot-atlas-map').getBoundingClientRect();
           const nav=document.querySelector('.bottom-nav').getBoundingClientRect();
-          return document.documentElement.scrollWidth<=innerWidth+2 && m.width>0 && m.left>=-1 &&
-                 m.right<=innerWidth+2 && nav.left>=-1 && nav.right<=innerWidth+2;
-        }"""), "Horizontal overflow at "+str(width)
+          return {innerWidth,scrollWidth:document.documentElement.scrollWidth,bodyScroll:document.body.scrollWidth,
+                  map:[m.left,m.right,m.width,m.height],nav:[nav.left,nav.right,nav.width],
+                  hash:location.hash,cityDisplay:getComputedStyle(document.querySelector('#city')).display,
+                  cityVisible:document.querySelector('#city').classList.contains('active')};
+        }""")
+        print(f"viewport {width}: layout metrics = {measurements}",flush=True)
+        page.screenshot(path=str(SCREENSHOTS / ("atlas-debug-"+str(width)+".png")), full_page=False)
+        assert measurements["scrollWidth"]<=measurements["innerWidth"]+2 and measurements["map"][2]>0 and measurements["map"][0]>=-1 and measurements["map"][1]<=measurements["innerWidth"]+2 and measurements["nav"][0]>=-1 and measurements["nav"][1]<=measurements["innerWidth"]+2, "Layout failed at "+str(width)
         before = page.evaluate("EOTTurkeyAtlas.state.zoom")
         page.locator("#eot-atlas-zoom-in").click()
         assert page.evaluate("EOTTurkeyAtlas.state.zoom") > before
