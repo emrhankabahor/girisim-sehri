@@ -41,7 +41,7 @@ def select_district(page, province_id, district):
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
-    widths = [390]  # focused diagnosis; restore full matrix after economy fix
+    widths = [320, 375, 390, 430, 768, 1280]
     for width in widths:
         mobile = width <= 430
         context = browser.new_context(viewport={"width":width, "height":860},
@@ -110,16 +110,21 @@ with sync_playwright() as p:
         cash, storedCash:localStorage.getItem('gs124_cash'),
         account:localStorage.getItem('gs_current_account')})""", id_)
     print("purchase persistence diagnostics",state_check,flush=True)
-    assert id_ in state_check["persisted"], "Ownership not persisted"
+    assert id_ in state_check["unified"], "Purchase missing from unified career state"
+    assert page.evaluate("JSON.parse(localStorage.getItem('gs140_state')).cash") == before-price
+    # Legacy keys may be batched by the game's persistence dedupe layer.
+    # Reload must still preserve the canonical unified-state transaction.
     page.reload(wait_until="domcontentloaded")
     page.wait_for_function("Boolean(window.EOTTurkeyAtlas?.state.ready)",timeout=90000)
     select_district(page,34,"Pendik")
     assert page.evaluate("(id) => ownedAssets.some(a=>a.id===id)",id_), "Ownership not restored after reload"
+    assert page.evaluate("cash") == before-price, "Cash not restored after reload"
     page.locator("#eot-atlas-plots .eot-tr-plot button").first.click()
     page.locator("#eot-atlas-sell").click()
     assert not page.evaluate("(id) => ownedAssets.some(a=>a.id===id)",id_)
     assert page.evaluate("cash") == before-price+round(price*.9)
-    assert not page.evaluate("(id) => JSON.parse(localStorage.getItem('gs117_assets')).some(a=>a.id===id)",id_)
+    assert not page.evaluate("(id) => JSON.parse(localStorage.getItem('gs140_state')).ownedAssets.some(a=>a.id===id)",id_)
+    assert page.evaluate("JSON.parse(localStorage.getItem('gs140_state')).cash") == before-price+round(price*.9)
     print("economy: purchase -> cash decrease -> ownership -> reload -> sale -> cash increase OK",flush=True)
 
     # Desktop pointer drag, wheel and mobile touch gesture are verified by the event handlers
