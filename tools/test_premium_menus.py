@@ -1,4 +1,4 @@
-"""Real Chromium layout and functionality checks for Empire of Trade v294 menus."""
+"""Real Chromium layout and functionality checks for Empire of Trade v295 menus."""
 import functools
 import http.server
 import pathlib
@@ -10,7 +10,7 @@ SHOTS.mkdir(exist_ok=True)
 handler=functools.partial(http.server.SimpleHTTPRequestHandler,directory=str(ROOT))
 server=http.server.ThreadingHTTPServer(("127.0.0.1",8766),handler)
 threading.Thread(target=server.serve_forever,daemon=True).start()
-BASE="http://127.0.0.1:8766/?v=294"
+BASE="http://127.0.0.1:8766/?v=295"
 SEED="""(() => {
  if(!localStorage.getItem('eot_premium_smoke_seeded')){
  localStorage.setItem('gs_current_account',JSON.stringify({id:'guest',name:'Arayüz Test Oyuncusu',provider:'guest'}));
@@ -38,7 +38,8 @@ def measure(page,width,route):
    appPaddingTop:parseFloat(getComputedStyle(document.querySelector('#app-root .app')).paddingTop),
    heroShown:getComputedStyle(document.querySelector('#eot-v289-hero')).display!=='none',
    topbarHidden:getComputedStyle(document.querySelector('.topbar')).display==='none',
-   screenVisible:getComputedStyle(screen).display!=='none'};
+   screenVisible:getComputedStyle(screen).display!=='none',
+   appBackground:getComputedStyle(document.querySelector('#app-root .app')).backgroundImage};
  }""")
  assert result["scrollWidth"]<=width+3 and result["bodyScrollWidth"]<=width+3,(width,route,result)
  assert result["hero"][0]>=-1 and result["hero"][1]<=width+2,(width,route,result)
@@ -47,6 +48,7 @@ def measure(page,width,route):
  assert result["nav"][2]<=90,(width,route,result)
  assert result["heroShown"] and result["topbarHidden"] and result["screenVisible"],(width,route,result)
  assert result["legacyVisible"]==0,(width,route,result)
+ assert 'menu-background-v295.jpg' in result["appBackground"],(width,route,result)
  assert result["appPaddingTop"]==0,(width,route,result)
  if width>=1024: assert result["viewDisplay"]=="grid",(width,route,result)
  return result
@@ -61,7 +63,9 @@ with sync_playwright() as p:
   errors=[]
   page.on("pageerror",lambda e:errors.append(str(e)+" | STACK: "+str(getattr(e,"stack",""))))
   wait(page)
-  assert page.locator(".eot-v289-hero-logo").is_visible()
+  page.wait_for_function("getComputedStyle(document.querySelector('#app-root .app')).backgroundImage.includes('menu-background-v295.jpg')",timeout=15000)
+  assert not page.locator(".eot-v289-hero-logo").is_visible(),"Background already contains the Empire of Trade logo"
+  assert page.evaluate("""async () => { const img=new Image(); return await new Promise(done=>{img.onload=()=>done(img.naturalWidth===710 && img.naturalHeight===1536);img.onerror=()=>done(false);img.src='./assets/menu-background-v295.jpg'}); }"""),"v295 background failed to load"
   assert page.locator(".eot-v289-hero-logo").evaluate("(e)=>e.complete&&e.naturalWidth>0"),"Game logo missing"
   for route in ["home","market","business","finance","profile"]:
    page.evaluate("(name)=>{location.hash='#'+name}",route)
@@ -92,6 +96,7 @@ with sync_playwright() as p:
   page.evaluate("location.hash='#city'")
   page.wait_for_function("document.body.dataset.v289Route==='other'")
   assert not page.locator("#eot-v289-hero").is_visible(),"Hero leaked into map route"
+  assert "menu-background-v295.jpg" not in page.evaluate("getComputedStyle(document.querySelector('#app-root .app')).backgroundImage"),"Shared background leaked into atlas"
   assert page.locator("#eot-atlas-map").count()==1,"Atlas not preserved"
   assert page.locator("#eot-atlas-map").is_visible()
   assert not errors, (width,errors[:8])
