@@ -21,7 +21,18 @@ SEED="""(() => {
 })()"""
 def wait(page):
  page.goto(BASE+"#home",wait_until="domcontentloaded",timeout=90000)
- page.wait_for_function("window.__EOT_NATIVE_READY__ === true && !!window.EOTShowcaseV289 && !!document.querySelector('#home .eot-v289-view')",timeout=90000)
+ page.wait_for_timeout(6500)
+ details=page.evaluate("""() => ({
+  url:location.href,ready:window.__EOT_NATIVE_READY__,showcase:!!window.EOTShowcaseV289,
+  view:!!document.querySelector('#home .eot-v289-view'),root:!!document.querySelector('#app-root .app'),
+  home:!!document.querySelector('#home'),hash:location.hash,
+  body:document.body.className,boot:document.documentElement.className,
+  company:!!document.querySelector('#eotCompanySetup.show'),
+  splash:!!document.querySelector('#eotStartupSplash'),
+  version:localStorage.getItem('gs140_state')?.slice(0,100)
+ })""")
+ print("premium bootstrap diagnostics",details,flush=True)
+ page.wait_for_function("!!window.EOTShowcaseV289 && !!document.querySelector('#home .eot-v289-view')",timeout=18000)
  page.wait_for_timeout(600)
 
 def measure(page,width,route):
