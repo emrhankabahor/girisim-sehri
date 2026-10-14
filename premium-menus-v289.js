@@ -15,7 +15,7 @@ const category=[
 let mounted=false,previousRoute='',lastActivities='',lastBusiness='';
 const by=id=>document.getElementById(id);
 const format=n=>'₺'+Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:0});
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const val=(f,fallback=0)=>{try{return f()}catch(e){return fallback}};
 const num=(f)=>Number(val(f,0))||0;
 const txt=(id,value)=>{const n=by(id);if(n&&n.textContent!==String(value))n.textContent=String(value)};
