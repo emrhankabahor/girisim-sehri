@@ -195,3 +195,83 @@ body.eot-v289-main:not(.eot-setting-up) #eot-v289-hero{display:block!important}
 body.eot-v289-main:not(.eot-setting-up) #eot-v289-strip{display:grid!important}
 body.eot-v289-main .eot-v289-view a:focus-visible,
 body.eot-v289-main .eot-v289-view button:focus-visible{outline:2px solid #fff0aa!important;outline-offset:3px!important}
+
+
+/* v292 — closer 5-menu reference geometry; no behavior or state changes. */
+@media(max-width:480px){
+ body.eot-v289-main:not(.eot-setting-up) .app>.eot-v289-hero{
+  height:clamp(145px,40vw,183px)!important;
+  background-position:center 42%!important;
+ }
+ body.eot-v289-main .eot-v289-hero-logo{
+  top:46%!important;width:clamp(162px,48vw,220px)!important;
+  height:clamp(98px,29vw,136px)!important;
+ }
+ body.eot-v289-main .eot-v289-strip{min-height:59px!important;margin:-3px 0 8px!important;padding:5px 3px!important}
+ body.eot-v289-main .eot-v289-panel{margin:8px 0 10px!important;padding:9px 8px 10px!important}
+ body.eot-v289-main .eot-v289-panel-head{padding-bottom:6px!important}
+ body.eot-v289-main .eot-v289-finance-card{min-height:159px!important}
+ body.eot-v289-main .eot-v289-category{min-height:105px!important}
+}
+/* Gold-lined engraved title plaque mirrors the chosen game mockups. */
+body.eot-v289-main .eot-v289-page-title{
+ box-sizing:border-box!important;
+ width:min(77%,450px)!important;
+ margin:6px auto 12px!important;
+ padding:5px 11px!important;
+ font-size:clamp(20px,6.5vw,31px)!important;
+ line-height:1.2!important;
+ color:#ffe086!important;
+ border:1.5px solid #dfb564!important;
+ border-radius:50% / 44%!important;
+ background:linear-gradient(175deg,#144e94 0%,#061d47 48%,#06173b 80%)!important;
+ box-shadow:inset 0 2px #b3e8ff5e,inset 0 -3px #0007,0 3px 0 #b78e40,0 5px 10px #0008,0 0 10px #e3a85170!important;
+ text-shadow:0 2px #563009,0 0 8px #e1a3389c!important;
+}
+body.eot-v289-main .eot-v289-page-title::before,
+body.eot-v289-main .eot-v289-page-title::after{
+ content:"";position:absolute;top:54%;height:2px;width:18%;
+ background:linear-gradient(90deg,transparent,#e9c275);
+}
+body.eot-v289-main .eot-v289-page-title::before{right:100%}
+body.eot-v289-main .eot-v289-page-title::after{left:100%;transform:rotate(180deg)}
+@media(min-width:345px) and (max-width:767px){
+ body.eot-v289-main .eot-v289-market-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+ }
+ body.eot-v289-main .eot-v289-market-grid a{
+  border-width:1.5px!important;border-radius:11px!important;padding-bottom:8px!important;
+ }
+ body.eot-v289-main .eot-v289-market-grid .eot-v289-market-visual{height:clamp(65px,19vw,88px)!important}
+ body.eot-v289-main .eot-v289-market-grid .eot-v289-market-visual .eot-v289-ico{
+  width:clamp(52px,15vw,77px)!important;
+  height:clamp(57px,16vw,72px)!important;
+  font-size:clamp(29px,9vw,43px)!important;
+ }
+ body.eot-v289-main .eot-v289-market-grid a>b{
+  margin:6px 5px 3px!important;font-size:clamp(10px,2.65vw,12px)!important;
+  min-height:24px;line-height:1.15;
+ }
+ body.eot-v289-main .eot-v289-market-grid a>small{
+  margin:0 5px!important;
+  font-size:clamp(8px,2.1vw,10px)!important;
+  line-height:1.25!important;
+  padding-right:9px!important;
+ }
+ body.eot-v289-main .eot-v289-market-grid a>strong{font-size:17px!important;right:4px!important;bottom:1px!important}
+}
+@media(max-width:344px){
+ body.eot-v289-main .eot-v289-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+body.eot-v289-main .eot-v289-category .eot-v289-ico,
+body.eot-v289-main .eot-v289-business-card .eot-v289-ico{
+ background:radial-gradient(ellipse at 50% 22%,#398cda9c,transparent 66%),linear-gradient(160deg,#1465a9,#051a44)!important;
+ border-color:#e3b96c8a!important;
+ box-shadow:inset 0 2px #d8f5ff6b,inset 0 -4px #030e2d,0 5px 9px #000a,0 0 12px #2fb5ff68!important;
+ filter:drop-shadow(0 3px 2px #000a);
+}
+body.eot-v289-main .eot-v289-finance-card,
+body.eot-v289-main .eot-v289-panel{
+ box-shadow:inset 0 2px #bdeeff73,inset 0 -3px #0007,0 5px 12px #000a,0 0 13px #ffcb6a4a!important;
+}

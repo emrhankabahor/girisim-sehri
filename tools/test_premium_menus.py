@@ -10,12 +10,12 @@ SHOTS.mkdir(exist_ok=True)
 handler=functools.partial(http.server.SimpleHTTPRequestHandler,directory=str(ROOT))
 server=http.server.ThreadingHTTPServer(("127.0.0.1",8766),handler)
 threading.Thread(target=server.serve_forever,daemon=True).start()
-BASE="http://127.0.0.1:8766/?v=291"
+BASE="http://127.0.0.1:8766/?v=292"
 SEED="""(() => {
  if(!localStorage.getItem('eot_premium_smoke_seeded')){
  localStorage.setItem('gs_current_account',JSON.stringify({id:'guest',name:'Arayüz Test Oyuncusu',provider:'guest'}));
  localStorage.setItem('gs124_cash','180000000');
- localStorage.setItem('gs132_sim',JSON.stringify({companyName:'Premium Test Şirketi',companyProfile:{established:true,name:'Premium Test Şirketi',city:'İstanbul',legalType:'Anonim Şirketi (A.Ş.)',capital:180000000,companyCash:0},companies:[],notifications:[],employees:[],monthlyHistory:[],gameMonth:1,currentMonth:{revenue:0,expense:0,tax:0},cycleDue:Date.now()+300000}));
+ localStorage.setItem('gs132_sim',JSON.stringify({companyName:'Premium Test Şirketi',companyProfile:{established:true,name:'Premium Test Şirketi',city:'İstanbul',legalType:'Anonim Şirketi (A.Ş.)',capital:180000000,companyCash:0},companies:[],notifications:[],npcOffers:[],npcRefresh:0,employees:[],monthlyHistory:[],gameMonth:1,currentMonth:{revenue:0,expense:0,tax:0},cycleDue:Date.now()+300000}));
  localStorage.setItem('eot_premium_smoke_seeded','1');
  }
 })()"""
