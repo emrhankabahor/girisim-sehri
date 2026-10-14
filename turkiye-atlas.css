@@ -1,0 +1,78 @@
+/* Empire of Trade Türkiye Atlası v288 — game native, responsive, no overlays on other routes. */
+#city.eot-atlas-active> :not(.panel-head):not(#eot-atlas-root){display:none!important}
+#city.eot-atlas-active{min-width:0;max-width:100%;overflow-x:clip}
+#eot-atlas-root{width:100%;max-width:100%;min-width:0;box-sizing:border-box;color:#f8f2e7;padding-bottom:22px}
+#eot-atlas-root *,#eot-atlas-dialog *{box-sizing:border-box}
+#eot-atlas-root .eot-tr-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0 7px}
+#eot-atlas-root .eot-tr-heading>span{font-size:clamp(11px,3.1vw,15px);color:#f5d38f;font-weight:900;letter-spacing:.09em}
+#eot-atlas-root .eot-tr-heading>b{font-size:11px;color:#95d4f5;border:1px solid #5484bb66;background:#102e53;padding:7px 9px;border-radius:999px}
+#eot-atlas-root .eot-tr-caption{margin:0 0 14px;color:#b9cfe9;font-size:clamp(11px,2.7vw,13px);line-height:1.5}
+#eot-atlas-root .eot-tr-map-card{background:radial-gradient(ellipse at 55% 5%,#1c4d88 0%,#0a2349 70%);border:1px solid #77a9e375;border-radius:20px;overflow:hidden;box-shadow:inset 0 2px #c1dfff24,0 9px 22px #0008}
+#eot-atlas-root .eot-tr-map-top{display:flex;align-items:center;justify-content:space-between;padding:12px 13px 6px;gap:8px}
+#eot-atlas-root .eot-tr-map-top strong{font-size:16px;letter-spacing:.01em;color:#ffdfa0}
+#eot-atlas-root .eot-tr-map-top span{font-size:10px;color:#aed1f4;text-align:right}
+#eot-atlas-root .eot-tr-canvas{position:relative;width:100%;aspect-ratio:2.07/1;min-height:170px;max-height:370px;overflow:hidden;background:radial-gradient(ellipse at center,#16416f8c,#091b3c48);border-block:1px solid #82b1da19}
+#eot-atlas-root #eot-atlas-map{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;outline:none}
+#eot-atlas-root #eot-atlas-map:active{cursor:grabbing}
+#eot-atlas-root .eot-tr-province{transition:fill .16s,stroke .16s;cursor:pointer}
+#eot-atlas-root [data-province-id]:hover .eot-tr-province{fill:#256caa;stroke:#9dd9ff}
+#eot-atlas-root [data-province-id].selected .eot-tr-province{fill:#d8a43e;stroke:#fff1b6;stroke-width:1.4}
+#eot-atlas-root [data-province-id]:focus-visible{outline:none}
+#eot-atlas-root [data-province-id]:focus-visible .eot-tr-province{stroke:#fff;stroke-width:2}
+#eot-atlas-root .eot-tr-label{fill:#f3f8ff;font-family:system-ui,sans-serif;font-weight:750;paint-order:stroke fill;stroke:#052043;stroke-width:2.25;stroke-linejoin:round;pointer-events:none;user-select:none}
+#eot-atlas-root [data-province-id].selected .eot-tr-label{fill:#082647;stroke:#ffebaf;stroke-width:1.3;font-weight:900}
+#eot-atlas-root .eot-tr-controls{display:flex;align-items:center;gap:8px;padding:10px 12px}
+#eot-atlas-root .eot-tr-controls button{flex:0 0 37px;height:37px;min-width:0;border:1px solid #84b5e575;border-radius:12px;background:linear-gradient(140deg,#285689,#13355d);color:#fdf1d5;font-size:20px;font-weight:800;box-shadow:inset 0 1px #d2f0ff38,0 3px 8px #0004}
+#eot-atlas-root .eot-tr-controls button:last-child{flex:1 1 auto;font-size:clamp(10px,2.6vw,12px);line-height:1.1;background:linear-gradient(150deg,#f7dfa0,#dfb44a);border-color:#ffe3a5;color:#152c47;white-space:normal}
+#eot-atlas-root .eot-tr-controls #eot-atlas-zoom{margin:auto;color:#d6e7fc;font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#eot-atlas-root .eot-tr-search-label{display:block;margin:17px 0 7px;color:#ebd094;font-size:12px;font-weight:850}
+#eot-atlas-root #eot-atlas-search,#eot-atlas-root #eot-atlas-districts{display:block;width:100%;min-width:0;max-width:100%;height:44px;border:1px solid #6e9ed5a1;border-radius:13px;background:#0b2348;color:#f4f8ff;padding:0 12px;font-size:16px;outline-color:#f7d47f}
+#eot-atlas-root input::placeholder{color:#8daeca}
+#eot-atlas-root #eot-atlas-districts:disabled{opacity:.5}
+#eot-atlas-root .eot-tr-suggestions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:6px;margin-top:8px;max-height:150px;overflow-y:auto}
+#eot-atlas-root .eot-tr-suggestions:empty{display:none}
+#eot-atlas-root .eot-tr-suggestions button{min-height:36px;padding:7px 9px;background:#15375e;color:#dbeafa;border:1px solid #7fbae24a;border-radius:10px;text-align:left;font-weight:700;font-size:12px}
+#eot-atlas-root .eot-tr-suggestions p{font-size:12px;color:#ffda9a;grid-column:1/-1}
+#eot-atlas-root .eot-tr-location{margin-top:13px;padding:14px;border:1px solid #4c87ba72;border-radius:17px;background:linear-gradient(160deg,#163b6d,#0a2249);box-shadow:inset 0 1px #dbf5ff22}
+#eot-atlas-root .eot-tr-location strong{display:block;color:#ffe19f;font-size:17px;margin-bottom:10px;overflow-wrap:anywhere}
+#eot-atlas-root .eot-tr-location label{display:block;margin-bottom:6px;color:#bad2e8;font-size:11px;font-weight:850}
+#eot-atlas-root .eot-tr-info{margin:13px 0;color:#b8d3ee;line-height:1.45;font-size:12px;min-height:20px}
+#eot-atlas-root .eot-tr-plots{display:grid;gap:9px}
+#eot-atlas-root .eot-tr-plots-title{color:#ffdd91;font-weight:900;margin:5px 0 2px;font-size:14px}
+#eot-atlas-root .eot-tr-empty{padding:16px 13px;border-radius:15px;background:#132b51;border:1px solid #82b0d752;font-size:12px;color:#c2d7f0;line-height:1.5}
+#eot-atlas-root .eot-tr-plot{min-width:0;border:1px solid #6299cf86;background:linear-gradient(145deg,#153d71,#0a234d);border-radius:16px;padding:13px}
+#eot-atlas-root .eot-tr-plot-title{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+#eot-atlas-root .eot-tr-plot-title strong{font-size:14px;overflow-wrap:anywhere}
+#eot-atlas-root .eot-tr-plot-title span{flex:0 0 auto;font-size:10px;border:1px solid #74b4ed66;border-radius:999px;background:#0c344f;color:#97e8e7;padding:4px 7px}
+#eot-atlas-root .eot-tr-plot-title span.mine{background:#544116;color:#ffdc89;border-color:#ccaa5d8c}
+#eot-atlas-root .eot-tr-plot p{color:#bed3e9;font-size:12px;margin:8px 0}
+#eot-atlas-root .eot-tr-plot-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#eot-atlas-root .eot-tr-plot-bottom b{font-size:14px;color:#ffe3a4;overflow-wrap:anywhere}
+#eot-atlas-root .eot-tr-plot-bottom button{min-height:35px;border-radius:10px;border:1px solid #fbe0a7;background:linear-gradient(#ffe6ac,#e9b953);color:#0b2849;font-weight:900;padding:7px 12px}
+#eot-atlas-root .eot-tr-source{font-size:10px;color:#8fa9c9;margin-top:16px;line-height:1.5}
+#eot-atlas-dialog[hidden]{display:none!important}
+#eot-atlas-dialog{position:fixed;inset:0;z-index:2147483100;background:rgba(0,9,28,.78);display:grid;align-items:end;justify-items:center;padding:12px 12px calc(16px + env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain}
+#eot-atlas-dialog .eot-tr-modal-card{width:min(100%,470px);max-height:min(88dvh,680px);overflow-y:auto;overscroll-behavior:contain;padding:18px;border-radius:21px;border:1px solid #e2bf77;background:linear-gradient(165deg,#194778,#071b3b);box-shadow:0 20px 60px #000b,inset 0 1px #dff6ff2b;color:#fff8e9}
+#eot-atlas-dialog .eot-tr-modal-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+#eot-atlas-dialog .eot-tr-modal-head strong{font-size:clamp(16px,4.4vw,21px);line-height:1.3;overflow-wrap:anywhere}
+#eot-atlas-dialog .eot-tr-close{flex:0 0 36px;height:36px;border:1px solid #8db3d37d;border-radius:10px;color:#fff;background:#29466d;font-size:24px}
+#eot-atlas-dialog p{font-size:13px;color:#bed6ec;line-height:1.4;margin:13px 0}
+#eot-atlas-dialog .eot-tr-detail-price{color:#ffe2a0;font-size:clamp(21px,6vw,29px);font-weight:900;margin:10px 0}
+#eot-atlas-dialog #eot-atlas-buy,#eot-atlas-dialog #eot-atlas-sell{display:block;width:100%;min-height:46px;background:linear-gradient(#ffe4aa,#eabb51);color:#102c49;border:1px solid #fff2ce;border-radius:12px;font-size:14px;font-weight:900;margin-top:12px}
+#eot-atlas-dialog #eot-atlas-buy[hidden],#eot-atlas-dialog #eot-atlas-sell[hidden]{display:none!important}
+#eot-atlas-dialog #eot-atlas-buy:disabled{opacity:.46}
+#eot-atlas-dialog #eot-atlas-legacy-route{display:block;margin-top:15px;font-size:12px;color:#97daf5;text-align:center}
+@media(max-width:375px){
+ #eot-atlas-root .eot-tr-canvas{min-height:145px}
+ #eot-atlas-root .eot-tr-controls{gap:6px;padding:8px}
+ #eot-atlas-root .eot-tr-controls button{flex-basis:32px;height:34px}
+ #eot-atlas-root .eot-tr-plot-bottom button{padding:7px 9px}
+ #eot-atlas-dialog{padding:8px 8px calc(12px + env(safe-area-inset-bottom,0px))}
+}
+@media(min-width:768px){
+ #eot-atlas-root .eot-tr-canvas{aspect-ratio:2.25/1}
+ #eot-atlas-dialog{align-items:center}
+}
+@media(prefers-reduced-motion:reduce){
+ #eot-atlas-root .eot-tr-province{transition:none}
+}

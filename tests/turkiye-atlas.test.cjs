@@ -1,0 +1,50 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'..'),load=p=>fs.readFileSync(path.join(root,p),'utf8');
+const provinces=JSON.parse(load('assets/turkiye-il-bilgileri.json'));
+const districts=JSON.parse(load('assets/turkiye-ilceler.json'));
+const geometry=JSON.parse(load('assets/turkiye-iller.geojson'));
+const atlas=load('turkiye-atlas.js'),css=load('turkiye-atlas.css');
+test('81 real province boundaries, 81 plate mappings, and 973 offline districts',()=>{
+ assert.equal(provinces.length,81);assert.equal(districts.length,973);assert.equal(geometry.features.length,81);
+ assert.equal(new Set(provinces.map(x=>x.id)).size,81);
+ assert.equal(new Set(geometry.features.map(x=>x.properties.plaka)).size,81);
+ const codes=new Set(provinces.map(x=>x.id));
+ assert(districts.every(x=>codes.has(x.province_id)));
+ assert(geometry.features.every(x=>codes.has(x.properties.plaka)));
+ assert.equal(geometry.features.find(x=>x.properties.plaka===34).geometry.type,'MultiPolygon');
+ for(const [pid,name] of [[34,'Pendik'],[6,'Çankaya'],[35,'Karşıyaka']])assert(districts.some(x=>x.province_id===pid&&x.name===name));
+});
+test('map uses unified SVG geometry and labels, 1x-8x zoom, no external provider',()=>{
+ assert(atlas.includes("const BASE={x:0,y:0,w:1040,h:470}"));
+ assert(atlas.includes('svg.setAttribute(\'viewBox\''));
+ assert(atlas.includes('const xy=labelPosition(f)'));
+ assert(atlas.includes('Math.max(1,Math.min(8,next))'));
+ assert(atlas.includes('document.elementFromPoint'));
+ assert(atlas.includes("state.pointers.size>=2"));
+ assert(atlas.includes("'wheel'"));
+ assert(atlas.includes('window.EOTTurkeyAtlas'));
+ assert(!atlas.includes('api.mapbox.com'));
+});
+test('existing game economy owns purchase, sale and career save; no demo wallet',()=>{
+ for(const token of ['ownedAssets','buyAsset(a.id,a.name,\'Arsa\',a.price)','sellOwned(i)','saveAccountCareer','cash'])assert(atlas.includes(token),token);
+ assert(!atlas.includes('localStorage.setItem('));
+ assert(atlas.includes("a.collateral"));
+ assert(atlas.includes('balance()<a.price'));
+ assert(atlas.includes('linkedDistrict(d)'));
+});
+test('responsive map, dialog, main navigation and full Turkish search',()=>{
+ assert(css.includes('aspect-ratio:2.07/1'));
+ assert(css.includes('touch-action:none'));
+ assert(css.includes('max-height:min(88dvh,680px)'));
+ assert(css.includes('@media(max-width:375px)'));
+ assert(css.includes('@media(min-width:768px)'));
+ assert(atlas.includes(".toLocaleLowerCase('tr-TR')"));
+ assert(atlas.includes('Sonuç bulunamadı'));
+ assert(atlas.includes('state.district=null'));
+ const html=load('index.html'),sw=load('sw.js');
+ assert(html.includes('turkiye-atlas.js?v=288'));
+ assert(html.includes('turkiye-atlas.css?v=288'));
+ assert(sw.includes('turkiye-atlas.js?v=288'));
+ assert.equal(load('src/ortak/eklentiler/sw.js'),sw);
+});
