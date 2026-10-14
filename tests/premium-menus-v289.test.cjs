@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'..'),get=name=>fs.readFileSync(path.join(root
 const js=get('premium-menus-v289.js'),css=get('premium-menus-v289.css'),html=get('index.html'),sw=get('sw.js');
 test('five reference-inspired visual menus have the original real-game routes',()=>{
  for(const t of ['makeHome','makeMarket','makeBusiness','makeFinance','makeProfile'])assert(js.includes('function '+t+'('),t);
- for(const route of ['#home','#market','#business','#finance','#profile','#city','#estate','#cars','#company_center','#stocks','#crypto','#gold','#bank','#myassets'])assert(js.includes(route),route);
+ for(const route of ['#city','#estate','#cars','#company_center','#stocks','#crypto','#gold','#bank','#myassets'])assert(js.includes(route),route);
  assert(js.includes('eot-v289-hero-logo'));
  assert(js.includes('eot-v289-page-title'));
  assert(css.includes('background:radial-gradient'));

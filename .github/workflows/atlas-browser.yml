@@ -4,6 +4,10 @@ on:
     branches: [main]
     paths:
       - 'turkiye-atlas.js'
+      - 'premium-menus-v289.js'
+      - 'premium-menus-v289.css'
+      - 'tests/premium-menus-v289.test.cjs'
+      - 'tools/test_premium_menus.py'
       - 'turkiye-atlas.css'
       - 'assets/turkiye-*'
       - 'tests/turkiye-atlas.test.cjs'
@@ -27,9 +31,13 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Validate mobile layouts, province/district flow and economy
         run: python tools/test_atlas_browser.py
+      - name: Validate all five redesigned game menus
+        run: python tools/test_premium_menus.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: atlas-viewport-screenshots
-          path: atlas-test-screenshots/*.png
+          path: |
+            atlas-test-screenshots/*.png
+            premium-menu-screenshots/*.png
           if-no-files-found: ignore
