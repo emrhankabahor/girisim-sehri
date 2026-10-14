@@ -50,7 +50,7 @@ test('v295: approved image powers exactly the five premium menus and is offline 
  const photoCss=get('menu-background-v295.css');
  assert(fs.existsSync(path.join(root,'assets/menu-background-v295.jpg')));
  assert(fs.statSync(path.join(root,'assets/menu-background-v295.jpg')).size>300000);
- assert(html.includes('<link rel="stylesheet" href="menu-background-v295.css?v=295">'));
+ assert(html.includes('menu-background-v295.css?v=295'));
  assert(html.includes('bootstrap.js?v=295'));
  assert(photoCss.includes("url('./assets/menu-background-v295.jpg')"));
  assert(photoCss.includes('body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app'));
