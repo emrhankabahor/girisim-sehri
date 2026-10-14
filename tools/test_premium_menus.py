@@ -10,7 +10,7 @@ SHOTS.mkdir(exist_ok=True)
 handler=functools.partial(http.server.SimpleHTTPRequestHandler,directory=str(ROOT))
 server=http.server.ThreadingHTTPServer(("127.0.0.1",8766),handler)
 threading.Thread(target=server.serve_forever,daemon=True).start()
-BASE="http://127.0.0.1:8766/?v=290"
+BASE="http://127.0.0.1:8766/?v=291"
 SEED="""(() => {
  if(!localStorage.getItem('eot_premium_smoke_seeded')){
  localStorage.setItem('gs_current_account',JSON.stringify({id:'guest',name:'Arayüz Test Oyuncusu',provider:'guest'}));

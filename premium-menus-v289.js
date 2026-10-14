@@ -20,14 +20,14 @@ const val=(f,fallback=0)=>{try{return f()}catch(e){return fallback}};
 const num=(f)=>Number(val(f,0))||0;
 const txt=(id,value)=>{const n=by(id);if(n&&n.textContent!==String(value))n.textContent=String(value)};
 const getRoute=()=>location.hash.slice(1)||'home';
-const assetList=()=>val(()=>ownedAssets,[]);
-const coList=()=>val(()=>Array.isArray(sim.companies)?sim.companies:[],[]);
+const assetList=()=>{const arr=val(()=>ownedAssets,[]);return Array.isArray(arr)?arr:[]};
+const coList=()=>{const arr=val(()=>sim.companies,[]);return Array.isArray(arr)?arr:[]};
 const data=()=>({
  cash:num(()=>cash),worth:num(()=>totalWealth()),credit:num(()=>creditScore),rep:num(()=>reputation),
  debt:num(()=>debt()),stock:num(()=>stats('stock').value),crypto:num(()=>stats('crypto').value),
  gold:num(()=>stats('gold').value),flow:num(()=>operatingSummary().net),
  level:num(()=>gameLevel()),xp:val(()=>by('xpText')?.textContent,'0 / 100 XP'),
- companies:coList(),assets:assetList(),transactions:val(()=>tx,[]),account:val(()=>currentAccount(),null),
+ companies:coList(),assets:assetList(),transactions:Array.isArray(val(()=>tx,[]))?val(()=>tx,[]):[],account:val(()=>currentAccount(),null),
  company:val(()=>sim.companyProfile,null),notifications:val(()=>sim.notifications,[])
 });
 const icon=(emoji,cls='')=>'<span class="eot-v289-ico '+cls+'" aria-hidden="true">'+emoji+'</span>';

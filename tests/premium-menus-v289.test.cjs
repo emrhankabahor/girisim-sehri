@@ -6,6 +6,8 @@ test('five reference-inspired visual menus have the original real-game routes',(
  for(const t of ['makeHome','makeMarket','makeBusiness','makeFinance','makeProfile'])assert(js.includes('function '+t+'('),t);
  for(const route of ['#city','#estate','#cars','#company_center','#stocks','#crypto','#gold','#bank','#myassets'])assert(js.includes(route),route);
  assert(js.includes('eot-v289-hero-logo'));
+ assert(js.includes('Array.isArray(arr)?arr:[]'));
+ assert(js.includes('transactions:Array.isArray'));
  assert(js.includes('eot-v289-page-title'));
  assert(css.includes('background:radial-gradient'));
  assert(css.includes('url(\'./assets/opening-city-v218.webp\')'));
@@ -23,10 +25,10 @@ test('five new menus do not hide or replace company onboarding, land map, or oth
  assert(css.includes('body.eot-setting-up #eot-v289-hero'));
  assert(css.includes('.screen.eot-v289-mounted>*:not(.eot-v289-view)'));
  assert(js.includes("routes=['home','market','business','finance','profile']"));
- assert(html.includes('premium-menus-v289.css?v=290'));
- assert(html.includes('premium-menus-v289.js?v=290'));
- assert(sw.includes('premium-menus-v289.css?v=290'));
- assert(sw.includes('premium-menus-v289.js?v=290'));
+ assert(html.includes('premium-menus-v289.css?v=291'));
+ assert(html.includes('premium-menus-v289.js?v=291'));
+ assert(sw.includes('premium-menus-v289.css?v=291'));
+ assert(sw.includes('premium-menus-v289.js?v=291'));
  assert.equal(sw,get('src/ortak/eklentiler/sw.js'));
 });
 test('compact responsive layouts and native five-tab bar preserved',()=>{
