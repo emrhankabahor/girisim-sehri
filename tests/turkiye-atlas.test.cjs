@@ -29,7 +29,7 @@ test('map uses unified SVG geometry and labels, 1x-8x zoom, no external provider
 test('existing game economy owns purchase, sale and career save; no demo wallet',()=>{
  for(const token of ['ownedAssets','buyAsset(a.id,a.name,\'Arsa\',a.price)','sellOwned(i)','saveAccountCareer','cash'])assert(atlas.includes(token),token);
  assert(!atlas.includes('localStorage.setItem('));
- assert(atlas.includes("a.collateral"));
+ assert(atlas.includes("owned()[i].collateral"));
  assert(atlas.includes('balance()<a.price'));
  assert(atlas.includes('linkedDistrict(d)'));
 });

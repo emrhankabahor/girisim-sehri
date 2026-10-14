@@ -1,0 +1,35 @@
+name: Türkiye atlas browser validation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'turkiye-atlas.js'
+      - 'turkiye-atlas.css'
+      - 'assets/turkiye-*'
+      - 'tests/turkiye-atlas.test.cjs'
+      - 'tools/test_atlas_browser.py'
+      - '.github/workflows/atlas-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Chromium test runner
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Validate mobile layouts, province/district flow and economy
+        run: python tools/test_atlas_browser.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: atlas-viewport-screenshots
+          path: atlas-test-screenshots/*.png
+          if-no-files-found: ignore
