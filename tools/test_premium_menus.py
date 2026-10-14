@@ -22,7 +22,8 @@ SEED="""(() => {
 def wait(page):
  page.goto(BASE+"#home",wait_until="domcontentloaded",timeout=90000)
  page.wait_for_function("window.__EOT_NATIVE_READY__ === true && !!window.EOTShowcaseV289 && !!document.querySelector('#home .eot-v289-view')",timeout=45000)
- page.wait_for_timeout(600)
+ page.wait_for_function("!document.documentElement.classList.contains('eot-booting') && !document.querySelector('#eotStartupSplash')",timeout=25000)
+ page.wait_for_timeout(400)
 
 def measure(page,width,route):
  result=page.evaluate("""() => {
