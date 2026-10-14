@@ -25,10 +25,10 @@ test('five new menus do not hide or replace company onboarding, land map, or oth
  assert(css.includes('body.eot-setting-up #eot-v289-hero'));
  assert(css.includes('.screen.eot-v289-mounted>*:not(.eot-v289-view)'));
  assert(js.includes("routes=['home','market','business','finance','profile']"));
- assert(html.includes('premium-menus-v289.css?v=292'));
- assert(html.includes('premium-menus-v289.js?v=292'));
- assert(sw.includes('premium-menus-v289.css?v=292'));
- assert(sw.includes('premium-menus-v289.js?v=292'));
+ assert(html.includes('premium-menus-v289.css?v=293'));
+ assert(html.includes('premium-menus-v289.js?v=293'));
+ assert(sw.includes('premium-menus-v289.css?v=293'));
+ assert(sw.includes('premium-menus-v289.js?v=293'));
  assert.equal(sw,get('src/ortak/eklentiler/sw.js'));
 });
 test('compact responsive layouts and native five-tab bar preserved',()=>{
@@ -38,7 +38,7 @@ test('compact responsive layouts and native five-tab bar preserved',()=>{
  assert(js.includes("window.addEventListener('hashchange',updateRoute)"));
 });
 
-test('v292: dense three-column market layout and live monthly cashflow',()=>{
+test('v293: dense three-column market layout and live monthly cashflow',()=>{
  assert(js.includes('operatingStats().net'));
  assert(!js.includes('operatingSummary().net'));
  assert(css.includes('@media(min-width:345px) and (max-width:767px)'));

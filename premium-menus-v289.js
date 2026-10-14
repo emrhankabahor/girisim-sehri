@@ -30,7 +30,23 @@ const data=()=>({
  companies:coList(),assets:assetList(),transactions:Array.isArray(val(()=>tx,[]))?val(()=>tx,[]):[],account:val(()=>currentAccount(),null),
  company:val(()=>sim.companyProfile,null),notifications:val(()=>sim.notifications,[])
 });
-const icon=(emoji,cls='')=>'<span class="eot-v289-ico '+cls+'" aria-hidden="true">'+emoji+'</span>';
+// Code-native icons keep the same silhouette on iOS, Windows and Linux.
+const iconShapes={
+ '🏪':'<path fill="#163c72" d="M9 28h43v27H9z"/><path fill="#ffe09a" d="M14 32h15v23H14zM35 32h12v14H35z"/><path fill="#fff2d1" d="M6 27l7-16h34l9 16z"/><path fill="#ef7758" d="M13 11h7l-4 16H7zm14 0h7v16h-9zm14 0h6l9 16H45z"/>',
+ '🏭':'<path fill="#7897be" d="M40 7h6v35h-6zM50 13h6v29h-6z"/><path fill="#eff2dc" d="M8 30l14-9v9l14-9v34H8z"/><path fill="#347ab8" d="M36 31h22v24H36z"/><path fill="#ffd879" d="M12 37h6v7h-6zm11 0h6v7h-6zm18 1h5v7h-5zm9 0h5v7h-5z"/>',
+ '🏗️':'<path fill="none" stroke="#ffd16a" stroke-width="3" d="M20 56V8h6v48M5 17h52L23 8 5 17zm18 0l-3 12 6 10-6 11M49 17v19h-5"/><path fill="#418acc" d="M32 43h24v13H32z"/><path fill="none" stroke="#c2e7ff" stroke-width="2" d="M35 56V39m8 17V35m9 21V39"/>',
+ '🚗':'<path fill="#164574" d="M5 24L31 9l27 15v32H5z"/><path fill="#78bcf4" d="M10 27h43v24H10z"/><path fill="#e8f4ff" d="M18 35l5-9h17l7 9z"/><path fill="#efb44e" d="M12 35h39l4 6v9H9v-9z"/><path fill="#fff5cf" d="M12 39h8v4h-8zm31 0h8v4h-8z"/><path fill="#07172f" d="M14 48h7v7h-7zm29 0h7v7h-7z"/>',
+ '🏢':'<path fill="#175694" d="M9 19l27-12 17 9v40H9z"/><path fill="#67b7f4" d="M9 19l27-12v49H9z"/><path fill="#e3f7ff" d="M15 22h6v7h-6zm12-5h5v7h-5zM15 35h6v7h-6zm12-5h5v7h-5zM15 48h6v8h-6zm12-5h5v7h-5z"/><path fill="#ffd57a" d="M40 22h6v7h-6zm0 13h6v7h-6zm0 13h6v8h-6z"/>',
+ '📍':'<path fill="#2a804f" d="M4 46l28-13 28 13-28 15z"/><path fill="#64b866" d="M4 41l28-13 28 13-28 15z"/><path fill="#ffce5b" d="M32 5c-18 0-18 21 0 38C50 26 50 5 32 5"/><circle cx="32" cy="18" r="7" fill="#1877b0"/>',
+ '💰':'<path fill="#c9902c" d="M8 31h20v22H8zm26-16h21v38H34z"/><g fill="#ffda65" stroke="#fff0b3" stroke-width="1.5"><ellipse cx="18" cy="31" rx="10" ry="4"/><ellipse cx="44" cy="15" rx="11" ry="4"/><path fill="none" d="M8 39q10 7 20 0M8 46q10 7 20 0M34 24q10 7 21 0M34 33q10 7 21 0M34 42q10 7 21 0"/></g>',
+ '📈':'<path fill="#4baee9" d="M8 38h10v18H8zm17-11h10v29H25zm17-14h10v43H42z"/><path fill="none" stroke="#7af0a8" stroke-width="4" d="M7 29l18-16 9 5L53 4M42 4h11v11"/>',
+ '👤':'<circle fill="#a7dcff" cx="32" cy="18" r="11"/><path fill="#459ee5" stroke="#afdcff" stroke-width="2" d="M12 55v-6c0-23 40-23 40 0v6z"/>'
+};
+const iconAlias={'🏙️':'🏢','🏠':'🏢','💵':'💰','🪙':'💰','📊':'📈'};
+const icon=(emoji,cls='')=>{
+ const shape=iconShapes[iconAlias[emoji]||emoji];
+ return '<span class="eot-v289-ico '+cls+'" aria-hidden="true">'+(shape?'<svg viewBox="0 0 64 64" focusable="false">'+shape+'</svg>':emoji)+'</span>';
+};
 const card=(emoji,label,sub,href,extra='')=>'<a class="eot-v289-tile '+extra+'" href="'+href+'">'+icon(emoji)+'<span class="eot-v289-tile-text"><b>'+esc(label)+'</b><small>'+esc(sub)+'</small></span><span class="eot-v289-chevron">›</span></a>';
 const title=(label,action='',href='')=>'<div class="eot-v289-panel-head"><b>'+label+'</b>'+(href?'<a href="'+href+'">'+action+' ›</a>':'')+'</div>';
 const panel=(inside,extra='')=>'<section class="eot-v289-panel '+extra+'">'+inside+'</section>';
@@ -91,7 +107,7 @@ function makeBusiness(){
  '<div>'+icon('💰')+'<span>Şirket Değeri</span><strong id="eot-v289-business-value">—</strong></div>'+
  '<div>'+icon('👥')+'<span>Çalışan</span><strong id="eot-v289-employees">—</strong></div></div>')+
  panel(title('🏢 İşletmelerim','Şirket Merkezi','#company_center')+
- '<div class="eot-v289-business-grid">'+category.slice(0,5).map(([e,n,s,h,code])=>'<a class="eot-v289-business-card" href="'+h+'">'+icon(e,'v289-'+code)+
+ '<div class="eot-v289-business-grid">'+[category[0],category[3],category[1],category[2],category[4]].map(([e,n,s,h,code])=>'<a class="eot-v289-business-card" href="'+h+'">'+icon(e,'v289-'+code)+
  '<b>'+n+'</b><small id="eot-v289-count-'+code+'">—</small><span>Yönet ›</span></a>').join('')+'</div>')+
  panel(title('🏛️ Şirket Yönetimi')+
  '<div class="eot-v289-management-grid">'+card('🏢','Şirket Merkezi','Portföy, gelir ve faaliyetler','#company_center')+

@@ -1,9 +1,9 @@
-const CACHE_NAME='empire-of-trade-v339';
+const CACHE_NAME='empire-of-trade-v340';
 // Only critical startup files gate installation. Optional game assets are cached
 // on demand, so a slow or failed secondary download cannot block the launch shell.
 const CORE=[
- './index.html','./bootstrap.js?v=292',
- './styles.css?v=188','./interface-theme.css?v=284','./responsive-v285.css?v=287','./turkiye-atlas.css?v=288','./turkiye-atlas.js?v=288','./premium-menus-v289.css?v=292','./premium-menus-v289.js?v=292',
+ './index.html','./bootstrap.js?v=293',
+ './styles.css?v=188','./interface-theme.css?v=284','./responsive-v285.css?v=287','./turkiye-atlas.css?v=288','./turkiye-atlas.js?v=288','./premium-menus-v289.css?v=293','./premium-menus-v289.js?v=293',
  './assets/logo-v221-192.png','./assets/logo-v221-512.png',
  './assets/splash-refined-v260.png',
  './assets/company-background-v283.jpg'

@@ -275,3 +275,64 @@ body.eot-v289-main .eot-v289-finance-card,
 body.eot-v289-main .eot-v289-panel{
  box-shadow:inset 0 2px #bdeeff73,inset 0 -3px #0007,0 5px 12px #000a,0 0 13px #ffcb6a4a!important;
 }
+
+/* v293: reference proportions, a 3+2 business grid, and safe-area aware chrome. */
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app{
+ padding-top:env(safe-area-inset-top,0px)!important;
+ padding-bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+}
+body.eot-design-v1.eot-v289-main .eot-v289-business-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+body.eot-design-v1.eot-v289-main .eot-v289-business-card{grid-column:span 2}
+body.eot-design-v1.eot-v289-main .eot-v289-business-card:nth-child(n+4){grid-column:span 3}
+body.eot-design-v1.eot-v289-main .eot-v289-ico{
+ flex-shrink:0;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
+}
+body.eot-design-v1.eot-v289-main .eot-v289-page-title{border-radius:18px 18px 22px 22px!important}
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up)>.bottom-nav .nav-btn.active{
+ color:#ffe291!important;
+ background:radial-gradient(ellipse at 50% 0,#c9974c55,transparent 80%),linear-gradient(#183051,#09182e)!important;
+ box-shadow:inset 0 1px #fff3c4,inset 0 -2px #dfac46,0 0 12px #ffbd55b0!important;
+}
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up)>.bottom-nav .nav-btn.active .nav-ico{
+ color:#ffe291!important;filter:drop-shadow(0 0 4px #eeb84699);
+}
+body.eot-design-v1.eot-v289-main .eot-v289-panel{
+ background:radial-gradient(ellipse at 50% 0,#1689fb55,transparent 55%),linear-gradient(160deg,#082c62,#031533 85%);
+}
+body.eot-design-v1.eot-v289-main .eot-v289-triple strong{font-size:clamp(10px,2.8vw,19px);overflow-wrap:normal;max-width:100%}
+@media(max-width:480px){
+ body.eot-design-v1.eot-v289-main .screen.eot-v289-mounted{padding:0!important;margin-top:0!important}
+ body.eot-design-v1.eot-v289-main .eot-v289-page-title{font-size:22px!important;margin:5px auto 9px!important;padding:3px 9px!important}
+ body.eot-design-v1.eot-v289-main .eot-v289-panel{padding:7px!important;margin:7px 0 9px!important}
+ body.eot-design-v1.eot-v289-main .eot-v289-panel-head{padding-bottom:5px!important}
+ body.eot-design-v1.eot-v289-main .eot-v289-panel-head b{font-size:14px}
+ body.eot-design-v1.eot-v289-main .eot-v289-triple{padding-top:4px}
+ body.eot-design-v1.eot-v289-main .eot-v289-triple>div{padding:3px;gap:3px}
+ body.eot-design-v1.eot-v289-main .eot-v289-triple .eot-v289-ico{height:29px;width:34px;font-size:25px}
+ body.eot-design-v1.eot-v289-main .eot-v289-category{min-height:78px!important;padding:5px 3px;gap:3px}
+ body.eot-design-v1.eot-v289-main .eot-v289-category .eot-v289-ico{height:43px;width:53px;font-size:32px}
+ body.eot-design-v1.eot-v289-main .eot-v289-picture-grid{gap:6px;margin-top:6px}
+ body.eot-design-v1.eot-v289-main .eot-v289-profile-grid .eot-v289-tile{min-height:68px;padding:7px;gap:6px}
+ body.eot-design-v1.eot-v289-main .eot-v289-profile-grid .eot-v289-ico{width:35px;height:40px;font-size:27px}
+ body.eot-design-v1.eot-v289-main .eot-v289-management-grid .eot-v289-tile{min-height:54px;padding:6px;gap:6px}
+ body.eot-design-v1.eot-v289-main .eot-v289-management-grid .eot-v289-ico{width:30px;height:34px;font-size:23px}
+ body.eot-design-v1.eot-v289-main .eot-v289-business-card{padding:7px 4px;gap:4px}
+ body.eot-design-v1.eot-v289-main .eot-v289-business-card .eot-v289-ico{height:48px;width:58px;font-size:34px}
+ body.eot-design-v1.eot-v289-main .eot-v289-finance-card{min-height:148px!important;padding:8px}
+ body.eot-design-v1.eot-v289-main .eot-v289-finance-card p{margin-top:8px}
+ body.eot-design-v1.eot-v289-main .eot-v289-secondary-cta{padding:10px 12px}
+}
+@media(min-width:1024px){
+ body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app{width:min(100%,960px)!important}
+ body.eot-design-v1.eot-v289-main .screen.eot-v289-mounted>.eot-v289-view{display:grid!important;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+ body.eot-design-v1.eot-v289-main .eot-v289-page-title,
+ body.eot-design-v1.eot-v289-main .eot-v289-view>.eot-v289-searchbar,
+ body.eot-design-v1.eot-v289-main .eot-v289-view>.eot-v289-filters,
+ body.eot-design-v1.eot-v289-main .eot-v289-view>.eot-v289-profile-panel{grid-column:1/-1}
+ body.eot-design-v1.eot-v289-main .eot-v289-panel{margin:0}
+ body.eot-design-v1.eot-v289-main .eot-v289-finance-grid{margin:0}
+}
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up)>.bottom-nav .nav-btn.active .nav-ico{
+ background:transparent!important;box-shadow:none!important;border-color:transparent!important;
+}
+.eot-v289-ico svg{display:block;width:92%;height:92%;filter:drop-shadow(0 3px 2px #0008)}

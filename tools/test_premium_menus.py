@@ -1,4 +1,4 @@
-"""Real Chromium layout and functionality checks for Empire of Trade v289 menus."""
+"""Real Chromium layout and functionality checks for Empire of Trade v293 menus."""
 import functools
 import http.server
 import pathlib
@@ -10,7 +10,7 @@ SHOTS.mkdir(exist_ok=True)
 handler=functools.partial(http.server.SimpleHTTPRequestHandler,directory=str(ROOT))
 server=http.server.ThreadingHTTPServer(("127.0.0.1",8766),handler)
 threading.Thread(target=server.serve_forever,daemon=True).start()
-BASE="http://127.0.0.1:8766/?v=292"
+BASE="http://127.0.0.1:8766/?v=293"
 SEED="""(() => {
  if(!localStorage.getItem('eot_premium_smoke_seeded')){
  localStorage.setItem('gs_current_account',JSON.stringify({id:'guest',name:'Arayüz Test Oyuncusu',provider:'guest'}));
@@ -33,6 +33,8 @@ def measure(page,width,route):
  const panel=screen.querySelector('.eot-v289-view').getBoundingClientRect();
  return {innerWidth,scrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body.scrollWidth,
    hero:[b.left,b.right,b.height],panel:[panel.left,panel.right,panel.width],nav:[nav.left,nav.right,nav.height],
+   viewDisplay:getComputedStyle(screen.querySelector('.eot-v289-view')).display,
+   appPaddingTop:parseFloat(getComputedStyle(document.querySelector('#app-root .app')).paddingTop),
    heroShown:getComputedStyle(document.querySelector('#eot-v289-hero')).display!=='none',
    topbarHidden:getComputedStyle(document.querySelector('.topbar')).display==='none',
    screenVisible:getComputedStyle(screen).display!=='none'};
@@ -43,6 +45,8 @@ def measure(page,width,route):
  assert result["nav"][0]>=-1 and result["nav"][1]<=width+2,(width,route,result)
  assert result["nav"][2]<=90,(width,route,result)
  assert result["heroShown"] and result["topbarHidden"] and result["screenVisible"],(width,route,result)
+ assert result["appPaddingTop"]==0,(width,route,result)
+ if width>=1024: assert result["viewDisplay"]=="grid",(width,route,result)
  return result
 
 with sync_playwright() as p:
@@ -70,6 +74,9 @@ with sync_playwright() as p:
     shown=page.locator("#eot-v289-cash").inner_text()
     expected=page.evaluate("() => '₺'+Number(cash||0).toLocaleString('tr-TR',{maximumFractionDigits:0})")
     assert shown==expected,(width,route,shown,expected,true_cash,errors)
+   if route=="business":
+    labels=page.locator(".eot-v289-business-card>b").all_text_contents()
+    assert labels==["Mağazalar","Galeri","Fabrikalar","İnşaat","Gayrimenkul"],labels
    if route=="market":
     inp=page.locator("#eot-v289-market-search")
     inp.fill("Kripto")
