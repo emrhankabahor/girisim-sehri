@@ -1,0 +1,33 @@
+name: Premium menus Chromium regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'premium-menus-v289.js'
+      - 'premium-menus-v289.css'
+      - 'tools/test_premium_menus.py'
+      - '.github/workflows/premium-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  premium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Chromium
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Validate premium routes and mobile layouts
+        run: python tools/test_premium_menus.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: premium-viewport-screenshots
+          path: premium-menu-screenshots/*.png
+          if-no-files-found: ignore
