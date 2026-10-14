@@ -53,7 +53,7 @@ with sync_playwright() as p:
   ctx.add_init_script(SEED)
   page=ctx.new_page()
   errors=[]
-  page.on("pageerror",lambda e:errors.append(str(e)))
+  page.on("pageerror",lambda e:errors.append(str(e)+" | STACK: "+str(getattr(e,"stack",""))))
   wait(page)
   assert page.locator(".eot-v289-hero-logo").is_visible()
   assert page.locator(".eot-v289-hero-logo").evaluate("(e)=>e.complete&&e.naturalWidth>0"),"Game logo missing"
