@@ -16,6 +16,7 @@ SEED = """(() => {
  if (!localStorage.getItem('eot_atlas_smoke_seeded')) {
    localStorage.setItem('gs_current_account', JSON.stringify({id:'guest',name:'Atlas Smoke Test',provider:'guest'}));
    localStorage.setItem('gs124_cash', '250000000');
+   localStorage.setItem('gs132_sim', JSON.stringify({companyName:'Atlas Test',companyProfile:{established:true,name:'Atlas Test',city:'İstanbul',legalType:'Anonim Şirketi (A.Ş.)',capital:250000000,companyCash:0},companies:[],gameMonth:1,currentMonth:{revenue:0,expense:0,tax:0},cycleDue:Date.now()+300000}));
    localStorage.setItem('eot_atlas_smoke_seeded','1');
  }
 })()"""
