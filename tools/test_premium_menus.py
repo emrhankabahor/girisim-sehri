@@ -10,7 +10,7 @@ SHOTS.mkdir(exist_ok=True)
 handler=functools.partial(http.server.SimpleHTTPRequestHandler,directory=str(ROOT))
 server=http.server.ThreadingHTTPServer(("127.0.0.1",8766),handler)
 threading.Thread(target=server.serve_forever,daemon=True).start()
-BASE="http://127.0.0.1:8766/?v=289"
+BASE="http://127.0.0.1:8766/?v=290"
 SEED="""(() => {
  if(!localStorage.getItem('eot_premium_smoke_seeded')){
  localStorage.setItem('gs_current_account',JSON.stringify({id:'guest',name:'Arayüz Test Oyuncusu',provider:'guest'}));
@@ -21,18 +21,7 @@ SEED="""(() => {
 })()"""
 def wait(page):
  page.goto(BASE+"#home",wait_until="domcontentloaded",timeout=90000)
- page.wait_for_timeout(6500)
- details=page.evaluate("""() => ({
-  url:location.href,ready:window.__EOT_NATIVE_READY__,showcase:!!window.EOTShowcaseV289,
-  view:!!document.querySelector('#home .eot-v289-view'),root:!!document.querySelector('#app-root .app'),
-  home:!!document.querySelector('#home'),hash:location.hash,
-  body:document.body.className,boot:document.documentElement.className,
-  company:!!document.querySelector('#eotCompanySetup.show'),
-  splash:!!document.querySelector('#eotStartupSplash'),
-  version:localStorage.getItem('gs140_state')?.slice(0,100)
- })""")
- print("premium bootstrap diagnostics",details,flush=True)
- page.wait_for_function("!!window.EOTShowcaseV289 && !!document.querySelector('#home .eot-v289-view')",timeout=18000)
+ page.wait_for_function("window.__EOT_NATIVE_READY__ === true && !!window.EOTShowcaseV289 && !!document.querySelector('#home .eot-v289-view')",timeout=45000)
  page.wait_for_timeout(600)
 
 def measure(page,width,route):
@@ -78,8 +67,8 @@ with sync_playwright() as p:
    if route=="home":
     true_cash=page.evaluate("cash")
     shown=page.locator("#eot-v289-cash").inner_text()
-    assert str(true_cash).replace("000","")!="no_data"
-    assert shown.startswith("₺") and shown!='₺0'
+    expected=page.evaluate("() => '₺'+Number(cash||0).toLocaleString('tr-TR',{maximumFractionDigits:0})")
+    assert shown==expected,(width,route,shown,expected,true_cash,errors)
    if route=="market":
     inp=page.locator("#eot-v289-market-search")
     inp.fill("Kripto")

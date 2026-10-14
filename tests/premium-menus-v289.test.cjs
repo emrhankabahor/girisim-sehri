@@ -23,10 +23,10 @@ test('five new menus do not hide or replace company onboarding, land map, or oth
  assert(css.includes('body.eot-setting-up #eot-v289-hero'));
  assert(css.includes('.screen.eot-v289-mounted>*:not(.eot-v289-view)'));
  assert(js.includes("routes=['home','market','business','finance','profile']"));
- assert(html.includes('premium-menus-v289.css?v=289'));
- assert(html.includes('premium-menus-v289.js?v=289'));
- assert(sw.includes('premium-menus-v289.css?v=289'));
- assert(sw.includes('premium-menus-v289.js?v=289'));
+ assert(html.includes('premium-menus-v289.css?v=290'));
+ assert(html.includes('premium-menus-v289.js?v=290'));
+ assert(sw.includes('premium-menus-v289.css?v=290'));
+ assert(sw.includes('premium-menus-v289.js?v=290'));
  assert.equal(sw,get('src/ortak/eklentiler/sw.js'));
 });
 test('compact responsive layouts and native five-tab bar preserved',()=>{

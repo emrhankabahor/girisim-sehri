@@ -217,7 +217,7 @@ function refresh(){
  as('eot-v289-cash',d.cash);txt('eot-v289-credit',Math.round(d.credit));
  const bar=by('eot-v289-credit-bar');if(bar)bar.style.width=Math.min(100,Math.max(0,d.credit))+'%';
  const clock=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});txt('eot-v289-clock',clock);
- const notices=d.notifications.filter(x=>x&&!x.read).length;const badge=by('eot-v289-badge');
+ const notices=Array.isArray(d.notifications)?d.notifications.filter(x=>x&&!x.read).length:0;const badge=by('eot-v289-badge');
  if(badge){badge.hidden=!notices;if(notices)badge.textContent=String(notices>99?'99+':notices)}
  if(route==='home'){
  as('eot-v289-worth',d.worth);as('eot-v289-flow',d.flow);txt('eot-v289-company-count',d.companies.length);
