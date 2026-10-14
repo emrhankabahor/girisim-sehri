@@ -336,3 +336,5 @@ body.eot-design-v1.eot-v289-main:not(.eot-setting-up)>.bottom-nav .nav-btn.activ
  background:transparent!important;box-shadow:none!important;border-color:transparent!important;
 }
 .eot-v289-ico svg{display:block;width:92%;height:92%;filter:drop-shadow(0 3px 2px #0008)}
+/* Legacy route-specific !important rules must not display a second menu. */
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) #app-root :is(#home,#market,#business,#finance,#profile).eot-v289-mounted > :not(.eot-v289-view){display:none!important}

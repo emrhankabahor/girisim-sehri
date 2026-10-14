@@ -1,4 +1,4 @@
-"""Real Chromium layout and functionality checks for Empire of Trade v293 menus."""
+"""Real Chromium layout and functionality checks for Empire of Trade v294 menus."""
 import functools
 import http.server
 import pathlib
@@ -10,7 +10,7 @@ SHOTS.mkdir(exist_ok=True)
 handler=functools.partial(http.server.SimpleHTTPRequestHandler,directory=str(ROOT))
 server=http.server.ThreadingHTTPServer(("127.0.0.1",8766),handler)
 threading.Thread(target=server.serve_forever,daemon=True).start()
-BASE="http://127.0.0.1:8766/?v=293"
+BASE="http://127.0.0.1:8766/?v=294"
 SEED="""(() => {
  if(!localStorage.getItem('eot_premium_smoke_seeded')){
  localStorage.setItem('gs_current_account',JSON.stringify({id:'guest',name:'Arayüz Test Oyuncusu',provider:'guest'}));
@@ -33,6 +33,7 @@ def measure(page,width,route):
  const panel=screen.querySelector('.eot-v289-view').getBoundingClientRect();
  return {innerWidth,scrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body.scrollWidth,
    hero:[b.left,b.right,b.height],panel:[panel.left,panel.right,panel.width],nav:[nav.left,nav.right,nav.height],
+   legacyVisible:[...screen.children].filter(e=>!e.classList.contains('eot-v289-view') && getComputedStyle(e).display!=='none').length,
    viewDisplay:getComputedStyle(screen.querySelector('.eot-v289-view')).display,
    appPaddingTop:parseFloat(getComputedStyle(document.querySelector('#app-root .app')).paddingTop),
    heroShown:getComputedStyle(document.querySelector('#eot-v289-hero')).display!=='none',
@@ -45,6 +46,7 @@ def measure(page,width,route):
  assert result["nav"][0]>=-1 and result["nav"][1]<=width+2,(width,route,result)
  assert result["nav"][2]<=90,(width,route,result)
  assert result["heroShown"] and result["topbarHidden"] and result["screenVisible"],(width,route,result)
+ assert result["legacyVisible"]==0,(width,route,result)
  assert result["appPaddingTop"]==0,(width,route,result)
  if width>=1024: assert result["viewDisplay"]=="grid",(width,route,result)
  return result
