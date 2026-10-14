@@ -11,6 +11,7 @@ on:
       - 'tools/migrate_menu_sources.py'
       - 'tools/menu_function_spans.cjs'
       - 'tests/menu_*.py'
+      - 'tests/turkiye-atlas.test.cjs'
       - '.github/workflows/menu-sources.yml'
   pull_request:
     paths:
