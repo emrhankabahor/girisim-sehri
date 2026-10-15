@@ -1,4 +1,4 @@
-"""Real Chromium layout and functionality checks for Empire of Trade v295 menus."""
+"""Real Chromium layout and functionality checks for Empire of Trade v296 menus."""
 import functools
 import http.server
 import pathlib
@@ -10,7 +10,7 @@ SHOTS.mkdir(exist_ok=True)
 handler=functools.partial(http.server.SimpleHTTPRequestHandler,directory=str(ROOT))
 server=http.server.ThreadingHTTPServer(("127.0.0.1",8766),handler)
 threading.Thread(target=server.serve_forever,daemon=True).start()
-BASE="http://127.0.0.1:8766/?v=295"
+BASE="http://127.0.0.1:8766/?v=296"
 SEED="""(() => {
  if(!localStorage.getItem('eot_premium_smoke_seeded')){
  localStorage.setItem('gs_current_account',JSON.stringify({id:'guest',name:'Arayüz Test Oyuncusu',provider:'guest'}));
@@ -73,7 +73,12 @@ with sync_playwright() as p:
    page.wait_for_timeout(160)
    result=measure(page,width,route)
    assert page.locator("#"+route+" .eot-v289-view").is_visible()
-   assert page.locator("#"+route+" .eot-v289-page-title").count()==1
+   assert page.locator("#"+route+" .eot-v289-page-title").count()==(0 if route=="home" else 1)
+   if route=="home":
+    assert page.locator("#home .eot-v296-overview").is_visible()
+    assert page.locator("#home .eot-v296-shortcuts > a").count()==6
+    assert page.locator("#home .eot-v296-activity").is_visible()
+    assert page.evaluate("getComputedStyle(document.querySelector('#app-root .app'),'::before').position")=="fixed"
    page.screenshot(path=str(SHOTS/(f"{route}-{width}.png")),full_page=False)
    if route=="home":
     true_cash=page.evaluate("cash")
