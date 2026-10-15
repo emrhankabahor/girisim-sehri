@@ -1,14 +1,15 @@
-const CACHE_NAME='empire-of-trade-v342';
+const CACHE_NAME='empire-of-trade-v343';
 // Only critical startup files gate installation. Optional game assets are cached
 // on demand, so a slow or failed secondary download cannot block the launch shell.
 const CORE=[
- './index.html','./bootstrap.js?v=295',
- './styles.css?v=188','./interface-theme.css?v=284','./responsive-v285.css?v=287','./turkiye-atlas.css?v=288','./turkiye-atlas.js?v=288','./premium-menus-v289.css?v=294','./premium-menus-v289.js?v=294',
+ './index.html','./bootstrap.js?v=296',
+ './styles.css?v=188','./interface-theme.css?v=284','./responsive-v285.css?v=287','./turkiye-atlas.css?v=288','./turkiye-atlas.js?v=288','./premium-menus-v289.css?v=294','./premium-menus-v289.js?v=296',
  './assets/logo-v221-192.png','./assets/logo-v221-512.png',
  './assets/splash-refined-v260.png',
  './assets/company-background-v283.jpg',
  './assets/menu-background-v295.jpg',
- './menu-background-v295.css?v=295'
+ './menu-background-v295.css?v=295',
+ './home-v296.css?v=296'
 ];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)));await self.clients.claim();})());});
