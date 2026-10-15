@@ -26,9 +26,9 @@ test('five new menus do not hide or replace company onboarding, land map, or oth
  assert(css.includes('.screen.eot-v289-mounted>*:not(.eot-v289-view)'));
  assert(js.includes("routes=['home','market','business','finance','profile']"));
  assert(html.includes('premium-menus-v289.css?v=294'));
- assert(html.includes('premium-menus-v289.js?v=294'));
+ assert(html.includes('premium-menus-v289.js?v=296'));
  assert(sw.includes('premium-menus-v289.css?v=294'));
- assert(sw.includes('premium-menus-v289.js?v=294'));
+ assert(sw.includes('premium-menus-v289.js?v=296'));
  assert.equal(sw,get('src/ortak/eklentiler/sw.js'));
 });
 test('compact responsive layouts and native five-tab bar preserved',()=>{
@@ -61,7 +61,23 @@ test('v295: approved image powers exactly the five premium menus and is offline 
  assert(sw.includes("'./assets/menu-background-v295.jpg'"));
  assert(sw.includes("bootstrap.js?v=295"));
  assert.equal(sw,get('src/ortak/eklentiler/sw.js'));
- assert(get('bootstrap.js').includes("const APP_VERSION='295'"));
- assert(get('src/ortak/bootstrap.js').includes("const APP_VERSION='295'"));
- assert.equal(JSON.parse(get('version.json')).version,'295');
+ assert(get('bootstrap.js').includes("const APP_VERSION='296'"));
+ assert(get('src/ortak/bootstrap.js').includes("const APP_VERSION='296'"));
+ assert.equal(JSON.parse(get('version.json')).version,'296');
+});
+
+test('v296: Home is rebuilt inside the live game with original fixed artwork',()=>{
+ const css296=get('home-v296.css'),start=js.indexOf('function makeHome(){'),end=js.indexOf('function makeMarket(){'),home=js.slice(start,end);
+ assert(start>=0&&end>start);
+ assert(!home.includes('ANA SAYFA'));
+ for(const k of ['Genel Bakış','Hızlı Erişim','Son İşlemler','Günlük Gelir','eot-v296-daily-income'])assert(home.includes(k),k);
+ assert(js.includes('dailyRecordedIncome(d.transactions)'));
+ assert(js.includes('transactionTime(t)'));
+ assert(css296.includes('position:fixed'));
+ assert(css296.includes("url('./assets/menu-background-v295.jpg')"));
+ assert(css296.includes('eot-v296-home'));
+ assert(html.includes('home-v296.css?v=296'));
+ assert(sw.includes('home-v296.css?v=296'));
+ assert(!js.includes('12.450.000'));
+ assert(!js.includes('287.500.000'));
 });
