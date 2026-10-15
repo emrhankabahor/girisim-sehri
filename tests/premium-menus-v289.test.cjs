@@ -51,7 +51,7 @@ test('v295: approved image powers exactly the five premium menus and is offline 
  assert(fs.existsSync(path.join(root,'assets/menu-background-v295.jpg')));
  assert(fs.statSync(path.join(root,'assets/menu-background-v295.jpg')).size>300000);
  assert(html.includes('menu-background-v295.css?v=295'));
- assert(html.includes('bootstrap.js?v=295'));
+ assert(html.includes('bootstrap.js?v=296'));
  assert(photoCss.includes("url('./assets/menu-background-v295.jpg')"));
  assert(photoCss.includes('body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app'));
  assert(photoCss.includes('visibility:hidden'));
@@ -59,7 +59,7 @@ test('v295: approved image powers exactly the five premium menus and is offline 
  assert(!photoCss.includes('#company_setup'));
  assert(sw.includes("'./menu-background-v295.css?v=295'"));
  assert(sw.includes("'./assets/menu-background-v295.jpg'"));
- assert(sw.includes("bootstrap.js?v=295"));
+ assert(sw.includes("bootstrap.js?v=296"));
  assert.equal(sw,get('src/ortak/eklentiler/sw.js'));
  assert(get('bootstrap.js').includes("const APP_VERSION='296'"));
  assert(get('src/ortak/bootstrap.js').includes("const APP_VERSION='296'"));
