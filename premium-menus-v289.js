@@ -65,16 +65,14 @@ function mountHero(app){
  hero.insertAdjacentElement('afterend',strip);
 }
 function makeHome(){
- return '<div class="eot-v289-page-title">ANA SAYFA</div>'+
- panel(title('📊 Genel Bakış','Tüm Detaylar','#finance')+
- '<div class="eot-v289-triple"><div>'+icon('💵')+'<span>Net Değer</span><strong id="eot-v289-worth">—</strong></div>'+
- '<div>'+icon('💰')+'<span>Aylık Nakit Akışı</span><strong id="eot-v289-flow">—</strong></div>'+
- '<div>'+icon('🏙️')+'<span>Şirket Sayısı</span><strong id="eot-v289-company-count">—</strong></div></div>')+
+ return panel(title('📊 Genel Bakış','Tüm Detaylar','#finance')+
+ '<div class="eot-v289-triple eot-v296-overview"><div>'+icon('💵')+'<span>Net Değer</span><strong id="eot-v289-worth">—</strong><small>Toplam servet</small></div>'+
+ '<div>'+icon('💰')+'<span>Günlük Gelir</span><strong id="eot-v296-daily-income">—</strong><small>Bugünkü kayıtlı gelir</small></div>'+
+ '<div>'+icon('🏙️')+'<span>Şirket Sayısı</span><strong id="eot-v289-company-count">—</strong><small>Şirket portföyü</small></div></div>','eot-v296-overview-panel')+
  panel(title('⚡ Hızlı Erişim')+
- '<div class="eot-v289-picture-grid">'+category.map(([e,n,s,h])=>card(e,n,s,h,'eot-v289-category')).join('')+'</div>')+
+ '<div class="eot-v289-picture-grid eot-v296-shortcuts">'+category.map(([e,n,sub,href])=>card(e,n==='Fabrikalar'?'Fabrika':n,sub,href,'eot-v289-category')).join('')+'</div>','eot-v296-shortcuts-panel')+
  panel(title('🧾 Son İşlemler','Tümünü Gör','#transactions')+
- '<div class="eot-v289-activity" id="eot-v289-activities"><p>Henüz işlem yok.</p></div>')+
- '<a class="eot-v289-secondary-cta" href="#company_center">Şirket Merkezine Git <span>›</span></a>';
+ '<div class="eot-v289-activity eot-v296-activity" id="eot-v289-activities"><p>Henüz işlem yok.</p></div>','eot-v296-activity-panel');
 }
 function makeMarket(){
  const types=[
@@ -157,7 +155,7 @@ function mount(){
  mountHero(app);
  routes.forEach(r=>{
    const section=by(r),node=document.createElement('div');
-   node.className='eot-v289-view';node.dataset.route=r;node.innerHTML=markup[r]();
+   node.className='eot-v289-view';if(r==='home')node.classList.add('eot-v296-home');node.dataset.route=r;node.innerHTML=markup[r]();
    section.appendChild(node);section.classList.add('eot-v289-mounted');
  });
  const input=by('eot-v289-market-search');
@@ -207,19 +205,40 @@ function counts(d){
  };
 }
 const transactionNames={asset_buy:'Varlık satın alma',asset_sell:'Varlık satışı',buy:'Yatırım alımı',sell:'Yatırım satışı',loan_in:'Kredi kullanımı',installment:'Kredi ödemesi',factory_collect:'Fabrika geliri',construction_collect:'İnşaat geliri',deposit_open:'Vadeli hesap',company_foundation:'Şirket kuruluşu'};
+const incomeTypes=new Set(['factory_collect','construction_collect','store_collect','shop_collect','rent_collect','income','revenue','payout','dividend','business_income']);
+const outTypes=new Set(['asset_buy','buy','installment','early_close','deposit_open','company_foundation','land_buy','property_buy','car_buy']);
+const inTypes=new Set(['asset_sell','sell','factory_collect','construction_collect','store_collect','shop_collect','rent_collect','income','revenue','payout','dividend','business_income','loan_in']);
+function transactionAmount(t){return Number(t?.amount??t?.total??t?.price??0)||0}
+function dailyRecordedIncome(items){
+ const today=new Date().toDateString();
+ return items.reduce((sum,t)=>{
+  const at=Number(t?.t??t?.timestamp??t?.time??0);
+  return incomeTypes.has(t?.type)&&at>0&&new Date(at).toDateString()===today?sum+Math.abs(transactionAmount(t)):sum;
+ },0);
+}
+function transactionTime(t){
+ const at=Number(t?.t??t?.timestamp??t?.time??0);
+ if(!at||!Number.isFinite(at))return '';
+ const date=new Date(at);if(Number.isNaN(date.getTime()))return '';
+ const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+ const label=date.toDateString()===new Date().toDateString()?'Bugün':date.toDateString()===yesterday.toDateString()?'Dün':date.toLocaleDateString('tr-TR',{day:'2-digit',month:'short'});
+ return label+' '+date.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+}
 function updateActivities(d){
  const list=(d.transactions||[]).slice(0,3);
- const sig=JSON.stringify(list);
- if(sig===lastActivities)return;lastActivities=sig;
+ const sig=JSON.stringify(list);if(sig===lastActivities)return;lastActivities=sig;
  const wrap=by('eot-v289-activities');if(!wrap)return;
  wrap.replaceChildren();
- if(!list.length){const p=document.createElement('p');p.textContent='Henüz işlem yapılmadı. İlk yatırımınla ticaret yolculuğunu başlat.';wrap.append(p);return}
+ if(!list.length){const p=document.createElement('p');p.textContent='Henüz işlem yapılmadı. İlk ticaret işlemin burada görünecek.';wrap.append(p);return}
  for(const t of list){
- const row=document.createElement('div');row.className='eot-v289-activity-row';
- const amount=Number(t.amount??t.total??t.price??0);
- const type=t.type||'';
- row.innerHTML='<span>🧾</span><div><b>'+esc(transactionNames[type]||String(type||'İşlem'))+'</b><small>'+esc(t.sym||t.name||'Oyun işlemi')+'</small></div><strong>'+format(amount)+'</strong>';
- wrap.append(row);
+  const row=document.createElement('div');row.className='eot-v289-activity-row eot-v296-activity-row';
+  const type=String(t?.type||'');
+  const debit=outTypes.has(type),credit=inTypes.has(type);
+  const glyph=type.includes('factory')?'🏭':type.includes('buy')?'📍':type.includes('sell')?'📈':type.includes('loan')?'💰':'🧾';
+  row.innerHTML='<span class="eot-v296-activity-icon">'+glyph+'</span><div class="eot-v296-activity-info"><b>'+esc(transactionNames[type]||String(type||'İşlem'))+'</b><small>'+esc(t.sym||t.name||'Oyun işlemi')+'</small></div>'+
+   '<time class="eot-v296-activity-time">'+esc(transactionTime(t))+'</time>'+
+   '<strong class="'+(debit?'eot-v296-debit':credit?'eot-v296-credit':'eot-v296-neutral')+'">'+(debit?'− ':credit?'+ ':'')+format(Math.abs(transactionAmount(t)))+'</strong>';
+  wrap.append(row);
  }
 }
 function refresh(){
@@ -236,7 +255,7 @@ function refresh(){
  const notices=Array.isArray(d.notifications)?d.notifications.filter(x=>x&&x.read===false).length:0;const badge=by('eot-v289-badge');
  if(badge){badge.hidden=!notices;if(notices)badge.textContent=String(notices>99?'99+':notices)}
  if(route==='home'){
- as('eot-v289-worth',d.worth);as('eot-v289-flow',d.flow);txt('eot-v289-company-count',d.companies.length);
+ as('eot-v289-worth',d.worth);as('eot-v296-daily-income',dailyRecordedIncome(d.transactions));txt('eot-v289-company-count',d.companies.length);
  updateActivities(d);
  }
  if(route==='market'){
