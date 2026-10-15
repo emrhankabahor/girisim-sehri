@@ -1,0 +1,111 @@
+/* Empire of Trade v296 – in-game Home only, original v295 city art unchanged. */
+/* iOS Safari: use a fixed painting layer, not background-attachment:fixed. */
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app {
+ background-color:#020b28!important;
+ background-image:linear-gradient(#020b28,#020b28),url('./assets/menu-background-v295.jpg')!important;
+}
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app::before{
+ content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+ background-color:#020b28;
+ background-image:linear-gradient(180deg,#03132e08 0%,#03132e55 48%,#020b28e8 100%),url('./assets/menu-background-v295.jpg');
+ background-position:center top,center top;background-size:100% 100%,min(100vw,760px) auto;
+ background-repeat:no-repeat,no-repeat;
+}
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app>.eot-v289-hero,
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app>.eot-v289-strip,
+body.eot-design-v1.eot-v289-main:not(.eot-setting-up) .app>.screen{
+ position:relative;z-index:1;
+}
+/* No decorative ANA SAYFA heading: return directly to playable dashboard. */
+body.eot-v289-main[data-v289-route="home"] .eot-v296-home{padding-top:2px!important}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-home>.eot-v289-page-title{display:none!important}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-home .eot-v289-panel{
+ position:relative;margin:10px 0 13px!important;padding:12px 11px 13px!important;
+ border:1.5px solid #efbe67!important;border-radius:20px!important;
+ background:linear-gradient(155deg,#123c82e8 0%,#071a43f2 48%,#05102fec 100%)!important;
+ box-shadow:inset 0 1px #fff6d0a8,inset 0 -2px #15407e,0 0 16px #f6b4434a,0 8px 20px #02071999!important;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-home .eot-v289-panel-head{
+ padding:0 3px 10px!important;border-bottom:1px solid #5cbafc75!important;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-home .eot-v289-panel-head b{
+ color:#ffe39a!important;font-size:clamp(15px,4.6vw,21px)!important;text-shadow:0 2px 4px #0009!important;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-home .eot-v289-panel-head a{font-size:clamp(10px,2.6vw,12px)!important}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-overview{
+ margin-top:9px;padding:9px 0 4px;border-radius:14px;border:1px solid #458fd9ab;background:#04173eb0;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-overview>div{
+ padding:7px 4px;gap:5px!important;justify-content:center;min-height:128px;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-overview .eot-v289-ico{
+ width:54px;height:48px;filter:drop-shadow(0 5px 5px #000b);
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-overview strong{
+ font-size:clamp(11px,3.4vw,20px)!important;line-height:1.2;
+ font-variant-numeric:tabular-nums;overflow-wrap:anywhere;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-overview small{
+ font-size:clamp(8px,2.1vw,11px);color:#81dea9;font-weight:800;line-height:1.25;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts{
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:clamp(6px,1.8vw,11px)!important;margin-top:11px;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts .eot-v289-category{
+ display:flex!important;flex-direction:column;justify-content:space-between;min-width:0;
+ min-height:clamp(105px,28vw,153px)!important;padding:8px 3px 3px!important;
+ border:1.5px solid #ffe49b!important;border-radius:14px!important;
+ background:radial-gradient(ellipse at 50% 15%,#35a4ff92,transparent 75%),linear-gradient(165deg,#174e9b,#041539 90%)!important;
+ box-shadow:inset 0 2px #e9f7ff88,inset 0 -3px #2a65ac,0 5px 12px #0009,0 0 9px #ffb4435c!important;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts .eot-v289-ico{
+ width:clamp(52px,15vw,85px)!important;height:clamp(57px,17vw,92px)!important;
+ max-width:100%;margin:auto auto 2px;border:0!important;background:transparent!important;
+ box-shadow:none!important;filter:drop-shadow(0 4px 4px #000b) drop-shadow(0 0 7px #77b9ff6f)!important;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts .eot-v289-ico svg{width:100%;height:100%}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts .eot-v289-tile-text{
+ align-self:stretch;padding:6px 14px 6px 3px;border-radius:9px;
+ background:linear-gradient(180deg,#103e77,#061638);border-top:1px solid #9bdeff70;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts .eot-v289-tile-text b{
+ display:block;text-align:center;color:#fff5d8;font-size:clamp(10px,2.7vw,14px)!important;white-space:nowrap;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts .eot-v289-chevron{
+ bottom:5px;right:5px;font-size:19px;color:#ffcf62;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-activity{
+ margin-top:9px;padding:4px 8px;border:1px solid #398ee2ad;border-radius:14px;background:#041432ba;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-activity-row{
+ display:grid!important;grid-template-columns:30px minmax(0,1fr) auto;
+ gap:5px 8px;align-items:center;min-height:56px;padding:8px 1px!important;
+}
+body.eot-v289-main[data-v289-route="home"] .eot-v296-activity-row:last-child{border-bottom:0}
+.eot-v296-activity-icon{grid-row:span 2;font-size:21px}
+.eot-v296-activity-info{grid-row:span 2;min-width:0}
+.eot-v296-activity-time{grid-column:3;grid-row:1;font-size:clamp(9px,2.2vw,11px);color:#b8d9fb;text-align:right;white-space:nowrap}
+.eot-v296-activity-row strong{grid-column:3;grid-row:2;text-align:right;font-size:clamp(10px,2.7vw,14px)!important;white-space:nowrap}
+.eot-v296-activity-row .eot-v296-credit{color:#52e69b!important}
+.eot-v296-activity-row .eot-v296-debit{color:#ff7d88!important}
+.eot-v296-activity-row .eot-v296-neutral{color:#ffe39b!important}
+body.eot-v289-main[data-v289-route="home"] .eot-v289-hero-top{inset:8px 13px auto}
+body.eot-v289-main[data-v289-route="home"] .eot-v289-hero-action{width:39px;height:39px}
+body.eot-v289-main[data-v289-route="home"] .eot-v289-strip{
+ margin-top:0!important;margin-bottom:10px!important;
+ box-shadow:inset 0 1px #fff9d35b,0 0 14px #fbc35e7b,0 7px 17px #000a!important;
+}
+body.eot-v289-main[data-v289-route="home"]>.bottom-nav{box-shadow:0 0 16px #faaf4966,inset 0 1px #9fdfff!important}
+@media(min-width:768px){
+ body.eot-v289-main[data-v289-route="home"] .eot-v296-home{max-width:760px;margin:0 auto}
+ body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts .eot-v289-category{min-height:155px!important}
+}
+@media(max-width:345px){
+ body.eot-v289-main[data-v289-route="home"] .eot-v296-home .eot-v289-panel{padding:9px 6px!important}
+ body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts{gap:5px!important}
+ body.eot-v289-main[data-v289-route="home"] .eot-v296-shortcuts .eot-v289-tile-text b{font-size:9px!important}
+ body.eot-v289-main[data-v289-route="home"] .eot-v296-overview strong{font-size:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.eot-v289-main[data-v289-route="home"] .eot-v296-home *{transition:none!important;animation:none!important}
+}
