@@ -125,17 +125,6 @@ function startup(){
   mountNewGameButton();
   installNewAccountHook();
 
-  /* Profil bölümü oyun açıldıktan sonra oluşturulabiliyor.
-     DOM değiştikçe kontrol ederek butonu doğru anda ekle. */
-  if(!window.__EOT_NEW_GAME_PROFILE_OBSERVER__&&document.documentElement){
-    const observer=new MutationObserver(()=>{
-      const profile=document.getElementById('profile');
-      if(profile&&!document.getElementById('eotNewGameCard'))mountNewGameButton();
-    });
-    observer.observe(document.documentElement,{childList:true,subtree:true});
-    window.__EOT_NEW_GAME_PROFILE_OBSERVER__=observer;
-  }
-
   /* ANA ŞİRKET KAPISI:
      Ana şirket yoksa oyun ekranı açılamaz.
      State yüklenmesine kısa süre tanı, sonra kesin kontrol yap. */
