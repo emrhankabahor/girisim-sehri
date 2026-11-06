@@ -1,4 +1,4 @@
-const CACHE_NAME='empire-of-trade-v343';
+const CACHE_NAME='empire-of-trade-v296-ios2';
 // Only critical startup files gate installation. Optional game assets are cached
 // on demand, so a slow or failed secondary download cannot block the launch shell.
 const CORE=[
@@ -11,7 +11,19 @@ const CORE=[
  './menu-background-v295.css?v=295',
  './home-v296.css?v=296'
 ];
-self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE)));self.skipWaiting();});
+self.addEventListener('install',event=>{
+  event.waitUntil((async()=>{
+    const cache=await caches.open(CACHE_NAME);
+    // Cache resources independently: one failed image must not block iOS startup.
+    await Promise.allSettled(CORE.map(async path=>{
+      const request=new Request(new URL(path,self.registration.scope).href,{cache:'reload'});
+      const response=await fetch(request);
+      if(!response||!response.ok)throw new Error('Cache resource unavailable: '+path);
+      await cache.put(request,response);
+    }));
+    await self.skipWaiting();
+  })());
+});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)));await self.clients.claim();})());});
 self.addEventListener('message',event=>{if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();});
 async function cacheFirst(req){
