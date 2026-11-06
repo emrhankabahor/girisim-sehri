@@ -51,7 +51,7 @@
     navigator.serviceWorker.addEventListener('controllerchange',()=>{});
     window.addEventListener('load',async()=>{
       try{
-        const reg=await navigator.serviceWorker.register('./sw.js?v='+APP_VERSION+'-ios1',{scope:'./',updateViaCache:'none'});
+        const reg=await navigator.serviceWorker.register('./sw.js?v='+APP_VERSION+'-ios2',{scope:'./',updateViaCache:'none'});
         await reg.update();
         if(reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
         reg.addEventListener('updatefound',()=>{
