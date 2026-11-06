@@ -1,4 +1,4 @@
-const CACHE_NAME='empire-of-trade-v296-ios1';
+const CACHE_NAME='empire-of-trade-v296-ios2';
 // Only critical startup files gate installation. Optional game assets are cached
 // on demand, so a slow or failed secondary download cannot block the launch shell.
 const CORE=[
@@ -14,11 +14,16 @@ const CORE=[
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE_NAME);
-    // iOS Safari can reject addAll() for the entire cache if one large image
-    // or optional asset fails. Cache each resource independently so the app
-    // shell can still install and launch.
+    // Cache resources independently: one failed image must not block iOS startup.
     await Promise.allSettled(CORE.map(async path=>{
-      const request=new Request(path,{cache:'reload'});
+      const request=new Request(new URL(path,self.registration.scope).href,{cache:'reload'});
+      const response=await fetch(request);
+      if(!response||!response.ok)throw new Error('Cache resource unavailable: '+path);
+      await cache.put(request,response);
+    }));
+    await self.skipWaiting();
+  })());
+});
       const response=await fetch(request);
       if(!response||!response.ok)throw new Error('Cache resource unavailable: '+path);
       await cache.put(request,response);
