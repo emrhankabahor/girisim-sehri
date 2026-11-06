@@ -197,5 +197,5 @@
   });
 
   // Herhangi bir beklenmeyen hata oyunu sonsuza kadar kapatmasın.
-  setTimeout(()=>{if(!ready)window.EOTStartupSplash.ready()},9000);
+  setTimeout(()=>{if(!removed&&!finishing)window.EOTStartupSplash.failOpen()},8000);
 })();
