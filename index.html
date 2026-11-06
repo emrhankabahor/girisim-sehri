@@ -241,7 +241,7 @@ body{background:#030b14!important}.app{width:min(100%,500px)!important;margin:0 
   });
 
   // Herhangi bir beklenmeyen hata oyunu sonsuza kadar kapatmasın.
-  setTimeout(()=>{if(!ready)window.EOTStartupSplash.ready()},9000);
+  setTimeout(()=>{if(!removed&&!finishing)window.EOTStartupSplash.failOpen()},8000);
 })();
 </script>
 <!-- EOT_STARTUP_END -->
