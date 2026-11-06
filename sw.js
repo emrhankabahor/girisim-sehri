@@ -24,13 +24,6 @@ self.addEventListener('install',event=>{
     await self.skipWaiting();
   })());
 });
-      const response=await fetch(request);
-      if(!response||!response.ok)throw new Error('Cache resource unavailable: '+path);
-      await cache.put(request,response);
-    }));
-    await self.skipWaiting();
-  })());
-});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)));await self.clients.claim();})());});
 self.addEventListener('message',event=>{if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();});
 async function cacheFirst(req){
